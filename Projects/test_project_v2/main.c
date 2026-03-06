@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -12,6 +13,8 @@
 #include "hardware/structs/io_bank0.h"
 //#include "hardware/pio.h"
 //#include "hardware/"
+
+#define ENCODER_SPR 2400
 
 
 //Phase A and B GPIO ports for the Rotary Encoder
@@ -40,6 +43,7 @@ volatile bool Pulse_A = false;
 volatile bool Pulse_B = false;
 
 volatile int32_t count = 0;
+volatile int dir = 0;
 
 //volatile bool A_first = false;
 //volatile bool B_first = false;
@@ -53,49 +57,25 @@ volatile int32_t count = 0;
 void gpio_callback(uint gpio, uint32_t events) {
     static bool A_first = false;
     static bool B_first = false;
-    if (events & GPIO_IRQ_EDGE_RISE) {
-        // Rising edge detected
+
+    static int buffer = 0x00;
+    if (events & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL) {
+        // Rising or falling edge detected
         if (gpio == Phase_A){ 
-            //Pulse_A = true;
-            if(!B_first) A_first = true;
-            else {
-                count--;
-                A_first = false;    
-                B_first = false;              
-            }  
-        }
-        if (gpio == Phase_B){
-            //Pulse_B = true;  
-            if(!A_first) B_first = true; 
-            else {
-                count++;
-                A_first = false;
-                B_first = false;                
-            }        
-        }
-  
-        /*if (A_first) {
+            //count++;
+            dir = gpio_get(Phase_A) == gpio_get(Phase_B) ? 1 : -1;
+            //count += dir >= 0 ? 1 : -1;
             count++;
-            A_first = false;
-        }
-        else if (B_first){
-            count--;
-            B_first = false;
-        }*/
-    }
-    
-    /*if (events & GPIO_IRQ_EDGE_FALL) {
-        // Falling edge detected
-        if (gpio == Phase_A){ 
-            Pulse_A = false;
         }
         if (gpio == Phase_B){
-            Pulse_B = false;      
+            //count++;
+            dir = gpio_get(Phase_A) != gpio_get(Phase_B) ? 1 : -1;
+            //count += dir >= 0 ? 1 : -1;
+            count++;
         }
-    }*/
+
+    }
 }
-
-
 
 /**
  * @brief Main function.
@@ -108,19 +88,18 @@ int main()
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
 
 
-
-
     //Activate Interupt for 10 and 11
-    //gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
-    //gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
+    gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
+    gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
+    
 
-    gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
-    gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE, true);
+    //gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
+    //gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE, true);
     
     
     /* Create the tasks. */
     //xTaskCreate(blink_task, "Blink Task", 512, (void*) 1000, 2, &blinkTsk);
-    xTaskCreate(enc_task, "Enc task", 512, (void*) 1, 2, &encTsk);
+    xTaskCreate(enc_task, "Enc task", 512, (void*) 100, 2, &encTsk);
 
     
     vTaskStartScheduler();  /* Start the scheduler. */
@@ -184,23 +163,30 @@ void enc_task(void *args) {
     TickType_t xLastWakeTime = 0;
     const TickType_t xPeriod = (int)args;   // Get period (in ticks) from argument.
 
-    int Full_rotation   = 360;        // Number of pulses for full rotation
-    int curr_rot        = 0;
+    int local_count = 0;
+    int local_dir   = 0;
+    int diff        = 0;
 
-    int current_Pos = 0;
-    int last_Pos    = 0;
-    int diff_Pos    = 0;
+    float last_deg    = 0;
+    float deg       = 0.0;
 
     for (;;) {
         // GPIO 40 == Yellow == A, GPIO 39 == Green == B (WIP)
+        printf("Count: %d\tDir: %d\n",count, dir);
+        local_count = count;
+        local_dir   = dir;
         
-        //printf("\n");
-        //printf("P_A: %d\tP_B:  %d\tAng: %d\n",Pulse_A, Pulse_B, count);
-        printf("Count: %d\n",count);
-        //printf("P_A_first: %d\tP_B_first:  %d\tAng: %d\n",A_first, B_first, count);
-        //printf("Current angle: %d\n", curr_rot);
-        //printf("Current pulses: %d\n", count);
+
+        local_count = local_count % ENCODER_SPR;
+        local_count = local_count >= 0 ? local_count : local_count + ENCODER_SPR;
+        deg = (float)local_count * (360.0 / ENCODER_SPR);
+
+        diff = abs(deg - last_deg);
+        deg = local_dir > 0 ? deg : last_deg - diff;
         
+        printf("Count: %d\tDir: %d\tDeg: %f\tLast Deg: %f\n",count, dir, deg, last_deg);
+        
+        last_deg = deg;
         //last step in loop
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   
@@ -221,7 +207,7 @@ int grayTo_int(bool Enc_A, bool Enc_B){
     }
 }
 
-//Based on:: https://github.com/GitJer/Some_RPI-Pico_stuff/tree/main/Rotary_encoder
+
 void init_rotary_encoder(void){
     // initiate GPIOs
     gpio_init(Phase_A);

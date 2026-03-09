@@ -47,7 +47,7 @@ message(BSP_SOURCES="${BSP_SOURCES}")
 
 # Add executable. Default name is the project name, version 0.1
 include_directories(../../bsp) # Add include files for the bsp
-add_executable(test_project_v2 main.c ${BSP_SOURCES})
+add_executable(test_project_v2 main.c ${BSP_SOURCES} encoder.c RED.c)
 
 pico_set_program_name(test_project_v2 "test_project_v2")
 pico_set_program_version(test_project_v2 "0.1")

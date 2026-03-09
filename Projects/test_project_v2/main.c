@@ -18,8 +18,8 @@
 
 
 //Phase A and B GPIO ports for the Rotary Encoder
-#define Phase_A 10
-#define Phase_B 11
+#define Phase_A 40
+#define Phase_B 39
 
 //TaskHandle_t    blinkTsk; /* Handle for the LED task. */
 //TaskHandle_t    acclTsk; /* Handle for the accelerometer task. */
@@ -62,16 +62,14 @@ void gpio_callback(uint gpio, uint32_t events) {
     if (events & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL) {
         // Rising or falling edge detected
         if (gpio == Phase_A){ 
-            //count++;
             dir = gpio_get(Phase_A) == gpio_get(Phase_B) ? 1 : -1;
-            //count += dir >= 0 ? 1 : -1;
-            count++;
+            count += dir >= 0 ? 1 : -1;
+            //count++;
         }
         if (gpio == Phase_B){
-            //count++;
             dir = gpio_get(Phase_A) != gpio_get(Phase_B) ? 1 : -1;
-            //count += dir >= 0 ? 1 : -1;
-            count++;
+            count += dir >= 0 ? 1 : -1;
+            //count++;
         }
 
     }
@@ -87,14 +85,9 @@ int main()
     BSP_Init();             /* Initialize all components on the lab-kit. */
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
 
-
     //Activate Interupt for 10 and 11
     gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
     gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
-    
-
-    //gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
-    //gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE, true);
     
     
     /* Create the tasks. */
@@ -110,54 +103,6 @@ int main()
 }
 /*-----------------------------------------------------------*/
 
-
-/*void enc_task(void *args) {
-    TickType_t xLastWakeTime = 0;
-    const TickType_t xPeriod = (int)args;   // Get period (in ticks) from argument.
-
-    int Full_rotation   = 360;        // Number of pulses for full rotation
-    int curr_rot        = 0;
-
-    int current_Pos = 0;
-    int last_Pos    = 0;
-    int diff_Pos    = 0;
-
-    for (;;) {
-        // GPIO 40 == Yellow == A, GPIO 39 == Green == B (WIP)
-
-        //attatch to interrupt 
-        current_Pos = grayTo_int(Pulse_A, Pulse_B);   //collect A and B encoder outputs. Convert to int
-        //printf("Current Pos: %d\n", current_Pos);
-        //printf("Last Pos: %d\n", last_Pos);
-
-        printf("P_A: %d\tP_B: %d\tDiff: %d\tAng: %d\n",Pulse_A, Pulse_B, diff_Pos, curr_rot);
-
-        diff_Pos = (last_Pos - current_Pos);                    //calc diff in pos
-        //printf("Diff Pos: %d\n", diff_Pos);
-
-        //turned one way
-        if((diff_Pos == -1) || ( diff_Pos == 3)){               //determine directionbased on diff.
-            last_Pos = current_Pos;
-            curr_rot++;                                         //increase rotaional counter with enough pulses                                // adjust rotation to 0 - 360 Deg. 
-        }
-        //turned the other way
-        else if((diff_Pos == 1) || ( diff_Pos == -3)){
-            last_Pos = current_Pos;
-            curr_rot--;
-        }
-        //Error: Missed input
-        else if((diff_Pos == 2) || ( diff_Pos == -2)){}
-            //printf("Error: Missed input\n");
-        
-        //printf("\n");
-        //printf("Current angle: %d\n", curr_rot);
-        //printf("Current pulses: %d\n", count);
-        
-        //last step in loop
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
-    }   
-}
-/*-----------------------------------------------------------*/
 
 void enc_task(void *args) {
     TickType_t xLastWakeTime = 0;
@@ -181,8 +126,8 @@ void enc_task(void *args) {
         local_count = local_count >= 0 ? local_count : local_count + ENCODER_SPR;
         deg = (float)local_count * (360.0 / ENCODER_SPR);
 
-        diff = abs(deg - last_deg);
-        deg = local_dir > 0 ? deg : last_deg - diff;
+        //diff = abs(deg - last_deg);
+        //deg = local_dir > 0 ? deg : last_deg - diff;
         
         printf("Count: %d\tDir: %d\tDeg: %f\tLast Deg: %f\n",count, dir, deg, last_deg);
         
@@ -220,15 +165,9 @@ void init_rotary_encoder(void){
 
     // initiate interrupts in GPIO pins
     /*gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
-    gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE, true);
-
-    //initiate PIO
-    PIO pio = pio0;
-    
-    pio_gpio_init(pio, Phase_A);
-    pio_gpio_init(pio, Phase_B);
-    
-    //load encoder program into PIO Memory
-    uint offset = pio_add_program(pio, &pio_rot_enc_program);*/
+    gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE, true);*/
     
 }
+
+/******* RED_alt *******/
+

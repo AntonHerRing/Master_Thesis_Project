@@ -20,14 +20,18 @@
 
 extern void L6474_StepClockHandler(uint8_t deviceId);
 
+struct repeating_timer timer;
+
 void flag_pin_isr(void)
 {
     printf("flag pin interruption! \n");
 }
 
-void pwm_pin_isr(void)
+//void pwm_pin_isr(void)
+bool pwm_pin_isr(struct repeating_timer *t)
 {
     L6474_StepClockHandler(0);
+    return true;
 }
 
 /******************************************************//**
@@ -57,7 +61,8 @@ void L6474_Board_GpioInit() {
         perror("wiringPiISR");
         exit(EXIT_FAILURE);
     }*/
-   gpio_set_irq_enabled(FLAG_PIN, GPIO_IRQ_EDGE_FALL, true);
+    gpio_set_irq_enabled(FLAG_PIN, GPIO_IRQ_EDGE_FALL, true);
+
 
 	/* Configure L6474 - STBY/RESET pin -------------------------------------*/
     //pinMode(RESET_PIN, OUTPUT);
@@ -79,12 +84,23 @@ void L6474_Board_GpioInit() {
  **********************************************************/
 void L6474_Board_PwmSetFreq(uint16_t newFreq)
 {
-    int intensity = 0.5 * PWM_range;
+    uint slice = pwm_gpio_to_slice_num(PWM_PIN);
+
+    float divisor = (float)SYSFREQ / ((PWM_range + 1) * newFreq);
+    pwm_set_clkdiv(slice, divisor);
+
+    uint16_t intensity = 0.5 * PWM_range;   // 50% duty
+    pwm_set_gpio_level(PWM_PIN, intensity);
+
+    cancel_repeating_timer(&timer);
+    add_repeating_timer_us(1000000 / newFreq, &pwm_pin_isr, NULL, &timer);
+
+    /*int intensity = 0.5 * PWM_range;
     uint16_t divisor;
     divisor = SYSFREQ / PWM_range / newFreq;
     //pwmSetClock(divisor);
     pwm_set_clkdiv(pwm_gpio_to_slice_num(PWM_PIN), divisor);
-    pwm_set_gpio_level(PWM_PIN, intensity);
+    pwm_set_gpio_level(PWM_PIN, intensity);*/
 
 
 }
@@ -105,17 +121,29 @@ void L6474_Board_PwmInit()
     
     uint slice_num = pwm_gpio_to_slice_num(PWM_PIN);
     pwm_set_wrap(slice_num, PWM_range);
-    pwm_set_gpio_level(PWM_PIN, 0);
-    pwm_set_enabled(slice_num, true);
-    
 
+    float divisor = (float)SYSFREQ / ((PWM_range + 1) * 20000); // default 20kHz
+    pwm_set_clkdiv(slice_num, divisor);
+
+    pwm_set_gpio_level(PWM_PIN, PWM_range/2);
+    pwm_set_enabled(slice_num, true);
+
+    add_repeating_timer_us(1000000 / 20000, &pwm_pin_isr, NULL, &timer);
+    
     //pinMode(PWM_TIMER_PIN, INPUT);
     //pullUpDnControl(PWM_TIMER_PIN, PUD_UP);
 
-    gpio_init(PWM_TIMER_PIN);
+    /*gpio_init(PWM_TIMER_PIN);
     gpio_set_dir(PWM_TIMER_PIN, GPIO_IN);
     gpio_pull_up(PWM_TIMER_PIN);
-    gpio_set_irq_enabled(PWM_TIMER_PIN, GPIO_IRQ_EDGE_RISE, true);
+    
+    //pwm_set_irq_enabled(slice_num, true);
+
+    //gpio_set_irq_enabled(PWM_TIMER_PIN, GPIO_IRQ_EDGE_RISE, true);
+
+    pwm_set_irq_enabled(slice_num, true);
+    irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_pin_isr);
+    irq_set_enabled(PWM_IRQ_WRAP, true);*/
 
     /*if (wiringPiISR(PWM_TIMER_PIN, INT_EDGE_RISING, &pwm_pin_isr) < 0) {
         perror("wiringPiISR");

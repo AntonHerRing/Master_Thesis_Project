@@ -81,7 +81,7 @@ void gpio_callback(uint gpio, uint32_t events) {
     static bool B_first = false;
 
     static int buffer = 0x00;
-    if (events & GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL) {
+    if (events & (GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL)) {
         // Rising or falling edge detected
         if (gpio == Phase_A){ 
             dir = gpio_get(Phase_A) == gpio_get(Phase_B) ? 1 : -1;
@@ -94,12 +94,14 @@ void gpio_callback(uint gpio, uint32_t events) {
             //count++;
         }
 
-        if(gpio == PWM_PIN){
+        //if(gpio == PWM_PIN){
+        /*if(gpio == PWM_TIMER_PIN){    //Servo will move, But definitly not how its supposed to work
             L6474_StepClockHandler(0);
-        }
+        }*/
 
     }
 }
+
 
 /**
  * @brief Main function.
@@ -156,7 +158,6 @@ void enc_task(void *args) {
         local_count = count;
         local_dir   = dir;
         
-
         local_count = local_count % ENCODER_SPR;
         local_count = local_count >= 0 ? local_count : local_count + ENCODER_SPR;
         deg = (float)local_count * (360.0 / ENCODER_SPR);
@@ -189,10 +190,12 @@ void motor_task(void *args) {
 
     for (;;) {
 
-        //motor_deg = get_stepper_angle();
+        motor_deg = get_stepper_angle();
 
         if(toggle){
-            move_stepper_by(1.0);
+            move_stepper_by(30);
+            //L6474_Move(0, FORWARD, 8);
+
             toggle = false;
         }
 
@@ -214,5 +217,4 @@ void init_rotary_encoder(void){
     
 }
 
-/******* RED_alt *******/
 

@@ -94,7 +94,7 @@ void gpio_callback(uint gpio, uint32_t events) {
             //count++;
         }
 
-        if(PWM_PIN){
+        if(gpio == PWM_PIN){
             L6474_StepClockHandler(0);
         }
 
@@ -127,7 +127,7 @@ int main()
     /* Create the tasks. */
     //xTaskCreate(blink_task, "Blink Task", 512, (void*) 1000, 2, &blinkTsk);
     xTaskCreate(enc_task, "Enc task", 512, (void*) 100, 2, &encTsk);
-    xTaskCreate(motor_task, "Motor task", 512, (void*) 50, 2, &motorTsk);
+    xTaskCreate(motor_task, "Motor task", 512, (void*) 2000, 2, &motorTsk);
 
     
     vTaskStartScheduler();  /* Start the scheduler. */
@@ -177,32 +177,26 @@ void motor_task(void *args) {
     TickType_t xLastWakeTime = 0;
     const TickType_t xPeriod = (int)args;   // Get period (in ticks) from argument.
 
-    int max_pos = 500;
-    int curr_pos = 250;
+    int max_pos = 50;
+    int curr_pos = 25;
     int min_pos = 0;
 
     int dir = 1;
 
+    float motor_deg = 0.0;
+
+    bool toggle = true;
+
     for (;;) {
 
         //motor_deg = get_stepper_angle();
-        /*if(curr_pos >= max_pos) 
-            dir = -1;
-        else if (curr_pos <= min_pos  )
-            dir = 1;
 
-        if(dir == 1){
-            move_stepper_by(0.2);
-            curr_pos++;
+        if(toggle){
+            move_stepper_by(1.0);
+            toggle = false;
         }
-        else if(dir == -1){
-            move_stepper_by(-0.2);
-            curr_pos--; 
-        }*/
 
-        
-
-        //printf("Motor Steps: %d\n", curr_pos);
+        //printf("Motor deg: %f\n", motor_deg);
      
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   

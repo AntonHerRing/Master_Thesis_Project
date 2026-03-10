@@ -129,7 +129,7 @@ int main()
     /* Create the tasks. */
     //xTaskCreate(blink_task, "Blink Task", 512, (void*) 1000, 2, &blinkTsk);
     xTaskCreate(enc_task, "Enc task", 512, (void*) 100, 2, &encTsk);
-    xTaskCreate(motor_task, "Motor task", 512, (void*) 2000, 2, &motorTsk);
+    xTaskCreate(motor_task, "Motor task", 512, (void*) 500, 2, &motorTsk);
 
     
     vTaskStartScheduler();  /* Start the scheduler. */
@@ -166,7 +166,7 @@ void enc_task(void *args) {
         //deg = local_dir > 0 ? deg : last_deg - diff;
         
         //printf("Count: %d\tDir: %d\tDeg: %f\tLast Deg: %f\n",count, dir, deg, last_deg);
-        printf("Deg: %f\n", deg);
+        //printf("Deg: %f\n", deg);
         
         last_deg = deg;
         //last step in loop
@@ -192,14 +192,24 @@ void motor_task(void *args) {
 
         motor_deg = get_stepper_angle();
 
-        if(toggle){
-            move_stepper_by(30);
-            //L6474_Move(0, FORWARD, 8);
+        move_stepper_by(1);
 
-            toggle = false;
+        /*if(curr_pos >= max_pos)
+            dir = -1;
+        else if(curr_pos <= min_pos)
+            dir = 1;
+
+        if (dir == 1){
+            move_stepper_by(5);
+            curr_pos += 5;
         }
+        else if (dir == -1){
+            move_stepper_by(-5);
+            curr_pos -= 5;
+        }*/
+       move_stepper_by(1);
 
-        //printf("Motor deg: %f\n", motor_deg);
+        printf("Motor deg: %f\n", motor_deg);
      
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   

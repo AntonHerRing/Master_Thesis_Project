@@ -2016,15 +2016,16 @@ inline uint8_t L6474_Tmin_Time_to_Par(float Tmin)
  * @retval None
  **********************************************************/
 void L6474_WriteBytes(uint8_t *pByteToTransmit, uint8_t *pReceivedByte)
+
+//uint8_t* pByteToTransmit, uint8_t* pReceivedByte, uint8_t nbDevices
 {
-  //if (L6474_Board_SpiWriteBytes(pByteToTransmit, pReceivedByte, numberOfDevices) < 0)
-  //{ 
-  //   L6474_ErrorHandler(L6474_ERROR_1);
-  //}
+  if (L6474_Board_SpiWriteBytes(pByteToTransmit, pReceivedByte, numberOfDevices) < 0)
+  { 
+     L6474_ErrorHandler(L6474_ERROR_1);
+  }
   
   //void L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t len);
   //write one byte?
-  L6474_Board_SpiWriteBytes(pByteToTransmit, 1);
 
   if (isrFlag)
   {

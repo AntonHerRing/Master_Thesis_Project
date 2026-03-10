@@ -48,7 +48,7 @@ void L6474_Board_Delay(uint32_t milliseconds)
 void L6474_Board_GpioInit() {
 	/* Configure L6474 - Flag pin -------------------------------------------*/
     gpio_init(FLAG_PIN);
-    gpio_set_function(FLAG_PIN, GPIO_IN);
+    gpio_set_dir(FLAG_PIN, GPIO_IN);
     gpio_pull_up(FLAG_PIN);
     //pinMode(FLAG_PIN, INPUT);
     //pullUpDnControl(FLAG_PIN, PUD_UP);
@@ -62,13 +62,13 @@ void L6474_Board_GpioInit() {
 	/* Configure L6474 - STBY/RESET pin -------------------------------------*/
     //pinMode(RESET_PIN, OUTPUT);
     gpio_init(RESET_PIN);
-    gpio_set_function(RESET_PIN, GPIO_OUT);
+    gpio_set_dir(RESET_PIN, GPIO_OUT);
     L6474_Board_Reset();
 
     /* Configure L6474 - DIR pin for first device  -------------------------------*/
     //pinMode(DIR_PIN, OUTPUT);
     gpio_init(DIR_PIN);
-    gpio_set_function(DIR_PIN, GPIO_OUT);
+    gpio_set_dir(DIR_PIN, GPIO_OUT);
 }
 
 /******************************************************//**
@@ -113,7 +113,7 @@ void L6474_Board_PwmInit()
     //pullUpDnControl(PWM_TIMER_PIN, PUD_UP);
 
     gpio_init(PWM_TIMER_PIN);
-    gpio_set_function(PWM_TIMER_PIN, GPIO_IN);
+    gpio_set_dir(PWM_TIMER_PIN, GPIO_IN);
     gpio_pull_up(PWM_TIMER_PIN);
     gpio_set_irq_enabled(PWM_TIMER_PIN, GPIO_IRQ_EDGE_RISE, true);
 
@@ -185,9 +185,11 @@ void L6474_Board_SpiInit()
     gpio_init(SPI_MOSI);
     gpio_init(SPI_MISO);
 
-    spi_init(SPI_PORT, 1 * 1000 * 1000); // 1 * 1000 * 1000 = 1MHz
+    spi_init(SPI_PORT, 5 * 100 * 1000); // 5 * 100 * 1000 = 500kHz
+    spi_set_format(SPI_PORT, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST);
 
-    gpio_set_function(SPI_CS, GPIO_FUNC_SPI);       /* CS */
+    gpio_set_dir(SPI_CS, GPIO_OUT);
+    gpio_put(SPI_CS, true);       /* CS */
     gpio_set_function(SPI_SCK, GPIO_FUNC_SPI);      /* CLK */
     gpio_set_function(SPI_MOSI, GPIO_FUNC_SPI);     /* MOSI */
     gpio_set_function(SPI_MISO, GPIO_FUNC_SPI);     /* MISO */
@@ -199,12 +201,18 @@ void L6474_Board_SpiInit()
  * @param[in] pReceivedByte pointer to the received byte
  * @retval HAL_OK if SPI transaction is OK, HAL_KO else
  **********************************************************/
-void L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t len)
+uint8_t L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t* pReceivedByte, uint8_t nbDevices)
 {
-    //uint8_t fd;
+    uint8_t fd;
     //fd = wiringPiSPIDataRW(SPI_CHANNEL, pByteToTransmit, 1);
+    gpio_put(SPI_CS, false);
+    //spi_write_blocking (SPI_PORT, pByteToTransmit, len);
 
-    spi_write_blocking (SPI_PORT, pByteToTransmit, len);
+    spi_write_read_blocking(SPI_PORT, pByteToTransmit, &fd, 1);
+
+    gpio_put(SPI_CS, true);
     gpio_put(SPI_SCK, true);
     gpio_put(SPI_SCK, false);
+
+    return fd;
 }

@@ -124,13 +124,10 @@ int main()
     //gpio_set_function(SPI_MOSI, GPIO_FUNC_SPI);     /* MOSI */
     //gpio_set_function(SPI_MISO, GPIO_FUNC_SPI);     /* MISO */
 
-    
-    
-    
     /* Create the tasks. */
     //xTaskCreate(blink_task, "Blink Task", 512, (void*) 1000, 2, &blinkTsk);
     xTaskCreate(enc_task, "Enc task", 512, (void*) 100, 2, &encTsk);
-    xTaskCreate(motor_task, "Motor task", 512, (void*) 2000, 2, &motorTsk);
+    xTaskCreate(motor_task, "Motor task", 512, (void*) 50, 2, &motorTsk);
 
     
     vTaskStartScheduler();  /* Start the scheduler. */
@@ -155,7 +152,7 @@ void enc_task(void *args) {
 
     for (;;) {
         // GPIO 40 == Yellow == A, GPIO 39 == Green == B (WIP)
-        printf("Count: %d\tDir: %d\n",count, dir);
+        //printf("Count: %d\tDir: %d\n",count, dir);
         local_count = count;
         local_dir   = dir;
         
@@ -167,7 +164,8 @@ void enc_task(void *args) {
         //diff = abs(deg - last_deg);
         //deg = local_dir > 0 ? deg : last_deg - diff;
         
-        printf("Count: %d\tDir: %d\tDeg: %f\tLast Deg: %f\n",count, dir, deg, last_deg);
+        //printf("Count: %d\tDir: %d\tDeg: %f\tLast Deg: %f\n",count, dir, deg, last_deg);
+        printf("Deg: %f\n", deg);
         
         last_deg = deg;
         //last step in loop
@@ -179,29 +177,36 @@ void motor_task(void *args) {
     TickType_t xLastWakeTime = 0;
     const TickType_t xPeriod = (int)args;   // Get period (in ticks) from argument.
 
+    int max_pos = 500;
+    int curr_pos = 250;
+    int min_pos = 0;
+
+    int dir = 1;
+
     for (;;) {
 
-        move_stepper_by(20);
+        //motor_deg = get_stepper_angle();
+        /*if(curr_pos >= max_pos) 
+            dir = -1;
+        else if (curr_pos <= min_pos  )
+            dir = 1;
+
+        if(dir == 1){
+            move_stepper_by(0.2);
+            curr_pos++;
+        }
+        else if(dir == -1){
+            move_stepper_by(-0.2);
+            curr_pos--; 
+        }*/
+
+        
+
+        //printf("Motor Steps: %d\n", curr_pos);
      
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   
 }
-
-int grayTo_int(bool Enc_A, bool Enc_B){
-    if(!Enc_A && !Enc_B){
-        return 0;
-    }
-    else if(!Enc_A && Enc_B){
-        return 1;
-    }
-    else if(Enc_A && Enc_B){
-        return 2;
-    }
-    else{
-        return 3;
-    }
-}
-
 
 void init_rotary_encoder(void){
     // initiate GPIOs
@@ -212,10 +217,6 @@ void init_rotary_encoder(void){
     gpio_init(Phase_B);
     gpio_set_dir(Phase_B, GPIO_IN);
     gpio_pull_up(Phase_B);
-
-    // initiate interrupts in GPIO pins
-    /*gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE, true, &gpio_callback);
-    gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE, true);*/
     
 }
 

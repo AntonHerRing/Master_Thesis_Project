@@ -45,6 +45,9 @@
 #endif 
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "l6474_target_config.h"
 #include "steppermotor.h"
 #include "motor_prototypes.h"

@@ -95,14 +95,6 @@ void L6474_Board_PwmSetFreq(uint16_t newFreq)
     cancel_repeating_timer(&timer);
     add_repeating_timer_us(1000000 / newFreq, &pwm_pin_isr, NULL, &timer);
 
-    /*int intensity = 0.5 * PWM_range;
-    uint16_t divisor;
-    divisor = SYSFREQ / PWM_range / newFreq;
-    //pwmSetClock(divisor);
-    pwm_set_clkdiv(pwm_gpio_to_slice_num(PWM_PIN), divisor);
-    pwm_set_gpio_level(PWM_PIN, intensity);*/
-
-
 }
 
 
@@ -112,10 +104,6 @@ void L6474_Board_PwmSetFreq(uint16_t newFreq)
  **********************************************************/
 void L6474_Board_PwmInit()
 {
-    //pinMode(PWM_PIN, PWM_OUTPUT);
-    //pwmSetMode(PWM_MODE_MS);
-    //pwmSetRange(PWM_range);
-    //pwmWrite(PWM_PIN, 0);
     gpio_init(PWM_PIN);
     gpio_set_function(PWM_PIN, GPIO_FUNC_PWM);
     
@@ -125,30 +113,11 @@ void L6474_Board_PwmInit()
     float divisor = (float)SYSFREQ / ((PWM_range + 1) * 20000); // default 20kHz
     pwm_set_clkdiv(slice_num, divisor);
 
-    pwm_set_gpio_level(PWM_PIN, PWM_range/2);
+    pwm_set_gpio_level(PWM_PIN, 0.5 * PWM_range);
     pwm_set_enabled(slice_num, true);
 
     add_repeating_timer_us(1000000 / 20000, &pwm_pin_isr, NULL, &timer);
     
-    //pinMode(PWM_TIMER_PIN, INPUT);
-    //pullUpDnControl(PWM_TIMER_PIN, PUD_UP);
-
-    /*gpio_init(PWM_TIMER_PIN);
-    gpio_set_dir(PWM_TIMER_PIN, GPIO_IN);
-    gpio_pull_up(PWM_TIMER_PIN);
-    
-    //pwm_set_irq_enabled(slice_num, true);
-
-    //gpio_set_irq_enabled(PWM_TIMER_PIN, GPIO_IRQ_EDGE_RISE, true);
-
-    pwm_set_irq_enabled(slice_num, true);
-    irq_set_exclusive_handler(PWM_IRQ_WRAP, pwm_pin_isr);
-    irq_set_enabled(PWM_IRQ_WRAP, true);*/
-
-    /*if (wiringPiISR(PWM_TIMER_PIN, INT_EDGE_RISING, &pwm_pin_isr) < 0) {
-        perror("wiringPiISR");
-        exit(EXIT_FAILURE);
-    }*/
 }
 
 /******************************************************//**
@@ -231,16 +200,16 @@ void L6474_Board_SpiInit()
  **********************************************************/
 uint8_t L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t* pReceivedByte, uint8_t nbDevices)
 {
-    uint8_t fd;
+    //uint8_t fd;
     //fd = wiringPiSPIDataRW(SPI_CHANNEL, pByteToTransmit, 1);
     gpio_put(SPI_CS, false);
     //spi_write_blocking (SPI_PORT, pByteToTransmit, len);
 
-    spi_write_read_blocking(SPI_PORT, pByteToTransmit, &fd, 1);
+    spi_write_read_blocking(SPI_PORT, pByteToTransmit, pReceivedByte, 1);
 
     gpio_put(SPI_CS, true);
     gpio_put(SPI_SCK, true);
     gpio_put(SPI_SCK, false);
 
-    return fd;
+    return *pReceivedByte;
 }

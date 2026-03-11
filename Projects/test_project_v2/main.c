@@ -14,12 +14,12 @@
 //#include "hardware/pio.h"
 //#include "hardware/"
 
-#include "Motor.h"
 #include "Drivers/L16474/motor_rpi3b_interface.h"
 #include "Drivers/L16474/l6474.h"
 #include "Drivers/L16474/steppermotor.h"
 
-#define ENCODER_SPR 2400
+#include "Control/Control.h"
+#include "Encoder/Encoder.h"
 
 /*
 GPIO9::     CS
@@ -32,17 +32,15 @@ GPIO12::    MISO
 #define SPI_MOSI 11
 #define SPI_MISO 12
 
-
-//Phase A and B GPIO ports for the Rotary Encoder
+//encoder gpio ports
 #define Phase_A 40
 #define Phase_B 39
-
 
 
 //TaskHandle_t    blinkTsk; /* Handle for the LED task. */
 //TaskHandle_t    acclTsk; /* Handle for the accelerometer task. */
 TaskHandle_t    encTsk; /* Handle for the rotary encoder task. */
-TaskHandle_t    motorTsk; /* Handle for the rotary encoder task. */
+TaskHandle_t    motorTsk; /* Handle for the stepper motor task. */
 
 /**
  * @brief Blink task.
@@ -93,12 +91,6 @@ void gpio_callback(uint gpio, uint32_t events) {
             count += dir >= 0 ? 1 : -1;
             //count++;
         }
-
-        //if(gpio == PWM_PIN){
-        /*if(gpio == PWM_TIMER_PIN){    //Servo will move, But definitly not how its supposed to work
-            L6474_StepClockHandler(0);
-        }*/
-
     }
 }
 
@@ -115,23 +107,13 @@ int main()
 
     init_motor();
 
-    //Activate Interupt for 10 and 11
     gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
     gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 
-    //motor pins
-    //spi_init(SPI_PORT, 1 * 1000 * 1000); // 1 * 1000 * 1000 = 1MHz
-    //gpio_set_function(SPI_CS, GPIO_FUNC_SPI);       /* CS */
-    //gpio_set_function(SPI_SCK, GPIO_FUNC_SPI);      /* CLK */
-    //gpio_set_function(SPI_MOSI, GPIO_FUNC_SPI);     /* MOSI */
-    //gpio_set_function(SPI_MISO, GPIO_FUNC_SPI);     /* MISO */
-
     /* Create the tasks. */
-    //xTaskCreate(blink_task, "Blink Task", 512, (void*) 1000, 2, &blinkTsk);
     xTaskCreate(enc_task, "Enc task", 512, (void*) 100, 2, &encTsk);
-    xTaskCreate(motor_task, "Motor task", 512, (void*) 500, 2, &motorTsk);
+    xTaskCreate(motor_task, "Motor task", 512, (void*) 50, 2, &motorTsk);
 
-    
     vTaskStartScheduler();  /* Start the scheduler. */
     
     while (true) { 
@@ -145,30 +127,14 @@ void enc_task(void *args) {
     TickType_t xLastWakeTime = 0;
     const TickType_t xPeriod = (int)args;   // Get period (in ticks) from argument.
 
-    int local_count = 0;
-    int local_dir   = 0;
-    int diff        = 0;
-
-    float last_deg    = 0;
-    float deg       = 0.0;
+    float deg = 0.0;
 
     for (;;) {
-        // GPIO 40 == Yellow == A, GPIO 39 == Green == B (WIP)
-        //printf("Count: %d\tDir: %d\n",count, dir);
-        local_count = count;
-        local_dir   = dir;
-        
-        local_count = local_count % ENCODER_SPR;
-        local_count = local_count >= 0 ? local_count : local_count + ENCODER_SPR;
-        deg = (float)local_count * (360.0 / ENCODER_SPR);
 
-        //diff = abs(deg - last_deg);
-        //deg = local_dir > 0 ? deg : last_deg - diff;
+        deg = get_encoder_angle(count);
         
-        //printf("Count: %d\tDir: %d\tDeg: %f\tLast Deg: %f\n",count, dir, deg, last_deg);
-        //printf("Deg: %f\n", deg);
+        printf("Deg: %f\n", deg);
         
-        last_deg = deg;
         //last step in loop
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   
@@ -178,53 +144,32 @@ void motor_task(void *args) {
     TickType_t xLastWakeTime = 0;
     const TickType_t xPeriod = (int)args;   // Get period (in ticks) from argument.
 
-    int max_pos = 50;
-    int curr_pos = 25;
+    int max_pos = 500;
     int min_pos = 0;
 
     int dir = 1;
 
     float motor_deg = 0.0;
+    float deg_offset = 0.0;
 
-    bool toggle = true;
+    bool first_time = true;
 
     for (;;) {
-
         motor_deg = get_stepper_angle();
+        printf("Motor deg: %d\n", abs((int)(motor_deg)));
 
-        move_stepper_by(1);
-
-        /*if(curr_pos >= max_pos)
+        if(abs((int)(motor_deg)) >= max_pos)
             dir = -1;
-        else if(curr_pos <= min_pos)
+        else if(abs((int)(motor_deg)) <= min_pos)
             dir = 1;
 
-        if (dir == 1){
-            move_stepper_by(5);
-            curr_pos += 5;
-        }
-        else if (dir == -1){
-            move_stepper_by(-5);
-            curr_pos -= 5;
-        }*/
-       move_stepper_by(1);
-
-        printf("Motor deg: %f\n", motor_deg);
+        if (dir == 1)
+            move_stepper_by(0.2);
+        else if (dir == -1)
+            move_stepper_by(-0.2);
      
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   
-}
-
-void init_rotary_encoder(void){
-    // initiate GPIOs
-    gpio_init(Phase_A);
-    gpio_set_dir(Phase_A, GPIO_IN);
-    gpio_pull_up(Phase_A);
-
-    gpio_init(Phase_B);
-    gpio_set_dir(Phase_B, GPIO_IN);
-    gpio_pull_up(Phase_B);
-    
 }
 
 

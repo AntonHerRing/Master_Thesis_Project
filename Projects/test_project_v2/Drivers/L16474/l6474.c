@@ -308,6 +308,7 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
   uint8_t maxArgumentNbBytes = 0;
   uint8_t spiIndex = numberOfDevices - deviceId - 1;
   bool itDisable = FALSE;  
+
   
   do
   {
@@ -325,9 +326,6 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
       spiTxBursts[1][i] = L6474_NOP;
       spiTxBursts[2][i] = L6474_NOP;
       spiTxBursts[3][i] = L6474_NOP;
-      // spiRxBursts[1][i] = 0;
-      // spiRxBursts[2][i] = 0;
-      // spiRxBursts[3][i] = 0;    
     }
     switch (param)
     {
@@ -364,12 +362,19 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
                           &spiRxBursts[i][0]);
   }
   
-  spiRxData = ((uint32_t)spiTxBursts[1][spiIndex] << 16)|
+/*spiRxData = ((uint32_t)spiTxBursts[1][spiIndex] << 16)|
               (spiTxBursts[2][spiIndex] << 8) |
-              (spiTxBursts[3][spiIndex]);
+              (spiTxBursts[3][spiIndex]);*/
+spiRxData = ((uint32_t)spiRxBursts[1][spiIndex] << 16)|
+              (spiRxBursts[2][spiIndex] << 8) |
+              (spiRxBursts[3][spiIndex]);
   
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
  //  L6474_Board_EnableIrq();
+
+ //printf("dvPrm-curr_pos: %d\n", devicePrm[deviceId].currentPosition);
+
+ //printf("SPiRXData: %d\n", spiRxData);
     
   return (spiRxData);
 }
@@ -419,7 +424,8 @@ uint16_t L6474_CmdGetStatus(uint8_t deviceId)
   {
      L6474_WriteBytes(&spiTxBursts[i][0], &spiRxBursts[i][0]);
   }
-  status = (spiTxBursts[1][spiIndex] << 8) | (spiTxBursts[2][spiIndex]);
+  //status = (spiTxBursts[1][spiIndex] << 8) | (spiTxBursts[2][spiIndex]);
+  status = (spiRxBursts[1][spiIndex] << 8) | (spiRxBursts[2][spiIndex]);
   
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
  // //  L6474_Board_EnableIrq();

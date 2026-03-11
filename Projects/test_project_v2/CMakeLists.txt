@@ -47,7 +47,8 @@ message(BSP_SOURCES="${BSP_SOURCES}")
 
 # Add executable. Default name is the project name, version 0.1
 include_directories(../../bsp) # Add include files for the bsp
-add_executable(test_project_v2 main.c ${BSP_SOURCES} Motor.c Drivers/L16474/l6474.c Drivers/L16474/motor_rpi3b_interface.c Drivers/L16474/steppermotor.c)
+add_executable(test_project_v2 main.c ${BSP_SOURCES} Drivers/L16474/l6474.c Drivers/L16474/motor_rpi3b_interface.c Drivers/L16474/steppermotor.c
+                Control/Control.c Encoder/Encoder.c)
 
 pico_set_program_name(test_project_v2 "test_project_v2")
 pico_set_program_version(test_project_v2 "0.1")

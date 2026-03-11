@@ -144,7 +144,7 @@ void motor_task(void *args) {
     TickType_t xLastWakeTime = 0;
     const TickType_t xPeriod = (int)args;   // Get period (in ticks) from argument.
 
-    int max_pos = 500;
+    int max_pos = 50;
     int min_pos = 0;
 
     int dir = 1;

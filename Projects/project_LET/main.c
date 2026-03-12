@@ -52,27 +52,24 @@ LetTask_t letMotorTsk;  /*Handle for the LET stepper motor task. */
 LetTask_t letContrTsk;  /*Handle for the LET Control task. */
 LetTask_t letPrintTsk;  /*Handle for the LET Print task. */
 
-uint32_t* task_Enc;      /* Pointer to the local data of label A by task 1. */
-uint32_t  task_Enc_data; /* Local copy of label A owned by LET task 1. */
+uint32_t* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
+uint32_t  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
 uint32_t* PrintTask_Enc;      /* Pointer to the local data of label Enc by Print task. */
 uint32_t  PrintTask_Enc_data; /* Local copy of label Enc owned by Print LET task. */
 uint32_t* ContrTask_Enc;      /* Pointer to the local data of label ENC by Control task. */
 uint32_t  ContrTask_Enc_data; /* Local copy of label ENC owned by Control LET task. */
 
-uint32_t* task_Motor;      /* Pointer to the local data of label B by task 2. */
-uint32_t  task_Motor_data; /* Local copy of label B owned by LET task 2. */
-uint32_t* PrintTask_Motor;      /* Pointer to the local data of label B by Print task. */
-uint32_t  PrintTask_Motor_data; /* Local copy of label B owned by Print LET task. */
+uint32_t* task_Motor;      /* Pointer to the local data of label Motor by Motor task. */
+uint32_t  task_Motor_data; /* Local copy of label Motor owned by LET Motor task. */
+uint32_t* PrintTask_Motor;      /* Pointer to the local data of label Motor by Print task. */
+uint32_t  PrintTask_Motor_data; /* Local copy of label Motor owned by Print LET task. */
 
-uint32_t* task_Contr;      /* Pointer to the local data of label B by task 2. */
-uint32_t  task_Contr_data; /* Local copy of label B owned by LET task 2. */
+uint32_t* task_Contr;      /* Pointer to the local data of label Contr by Control task. */
+uint32_t  task_Contr_data; /* Local copy of label Contr owned by LET Control task. */
 uint32_t* MotorTask_Contr;      /* Pointer to the local data of label Contr by Motor task. */
 uint32_t  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
 
-//The Rotary (Gray code) Pulses
-volatile bool Pulse_A = false;
-volatile bool Pulse_B = false;
-
+// Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
 volatile int dir = 0;
 
@@ -155,6 +152,7 @@ int main()
         while (true);
     }
 
+    // Initialize the Interrupts on the two A and B ports
     gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
     gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 
@@ -178,7 +176,7 @@ int main()
 /*-----------------------------------------------------------*/
 
 void vLetEncTask_init(void) {
-    task_Enc = &task_Enc_data;    /* Initialize the pointer to the local buffer for label A */
+    task_Enc = &task_Enc_data;    /* Initialize the pointer to the local buffer for label ENC */
 
     xLetTaskRegisterWrite(&letEncTsk, &label_Enc, (void*) &task_Enc);    /* Register the write access for label A */    
 }
@@ -197,7 +195,7 @@ void vLetEncTask_job(void) {
 /*-----------------------------------------------------------*/
 
 void vLetMotorTask_init(void) {
-    task_Motor = &task_Motor_data;    /* Initialize the pointer to the local buffer for label A */
+    task_Motor = &task_Motor_data;    /* Initialize the pointer to the local buffer for label Motor */
     MotorTask_Contr = &MotorTask_Contr_data;
 
     xLetTaskRegisterWrite(&letMotorTsk, &label_Motor, (void*) &task_Motor);    /* Register the write access for label Motor */   
@@ -267,7 +265,8 @@ void vLetContrTask_init(void) {
 void vLetContrTask_job(void) {
 
     /******** Main function ********/
-    //test
+    // test
+    // Read Rotary Encoder angle, and send STOP signal to Control Variable for the Motor
     if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190){
         (*task_Contr) = -1;
     } 

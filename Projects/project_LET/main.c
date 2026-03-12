@@ -41,22 +41,33 @@ GPIO12::    MISO
 //function definition
 extern void L6474_StepClockHandler(uint8_t deviceId);
 
-label_t label_A;        /* Data label used for LET tasks. */
-label_t label_B;        /* Data label used for LET tasks. */
+// LET Labels and Local communication variables
+
+label_t label_Enc;        /* Data label used for LET tasks. */
+label_t label_Motor;        /* Data label used for LET tasks. */
+label_t label_Contr;        /* Data label used for LET tasks. */
 
 LetTask_t letEncTsk;    /*Handle for the LET rotary encoder task. */
 LetTask_t letMotorTsk;  /*Handle for the LET stepper motor task. */
+LetTask_t letContrTsk;  /*Handle for the LET Control task. */
 LetTask_t letPrintTsk;  /*Handle for the LET Print task. */
 
-uint32_t* task1_A;      /* Pointer to the local data of label A by task 1. */
-uint32_t  task1_A_data; /* Local copy of label A owned by LET task 1. */
-uint32_t* PrintTask_A;      /* Pointer to the local data of label A by Print task. */
-uint32_t  PrintTask_A_data; /* Local copy of label A owned by Print LET task. */
+uint32_t* task_Enc;      /* Pointer to the local data of label A by task 1. */
+uint32_t  task_Enc_data; /* Local copy of label A owned by LET task 1. */
+uint32_t* PrintTask_Enc;      /* Pointer to the local data of label Enc by Print task. */
+uint32_t  PrintTask_Enc_data; /* Local copy of label Enc owned by Print LET task. */
+uint32_t* ContrTask_Enc;      /* Pointer to the local data of label ENC by Control task. */
+uint32_t  ContrTask_Enc_data; /* Local copy of label ENC owned by Control LET task. */
 
-uint32_t* task2_B;      /* Pointer to the local data of label B by task 2. */
-uint32_t  task2_B_data; /* Local copy of label B owned by LET task 2. */
-uint32_t* PrintTask_B;      /* Pointer to the local data of label B by Print task. */
-uint32_t  PrintTask_B_data; /* Local copy of label B owned by Print LET task. */
+uint32_t* task_Motor;      /* Pointer to the local data of label B by task 2. */
+uint32_t  task_Motor_data; /* Local copy of label B owned by LET task 2. */
+uint32_t* PrintTask_Motor;      /* Pointer to the local data of label B by Print task. */
+uint32_t  PrintTask_Motor_data; /* Local copy of label B owned by Print LET task. */
+
+uint32_t* task_Contr;      /* Pointer to the local data of label B by task 2. */
+uint32_t  task_Contr_data; /* Local copy of label B owned by LET task 2. */
+uint32_t* MotorTask_Contr;      /* Pointer to the local data of label Contr by Motor task. */
+uint32_t  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
 
 //The Rotary (Gray code) Pulses
 volatile bool Pulse_A = false;
@@ -94,6 +105,16 @@ void vLetPrintTask_init(void);
  * @brief Job function of Print LET task.
  */
 void vLetPrintTask_job(void);
+
+/**
+ * @brief Initialization function of Control LET task.
+ */
+void vLetContrTask_init(void);
+
+/**
+ * @brief Job function of Control LET task.
+ */
+void vLetContrTask_job(void);
 
 
 /*************************************************************/
@@ -138,12 +159,14 @@ int main()
     gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 
     /* Create a label and LET tasks that read/write from it. */
-    xLetInitLabel("A", sizeof(uint32_t), &label_A, LET_COM_COPY);
-    xLetInitLabel("B", sizeof(uint32_t), &label_B, LET_COM_COPY);
+    xLetInitLabel("Enc", sizeof(uint32_t), &label_Enc, LET_COM_COPY);
+    xLetInitLabel("Motor", sizeof(uint32_t), &label_Motor, LET_COM_COPY);
+    xLetInitLabel("Contr", sizeof(uint32_t), &label_Contr, LET_COM_COPY);
 
     xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 5, 100, 100, 0, CORE0, &letEncTsk);
     xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 5, 50, 50, 0, CORE0, &letMotorTsk);
     xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 5, 100, 100, 0, CORE0, &letPrintTsk);
+    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 5, 100, 100, 0, CORE0, &letContrTsk);
     
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -155,9 +178,9 @@ int main()
 /*-----------------------------------------------------------*/
 
 void vLetEncTask_init(void) {
-    task1_A = &task1_A_data;    /* Initialize the pointer to the local buffer for label A */
+    task_Enc = &task_Enc_data;    /* Initialize the pointer to the local buffer for label A */
 
-    xLetTaskRegisterWrite(&letEncTsk, &label_A, (void*) &task1_A);    /* Register the write access for label A */    
+    xLetTaskRegisterWrite(&letEncTsk, &label_Enc, (void*) &task_Enc);    /* Register the write access for label A */    
 }
 /*-----------------------------------------------------------*/
 
@@ -169,14 +192,16 @@ void vLetEncTask_job(void) {
 
     deg = get_encoder_angle(count);
 
-    (*task1_A) = (uint32_t)deg; //write any inputs
+    (*task_Enc) = (uint32_t)deg; //write any inputs
 }
 /*-----------------------------------------------------------*/
 
 void vLetMotorTask_init(void) {
-    task2_B = &task2_B_data;    /* Initialize the pointer to the local buffer for label A */
+    task_Motor = &task_Motor_data;    /* Initialize the pointer to the local buffer for label A */
+    MotorTask_Contr = &MotorTask_Contr_data;
 
-    xLetTaskRegisterWrite(&letMotorTsk, &label_B, (void*) &task2_B);    /* Register the read access for label A */    
+    xLetTaskRegisterWrite(&letMotorTsk, &label_Motor, (void*) &task_Motor);    /* Register the write access for label Motor */   
+    xLetTaskRegisterRead(&letMotorTsk, &label_Contr, (void*) &MotorTask_Contr); /* Register the read access for label Contr */ 
 }
 /*-----------------------------------------------------------*/
 
@@ -190,6 +215,8 @@ void vLetMotorTask_job(void) {
 
     static float motor_deg = 0.0;
 
+    static uint32_t Stop_sig = 1;   // 1 == Go, -1 == Stop
+
     /******** Main function ********/
 
     motor_deg = get_stepper_angle();
@@ -199,32 +226,54 @@ void vLetMotorTask_job(void) {
     else if(abs((int)(motor_deg)) <= min_pos)
         dir = 1;
 
-    if (dir == 1)
+    Stop_sig = *MotorTask_Contr;
+
+    //Contr task sends STOP signal via MotorTask_Contr when around 180 Deg
+    if (dir == 1 && Stop_sig == 1)
         move_stepper_by(0.2);
-    else if (dir == -1)
+    else if (dir == -1 && Stop_sig == 1)
         move_stepper_by(-0.2);
+    else if (Stop_sig == -1);
 
-    (*task2_B) = (uint32_t)abs(motor_deg); //write any inputs
-
-    //printf("Motor deg: %d\tTest: %d\n", (uint32_t)abs(motor_deg), *task2_B);
-
-    //printf("%u\r\n", *task2_B); //Read any inputs
+    (*task_Motor) = (uint32_t)abs(motor_deg); //write any inputs
 }
 /*-----------------------------------------------------------*/
 
 void vLetPrintTask_init(void) {
-    PrintTask_A = &PrintTask_A_data;  /* Initialize the pointer to the local buffers */
-    PrintTask_B = &PrintTask_B_data;
+    PrintTask_Enc = &PrintTask_Enc_data;  /* Initialize the pointer to the local buffers */
+    PrintTask_Motor = &PrintTask_Motor_data;
 
-    xLetTaskRegisterRead(&letPrintTsk, &label_A, (void*) &PrintTask_A);    /* Register the read access for label A */    
-    xLetTaskRegisterRead(&letPrintTsk, &label_B, (void*) &PrintTask_B);    /* Register the read access for label B */   
+    xLetTaskRegisterRead(&letPrintTsk, &label_Enc, (void*) &PrintTask_Enc);    /* Register the read access for label Enc */    
+    xLetTaskRegisterRead(&letPrintTsk, &label_Motor, (void*) &PrintTask_Motor);    /* Register the read access for label Motor */   
 }
 /*-----------------------------------------------------------*/
 
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %u\tMotor Deg: %u\r\n", *PrintTask_A, *PrintTask_B); //Read any inputs
-    //printf("Motor Deg: %u\r\n", *PrintTask_B);
+    printf("Deg: %u\tMotor Deg: %u\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
+}
+/*-----------------------------------------------------------*/
+
+void vLetContrTask_init(void) {
+    task_Contr = &task_Contr_data;  /* Initialize the pointer to the local buffers */
+    ContrTask_Enc = &ContrTask_Enc_data;
+
+    xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);    /* Register the read access for label A */    
+    xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);    /* Register the read access for label B */   
+}
+/*-----------------------------------------------------------*/
+
+void vLetContrTask_job(void) {
+
+    /******** Main function ********/
+    //test
+    if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190){
+        (*task_Contr) = -1;
+    } 
+    else
+        (*task_Contr) = 1;
+
+    //printf("Deg: %u\tMotor Deg: %u\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
 }
 /*-----------------------------------------------------------*/

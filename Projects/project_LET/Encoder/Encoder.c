@@ -12,9 +12,10 @@ void init_rotary_encoder(void){
     gpio_pull_up(Phase_B);
 }
 
+// Positive value over zero, Negative value under zero
 float get_encoder_angle(int local_count){
     local_count = local_count % ENCODER_SPR;
     local_count = local_count >= 0 ? local_count : local_count + ENCODER_SPR;
     
-    return (float)local_count * (360.0 / ENCODER_SPR);
+    return 180.0 - (180.0 - (float)local_count * (360.0 / ENCODER_SPR));
 }

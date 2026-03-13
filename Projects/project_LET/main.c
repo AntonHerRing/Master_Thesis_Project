@@ -38,6 +38,13 @@ GPIO12::    MISO
 #define Phase_B 39
 
 
+//Task Periods
+#define T_Enc   100
+#define T_Motor 50
+#define T_Contr 100
+#define T_Print 100
+
+
 //function definition
 extern void L6474_StepClockHandler(uint8_t deviceId);
 
@@ -52,22 +59,22 @@ LetTask_t letMotorTsk;  /*Handle for the LET stepper motor task. */
 LetTask_t letContrTsk;  /*Handle for the LET Control task. */
 LetTask_t letPrintTsk;  /*Handle for the LET Print task. */
 
-uint32_t* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
-uint32_t  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
-uint32_t* PrintTask_Enc;      /* Pointer to the local data of label Enc by Print task. */
-uint32_t  PrintTask_Enc_data; /* Local copy of label Enc owned by Print LET task. */
-uint32_t* ContrTask_Enc;      /* Pointer to the local data of label ENC by Control task. */
-uint32_t  ContrTask_Enc_data; /* Local copy of label ENC owned by Control LET task. */
+int32_t* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
+int32_t  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
+int32_t* PrintTask_Enc;      /* Pointer to the local data of label Enc by Print task. */
+int32_t  PrintTask_Enc_data; /* Local copy of label Enc owned by Print LET task. */
+int32_t* ContrTask_Enc;      /* Pointer to the local data of label ENC by Control task. */
+int32_t  ContrTask_Enc_data; /* Local copy of label ENC owned by Control LET task. */
 
-uint32_t* task_Motor;      /* Pointer to the local data of label Motor by Motor task. */
-uint32_t  task_Motor_data; /* Local copy of label Motor owned by LET Motor task. */
-uint32_t* PrintTask_Motor;      /* Pointer to the local data of label Motor by Print task. */
-uint32_t  PrintTask_Motor_data; /* Local copy of label Motor owned by Print LET task. */
+int32_t* task_Motor;      /* Pointer to the local data of label Motor by Motor task. */
+int32_t  task_Motor_data; /* Local copy of label Motor owned by LET Motor task. */
+int32_t* PrintTask_Motor;      /* Pointer to the local data of label Motor by Print task. */
+int32_t  PrintTask_Motor_data; /* Local copy of label Motor owned by Print LET task. */
 
-uint32_t* task_Contr;      /* Pointer to the local data of label Contr by Control task. */
-uint32_t  task_Contr_data; /* Local copy of label Contr owned by LET Control task. */
-uint32_t* MotorTask_Contr;      /* Pointer to the local data of label Contr by Motor task. */
-uint32_t  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
+int32_t* task_Contr;      /* Pointer to the local data of label Contr by Control task. */
+int32_t  task_Contr_data; /* Local copy of label Contr owned by LET Control task. */
+int32_t* MotorTask_Contr;      /* Pointer to the local data of label Contr by Motor task. */
+int32_t  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
 
 // Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
@@ -157,14 +164,14 @@ int main()
     gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 
     /* Create a label and LET tasks that read/write from it. */
-    xLetInitLabel("Enc", sizeof(uint32_t), &label_Enc, LET_COM_COPY);
-    xLetInitLabel("Motor", sizeof(uint32_t), &label_Motor, LET_COM_COPY);
-    xLetInitLabel("Contr", sizeof(uint32_t), &label_Contr, LET_COM_COPY);
+    xLetInitLabel("Enc", sizeof(int32_t), &label_Enc, LET_COM_COPY);
+    xLetInitLabel("Motor", sizeof(int32_t), &label_Motor, LET_COM_COPY);
+    xLetInitLabel("Contr", sizeof(int32_t), &label_Contr, LET_COM_COPY);
 
-    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 5, 100, 100, 0, CORE0, &letEncTsk);
-    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 5, 50, 50, 0, CORE0, &letMotorTsk);
-    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 5, 100, 100, 0, CORE0, &letPrintTsk);
-    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 5, 100, 100, 0, CORE0, &letContrTsk);
+    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 2, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
+    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 3, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
+    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 4, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
+    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 5, T_Print, T_Print, 0, CORE0, &letPrintTsk);
     
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -190,7 +197,9 @@ void vLetEncTask_job(void) {
 
     deg = get_encoder_angle(count);
 
-    (*task_Enc) = (uint32_t)deg; //write any inputs
+    //printf("Test Rel ang: %f\n", get_encoder_relative_angle(count));
+
+    (*task_Enc) = (int32_t)deg; //write any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -217,7 +226,7 @@ void vLetMotorTask_job(void) {
     static float offset = 0.0;
     static int first_time = 20;
 
-    static uint32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
+    static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
     /******** Main function ********/
     if(first_time > 0){     //wait until the stepper motor value has stabilized
@@ -244,7 +253,7 @@ void vLetMotorTask_job(void) {
         else if (l_dir == -1 )
             move_stepper_by(-0.2);
 
-        (*task_Motor) = (uint32_t)abs(motor_deg); //write any inputs
+        (*task_Motor) = (int32_t)motor_deg; //write any inputs
     }
 }
 /*-----------------------------------------------------------*/
@@ -261,7 +270,7 @@ void vLetPrintTask_init(void) {
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %u\tMotor Deg: %u\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
+    printf("Deg: %d\tMotor Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -288,6 +297,6 @@ void vLetContrTask_job(void) {
     else
         (*task_Contr) = 1;                                  //GO
 
-    //printf("Deg: %u\tMotor Deg: %u\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
+    //printf("Deg in contr: %d\r\n", *ContrTask_Enc); //Read any inputs
 }
 /*-----------------------------------------------------------*/

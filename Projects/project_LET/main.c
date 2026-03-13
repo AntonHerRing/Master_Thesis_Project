@@ -230,16 +230,12 @@ void vLetMotorTask_job(void) {
     }
     else{
         motor_deg = (get_stepper_angle() - offset);
-        //relativ_deg = 180.0 - (180.0 - motor_deg);  //Pos = 0 - 180 half || Neg = 360 - 180 half
-        relativ_deg = motor_deg;
         Contr_sig = *MotorTask_Contr;
 
-        if((int)relativ_deg >= max_pos || Contr_sig == 2)
+        if((int)motor_deg >= max_pos || Contr_sig == 2)
             l_dir = -1;
-        else if((int)relativ_deg <= min_pos || Contr_sig == 3)
+        else if((int)motor_deg <= min_pos || Contr_sig == 3)
             l_dir = 1;
-
-        //printf("Motor Control: %d\t Dir: %d\tRel Deg: %f\n", Contr_sig, l_dir, relativ_deg);
 
         //Contr task sends STOP signal via MotorTask_Contr when around 180 Deg
         if (Contr_sig == 0);    //do nothing
@@ -281,13 +277,13 @@ void vLetContrTask_init(void) {
 void vLetContrTask_job(void) {
 
     /******** Main function ********/
-    // test
+    // mock control functions
     // Read Rotary Encoder angle, and send STOP signal to Control Variable for the Motor
     if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190)     //STOP -- ~180
         (*task_Contr) = 0;
-    else if(*ContrTask_Enc >= 80 && *ContrTask_Enc <= 100) //LEFT -- ~90
+    else if(*ContrTask_Enc >= 80 && *ContrTask_Enc <= 100)  //LEFT -- ~90
         (*task_Contr) = 2;
-    else if(*ContrTask_Enc >= 250 && *ContrTask_Enc <= 280) //RIGHT -- ~270
+    else if(*ContrTask_Enc >= 250 && *ContrTask_Enc <= 280) //RIGHT -- ~270 / -90
         (*task_Contr) = 3;
     else
         (*task_Contr) = 1;                                  //GO

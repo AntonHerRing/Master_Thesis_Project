@@ -44,6 +44,17 @@ GPIO12::    MISO
 #define T_Contr 100
 #define T_Print 100
 
+/*
+This configuration was unstable,
+and the Stepper motor would jump
+large distances unprompted
+
+#define T_Enc   50
+#define T_Motor 50
+#define T_Contr 50
+#define T_Print 100
+*/
+
 
 //function definition
 extern void L6474_StepClockHandler(uint8_t deviceId);

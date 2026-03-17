@@ -91,6 +91,10 @@ int32_t  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET t
 volatile int32_t count = 0;
 volatile int dir = 0;
 
+// PID variables
+struct PID Pid1;
+struct PID *PID1 = &Pid1;
+
 /**
  * @brief Initialization function of Rotary Encoder LET task.
  */
@@ -165,6 +169,8 @@ int main()
     BSP_Init();             /* Initialize all components on the lab-kit. */
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
     init_motor();           /* Initialize the Stepper Motor*/
+
+    init_pid(PID1);         /* Initialize PID variables with initial values*/
     
     if (xLetInit() == pdFALSE) {                    /* Initialize the LET module. */
         while (true);
@@ -208,7 +214,7 @@ void vLetEncTask_job(void) {
 
     deg = get_encoder_angle(count);
 
-    //printf("Test Rel ang: %f\n", get_encoder_relative_angle(count));
+    printf("Test ang: %d\n", (int)get_encoder_angle_alt(count));
 
     (*task_Enc) = (int32_t)deg; //write any inputs
 }
@@ -295,6 +301,8 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
+    /******** Init static var ********/
+    
 
     /******** Main function ********/
     // mock control functions

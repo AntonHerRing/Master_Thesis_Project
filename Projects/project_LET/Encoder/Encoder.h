@@ -22,8 +22,9 @@
 #define Phase_A 40
 #define Phase_B 39
 
-//Encoder Steps Per revolution
-#define ENCODER_SPR 2400
+//Encoder defines
+#define ENCODER_SPR         2400        // steps / revolution
+#define ENCODER_ANGLE_SCALE 1/6.666667    // step counts / degree. -> degree/step count
 
 /****************** Func Inits ******************/
 
@@ -31,3 +32,4 @@
 void init_rotary_encoder(void);
 float get_encoder_angle(int local_count);
 float get_encoder_relative_angle(int local_count);
+float get_encoder_angle_alt(int local_count);

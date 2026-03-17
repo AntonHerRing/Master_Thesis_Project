@@ -21,7 +21,6 @@ float get_encoder_relative_angle(int local_count){
     float deg = (float)local_count * (360.0 / ENCODER_SPR);
     if(deg > 180)
         deg = -(180.0 + (180.0 - deg));
-
     
     return deg;
 }
@@ -33,6 +32,16 @@ float get_encoder_angle(int local_count){
     local_count = local_count >= 0 ? local_count : local_count + ENCODER_SPR;
 
     float deg = (float)local_count * (360.0 / ENCODER_SPR);
+    
+    return deg;
+}
+
+// Utilizes angle scaler for continous reading of pos and neg
+//Note: several turns to one side require same amount of turns
+//back to reset it to between pos and neg. 
+float get_encoder_angle_alt(int local_count){
+    local_count = local_count % ENCODER_SPR;
+    float deg = (float)local_count * ENCODER_ANGLE_SCALE;
     
     return deg;
 }

@@ -93,7 +93,10 @@ volatile int dir = 0;
 
 // PID variables
 struct PID Pid1;
-struct PID *PID1 = &Pid1;
+struct PID *PID_Pend = &Pid1;
+
+struct PID Pid2;
+struct PID *PID_Rotor = &Pid2;
 
 /**
  * @brief Initialization function of Rotary Encoder LET task.
@@ -170,7 +173,7 @@ int main()
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
     init_motor();           /* Initialize the Stepper Motor*/
 
-    init_pid(PID1);         /* Initialize PID variables with initial values*/
+    init_pid(PID_Pend, PID_Rotor);         /* Initialize PID variables with initial values*/
     
     if (xLetInit() == pdFALSE) {                    /* Initialize the LET module. */
         while (true);

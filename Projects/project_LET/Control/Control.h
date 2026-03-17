@@ -29,6 +29,10 @@
 #define PRIMARY_INTEGRAL_MODE_1     0.0
 #define PRIMARY_DERIVATIVE_MODE_1   30
 
+#define SECONDARY_PROPORTIONAL_MODE_1 	15.0
+#define SECONDARY_INTEGRAL_MODE_1     	0.0
+#define SECONDARY_DERIVATIVE_MODE_1   	7.5
+
 /************ Structs and Variables ************/
 
 struct PID {
@@ -46,5 +50,5 @@ struct PID {
 /****************** Func Inits ******************/
 
 bool oppositeSigns(int x, int y);
-void init_pid(struct PID *PID1);
-void PID_controller(struct PID *Pid_pend);
+void init_pid(struct PID *PID1, struct PID *PID2);
+void PID_controller(struct PID *Pid_in, float encoder_angle);

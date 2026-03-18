@@ -10,14 +10,14 @@
 #define T_Contr 100
 #define T_Print 100
 
-float *current_error_steps, *current_error_rotor_steps;
+/*float *current_error_steps, *current_error_rotor_steps;
 float encoder_angle_slope_corr_steps;
 float pendulum_position_command_steps;
 float rotor_control_target_steps;
 int rotor_position_steps;
 float rotor_position_command_steps;
 float feedforward_gain;
-float encoder_position;
+float encoder_position;*/
 
 
 void init_pid(struct PID *PID1, struct PID *PID2){
@@ -53,15 +53,15 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 }
 
  void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float * current_error,
-		float * sample_period, float * Deriv_Filt) {
+		float sample_period, float * Deriv_Filt) {
 
 		float int_term, diff, diff_filt;
 
 	  /* Compute time integral of error by trapezoidal rule */
-	  int_term = PID->Ki*(*sample_period)*((*current_error) + PID->state_a[0])/2;
+	  int_term = PID->Ki*(sample_period)*((*current_error) + PID->state_a[0])/2;
 
 	  /* Compute time derivative of error */
-	  diff = PID->Kd*((*current_error) - PID->state_a[0])/(*sample_period);
+	  diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
 
 	  /* Compute first order low pass filter of time derivative */
 	  diff_filt = Deriv_Filt[0] * diff
@@ -80,9 +80,9 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 	  PID->int_term = int_term;
 }
 
-void test_task(int local_count){
+/*void test_task(int local_count){
 
-    /* CMSIS Variables */
+    // CMSIS Variables 
     arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
     float Deriv_Filt_Pend[2];
     float Deriv_Filt_Rotor[2];
@@ -125,7 +125,7 @@ void test_task(int local_count){
     encoder_position                = 0;
 
     while(1){
-        /* Initialize Pendulum PID control state */
+        // Initialize Pendulum PID control state 
         //ret = encoder_position_read(&encoder_position_steps, encoder_position_init, &htim3);
         encoder_position = local_count;
 
@@ -149,7 +149,7 @@ void test_task(int local_count){
 
 		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
 
-        /* Acquire rotor position and compute low pass filtered rotor position */
+        /// Acquire rotor position and compute low pass filtered rotor position 
 
         //ret = rotor_position_read(&rotor_position_steps);
 
@@ -158,7 +158,4 @@ void test_task(int local_count){
         BSP_MotorControl_GoTo(0, rotor_control_target_steps/2);
 
     }
-
-
-
-}
+}*/

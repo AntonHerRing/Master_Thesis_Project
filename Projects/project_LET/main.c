@@ -387,6 +387,10 @@ void vLetContrTask_job(void) {
         rotor_position_command_steps    = 0;
         feedforward_gain                = 1;
         encoder_position                = 0;   
+
+        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
+
+		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor, Deriv_Filt_Rotor);
     }
 
     /******** Main function ********/
@@ -397,19 +401,15 @@ void vLetContrTask_job(void) {
     if(balance_on){
         encoder_position = *ContrTask_Enc;
 
-        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
-
-		*current_error_rotor_steps = 0;
-		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor, Deriv_Filt_Rotor);
-
         *current_error_steps = encoder_angle_slope_corr_steps
                 + ENCODER_ANGLE_POLARITY * (encoder_position / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
 
         pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
 
-    	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor,  Deriv_Filt_Rotor);
+    	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor,  Deriv_Filt_Rotor);
 
-		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
+		//rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
+        rotor_control_target_steps = PID_Pend.control_output;
 
         //L6474_GoTo(0, rotor_control_target_steps/2);
         (*task_Contr) = (int32_t)(rotor_control_target_steps/2);

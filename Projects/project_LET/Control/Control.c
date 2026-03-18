@@ -80,7 +80,7 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 	  PID->int_term = int_term;
 }
 
-void test_task(void){
+void test_task(int local_count){
 
     /* CMSIS Variables */
     arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
@@ -108,7 +108,7 @@ void test_task(void){
 	PID_Pend.state_a[3] = 0;
 	PID_Pend.int_term   = 0;
 	PID_Pend.control_output = 0;
-    
+
 	PID_Rotor.state_a[0]    = 0;
 	PID_Rotor.state_a[1]    = 0;
 	PID_Rotor.state_a[2]    = 0;
@@ -126,6 +126,9 @@ void test_task(void){
 
     while(1){
         /* Initialize Pendulum PID control state */
+        //ret = encoder_position_read(&encoder_position_steps, encoder_position_init, &htim3);
+        encoder_position = local_count;
+
         pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc,
                 Deriv_Filt_Pend);
 
@@ -135,7 +138,6 @@ void test_task(void){
 
         *current_error_steps = encoder_angle_slope_corr_steps
                 + ENCODER_ANGLE_POLARITY * (encoder_position / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
-
 
         //*current_error_steps = *current_error_steps + pendulum_position_command_steps;
 

@@ -56,6 +56,16 @@ large distances unprompted
 #define T_Print 100
 */
 
+/***** STM Var******/
+float *current_error_steps, *current_error_rotor_steps;
+float encoder_angle_slope_corr_steps;
+float pendulum_position_command_steps;
+float rotor_control_target_steps;
+int rotor_position_steps;
+float rotor_position_command_steps;
+float feedforward_gain;
+float encoder_position;
+
 
 //function definition
 extern void L6474_StepClockHandler(uint8_t deviceId);
@@ -257,8 +267,9 @@ void vLetMotorTask_job(void) {
         sleep_ms(10);
         move_stepper_by(-0.2);
         printf("First Time: %d\tOffset: %f\n", first_time, offset);
+        sleep_ms(10);
     }
-    else{
+    /*else{
         motor_deg = (get_stepper_angle() - offset);
         Contr_sig = *MotorTask_Contr;
 
@@ -275,6 +286,9 @@ void vLetMotorTask_job(void) {
             move_stepper_by(-0.2);
 
         (*task_Motor) = (int32_t)motor_deg; //write any inputs
+    }*/
+    else{
+        L6474_GoTo(0, *MotorTask_Contr);
     }
 }
 /*-----------------------------------------------------------*/
@@ -304,22 +318,101 @@ void vLetContrTask_init(void) {
 }
 /*-----------------------------------------------------------*/
 
-void vLetContrTask_job(void) {
+//void vLetContrTask_job(void) {
     /******** Init static var ********/
     
 
     /******** Main function ********/
     // mock control functions
     // Read Rotary Encoder angle, and send STOP signal to Control Variable for the Motor
-    if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190)     //STOP -- ~180
+    /*if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190)     //STOP -- ~180
         (*task_Contr) = 0;
     else if(*ContrTask_Enc >= 80 && *ContrTask_Enc <= 100)  //LEFT -- ~90
         (*task_Contr) = 2;
     else if(*ContrTask_Enc >= 250 && *ContrTask_Enc <= 280) //RIGHT -- ~270 / -90
         (*task_Contr) = 3;
     else
-        (*task_Contr) = 1;                                  //GO
+        (*task_Contr) = 1;*/                                  //GO
+
 
     //printf("Deg in contr: %d\r\n", *ContrTask_Enc); //Read any inputs
+//}
+/*-----------------------------------------------------------*/
+
+void vLetContrTask_job(void) {
+    /******** Init static var ********/
+    static bool first_time = true;
+    static bool balance_on = false;
+    /* CMSIS Variables */
+    arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
+    float Deriv_Filt_Pend[2];
+    float Deriv_Filt_Rotor[2];
+    float Wo_t, fo_t, IWon_t;
+
+    if(first_time){
+        first_time = false;
+
+        fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
+        Wo_t = 2 * 3.141592654 * fo_t;
+        IWon_t = 2 / (Wo_t * (T_Enc));
+        Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
+        Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
+
+        fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
+        Wo_t = 2 * 3.141592654 * fo_t;
+        IWon_t = 2 / (Wo_t * (T_Motor));
+        Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
+        Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
+
+        *current_error_steps        = 0;
+        *current_error_rotor_steps  = 0;
+        PID_Pend.state_a[0] = 0;
+        PID_Pend.state_a[1] = 0;
+        PID_Pend.state_a[2] = 0;
+        PID_Pend.state_a[3] = 0;
+        PID_Pend.int_term   = 0;
+        PID_Pend.control_output = 0;
+
+        PID_Rotor.state_a[0]    = 0;
+        PID_Rotor.state_a[1]    = 0;
+        PID_Rotor.state_a[2]    = 0;
+        PID_Rotor.state_a[3]    = 0;
+        PID_Rotor.int_term      = 0;
+        PID_Rotor.control_output = 0;
+
+        encoder_angle_slope_corr_steps  = 0;
+        pendulum_position_command_steps = 0;
+        rotor_control_target_steps      = 0;
+        rotor_position_steps            = 0;
+        rotor_position_command_steps    = 0;
+        feedforward_gain                = 1;
+        encoder_position                = 0;   
+    }
+
+    /******** Main function ********/
+    if (*ContrTask_Enc >= 178 && *ContrTask_Enc <= 182)
+        balance_on = true;
+
+
+    if(balance_on){
+        encoder_position = *ContrTask_Enc;
+
+        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
+
+		*current_error_rotor_steps = 0;
+		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor, Deriv_Filt_Rotor);
+
+        *current_error_steps = encoder_angle_slope_corr_steps
+                + ENCODER_ANGLE_POLARITY * (encoder_position / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
+
+        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
+
+    	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor,  Deriv_Filt_Rotor);
+
+		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
+
+        //L6474_GoTo(0, rotor_control_target_steps/2);
+        (*task_Contr) = (int32_t)(rotor_control_target_steps/2);
+    }
 }
 /*-----------------------------------------------------------*/

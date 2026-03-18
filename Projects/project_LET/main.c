@@ -226,11 +226,13 @@ void vLetEncTask_job(void) {
 
     /******** Main function ********/
 
-    deg = get_encoder_angle(count);
+    //deg = get_encoder_angle(count);
 
-    printf("Test ang: %d\n", (int)get_encoder_angle_alt(count));
+    (*task_Enc) = get_encoder_steps(count);
 
-    (*task_Enc) = (int32_t)deg; //write any inputs
+    //printf("Test ang: %d\n", (int)get_encoder_angle_alt(count));
+
+    //(*task_Enc) = (int32_t)deg; //write any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -305,7 +307,7 @@ void vLetPrintTask_init(void) {
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %d\tMotor Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
+    printf("Deg: %d\tMotor Deg: %d\r\n", get_encoder_angle(*PrintTask_Enc), *PrintTask_Motor); //Read any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -400,6 +402,7 @@ void vLetContrTask_job(void) {
 
     if(balance_on){
         encoder_position = *ContrTask_Enc;
+        //encoder_position = count;   // steps/pulses instead of deg
 
         *current_error_steps = encoder_angle_slope_corr_steps
                 + ENCODER_ANGLE_POLARITY * (encoder_position / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
@@ -413,6 +416,7 @@ void vLetContrTask_job(void) {
 
         //L6474_GoTo(0, rotor_control_target_steps/2);
         (*task_Contr) = (int32_t)(rotor_control_target_steps/2);
+        printf("Target steps: %d\n", (int32_t)(rotor_control_target_steps/2));
     }
 }
 /*-----------------------------------------------------------*/

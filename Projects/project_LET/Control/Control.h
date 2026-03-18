@@ -33,6 +33,20 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5
 
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 10  		// 10 - Corner frequency of low pass filter of Primary PID derivative
+#define LP_CORNER_FREQ_ROTOR 100 						// 100 - Corner frequency of low pass filter of Rotor Angle
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR 50 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
+#define LP_CORNER_FREQ_STEP 50	
+
+#define ENCODER_ANGLE_POLARITY -1.0				// Note that physical system applies negative polarity to pendulum angle
+												// by definition of coordinate system.
+
+#define CONTROLLER_GAIN_SCALE 						1
+#define STEPPER_READ_POSITION_STEPS_PER_DEGREE 		8.888889	//	Stepper position read value in steps per degree
+#define STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE 	STEPPER_READ_POSITION_STEPS_PER_DEGREE
+#define ENCODER_READ_ANGLE_SCALE 					6.666667 // Angle Scale 6.66667 for 600 Pulse Per Rev Resolution Optical Encoder
+#define FULL_STATE_FEEDBACK_SCALE 					1.00 // Scale factor for Full State Feedback Architecture
+
 /************ Structs and Variables ************/
 
 struct PID {
@@ -46,6 +60,16 @@ struct PID {
     float error;
     float prev_error;
 };
+
+typedef struct
+{
+  float state_a[4];  /** The filter state array of length 4. */
+  float Kp;          /** The proportional gain. */
+  float Ki;          /** The integral gain. */
+  float Kd;          /** The derivative gain. */
+  float int_term;    /** The controller integral output */
+  float control_output; /** The controller output */
+} arm_pid_instance_a_f32;
 
 /****************** Func Inits ******************/
 

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"

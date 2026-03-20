@@ -276,12 +276,14 @@ void vLetMotorTask_job(void) {
         move_stepper_by(0.2);
         sleep_ms(10);
         move_stepper_by(-0.2);
-        printf("First Time: %d\tOffset: %f\n", first_time, offset);
+        //printf("First Time: %d\tOffset: %f\n", first_time, offset);
         sleep_ms(10);
     }
     else if(first_time == 1){
         first_time--;
-        move_stepper_by(-offset);
+        offset = get_stepper_angle();
+        printf("First Time: %d\tOffset: %f\n", first_time, offset);
+        //move_stepper_by(-offset);
         sleep_ms(10);
     }
     /*else{
@@ -303,7 +305,7 @@ void vLetMotorTask_job(void) {
         (*task_Motor) = (int32_t)motor_deg; //write any inputs
     }*/
     else if(motor_deg >= -90 && motor_deg <= 90){
-        L6474_GoTo(0, *MotorTask_Contr);
+        //L6474_GoTo(0, *MotorTask_Contr);
     }
     else{
         printf("Error: Control task overshoot\n");
@@ -363,10 +365,10 @@ void vLetContrTask_job(void) {
     static bool first_time = true;
     static bool balance_on = false;
     /* CMSIS Variables */
-    arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
-    float Deriv_Filt_Pend[2];
-    float Deriv_Filt_Rotor[2];
-    float Wo_t, fo_t, IWon_t;
+    static arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
+    static float Deriv_Filt_Pend[2];
+    static float Deriv_Filt_Rotor[2];
+    static float Wo_t, fo_t, IWon_t;
 
     if(first_time){
         first_time = false;
@@ -399,6 +401,14 @@ void vLetContrTask_job(void) {
         PID_Rotor.int_term      = 0;
         PID_Rotor.control_output = 0;
 
+        PID_Pend.Kp = PRIMARY_PROPORTIONAL_MODE_1;
+        PID_Pend.Ki = PRIMARY_INTEGRAL_MODE_1;
+        PID_Pend.Kd = PRIMARY_DERIVATIVE_MODE_1;
+
+        PID_Rotor.Kp = SECONDARY_PROPORTIONAL_MODE_1;
+        PID_Rotor.Ki = SECONDARY_INTEGRAL_MODE_1;
+        PID_Rotor.Kd = SECONDARY_DERIVATIVE_MODE_1;
+
         encoder_angle_slope_corr_steps  = 0;
         pendulum_position_command_steps = 0;
         rotor_control_target_steps      = 0;
@@ -407,6 +417,8 @@ void vLetContrTask_job(void) {
         feedforward_gain                = 1;
         encoder_position                = 0;   
 
+        printf("Rotor PID ki: %f\tPend PID ki: %f\n", PID_Rotor.Ki, PID_Pend.Ki);
+        printf("Curr Err: %f\n", *current_error_steps);
         pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
 
 		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor, Deriv_Filt_Rotor);
@@ -414,18 +426,21 @@ void vLetContrTask_job(void) {
 
     /******** Main function ********/
     //if (*ContrTask_Enc >= 178 && *ContrTask_Enc <= 182)
-    if (*ContrTask_Enc >= 1100 && *ContrTask_Enc <= 1300)
+    if (abs(*ContrTask_Enc) >= 1100 && abs(*ContrTask_Enc) <= 1300)
         balance_on = true;
-    else if (*ContrTask_Enc <= 600 && *ContrTask_Enc >= -600)
-        balance_on = false;
+    //else if (*ContrTask_Enc <= 600 && *ContrTask_Enc >= -600)
+    //    balance_on = false;
+    //printf("Balance On: %d\tContr Enc: %d\n", balance_on, *ContrTask_Enc);
 
 
     if (balance_on){
-        encoder_position = *ContrTask_Enc;
+        encoder_position = (float)*ContrTask_Enc;
         //encoder_position = count;   // steps/pulses instead of deg
 
         *current_error_steps = encoder_angle_slope_corr_steps
                 + ENCODER_ANGLE_POLARITY * (encoder_position / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
+        
+                printf("P5: %f\n", *current_error_steps);
 
         pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
 
@@ -436,7 +451,7 @@ void vLetContrTask_job(void) {
 
         //L6474_GoTo(0, rotor_control_target_steps/2);
         (*task_Contr) = (int32_t)(rotor_control_target_steps/2);
-        printf("Target steps: %d\n", (int32_t)(rotor_control_target_steps));
+        //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);
     }
     else
         encoder_position = 0;

@@ -70,6 +70,8 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 
 	  /* Accumulate PID output with Integral, Derivative and Proportional contributions*/
 
+	  printf("int_term: %f\tdiff: %f\tdiff_filt: %f\n ", int_term, diff, diff_filt);
+
 	  PID->control_output = diff_filt + int_term + PID->Kp*(*current_error);
 
 	  /* Update state variables */

@@ -76,5 +76,6 @@ typedef struct
 bool oppositeSigns(int x, int y);
 void init_pid(struct PID *PID1, struct PID *PID2);
 void PID_controller(struct PID *Pid_in, float encoder_angle);
+
  void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float * current_error,
 		float sample_period, float * Deriv_Filt);

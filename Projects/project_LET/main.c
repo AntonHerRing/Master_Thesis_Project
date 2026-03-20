@@ -40,9 +40,14 @@ GPIO12::    MISO
 
 
 //Task Periods
-#define T_Enc   100
+/*#define T_Enc   100
 #define T_Motor 50
 #define T_Contr 100
+#define T_Print 100*/
+
+#define T_Enc   2
+#define T_Motor 2
+#define T_Contr 2
 #define T_Print 100
 
 /*
@@ -262,13 +267,21 @@ void vLetMotorTask_job(void) {
     static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
     /******** Main function ********/
-    if(first_time > 0){     //wait until the stepper motor value has stabilized
+    motor_deg = (get_stepper_angle() - offset);
+    (*task_Motor) = (int32_t)motor_deg; //write any inputs
+
+    if(first_time > 1){     //wait until the stepper motor value has stabilized
         first_time--;
         offset = get_stepper_angle();
         move_stepper_by(0.2);
         sleep_ms(10);
         move_stepper_by(-0.2);
         printf("First Time: %d\tOffset: %f\n", first_time, offset);
+        sleep_ms(10);
+    }
+    else if(first_time == 1){
+        first_time--;
+        move_stepper_by(-offset);
         sleep_ms(10);
     }
     /*else{
@@ -289,8 +302,12 @@ void vLetMotorTask_job(void) {
 
         (*task_Motor) = (int32_t)motor_deg; //write any inputs
     }*/
-    else{
+    else if(motor_deg >= -90 && motor_deg <= 90){
         L6474_GoTo(0, *MotorTask_Contr);
+    }
+    else{
+        printf("Error: Control task overshoot\n");
+        move_stepper_by(0.0);
     }
 }
 /*-----------------------------------------------------------*/
@@ -307,7 +324,7 @@ void vLetPrintTask_init(void) {
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %d\tMotor Deg: %d\r\n", get_encoder_angle(*PrintTask_Enc), *PrintTask_Motor); //Read any inputs
+    printf("Deg: %d\tMotor Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -396,11 +413,14 @@ void vLetContrTask_job(void) {
     }
 
     /******** Main function ********/
-    if (*ContrTask_Enc >= 178 && *ContrTask_Enc <= 182)
+    //if (*ContrTask_Enc >= 178 && *ContrTask_Enc <= 182)
+    if (*ContrTask_Enc >= 1100 && *ContrTask_Enc <= 1300)
         balance_on = true;
+    else if (*ContrTask_Enc <= 600 && *ContrTask_Enc >= -600)
+        balance_on = false;
 
 
-    if(balance_on){
+    if (balance_on){
         encoder_position = *ContrTask_Enc;
         //encoder_position = count;   // steps/pulses instead of deg
 
@@ -416,7 +436,9 @@ void vLetContrTask_job(void) {
 
         //L6474_GoTo(0, rotor_control_target_steps/2);
         (*task_Contr) = (int32_t)(rotor_control_target_steps/2);
-        printf("Target steps: %d\n", (int32_t)(rotor_control_target_steps/2));
+        printf("Target steps: %d\n", (int32_t)(rotor_control_target_steps));
     }
+    else
+        encoder_position = 0;
 }
 /*-----------------------------------------------------------*/

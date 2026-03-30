@@ -78,6 +78,8 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 
 	  PID->control_output = diff_filt + int_term + PID->Kp*(*current_error);
 
+	  printf("PID contr Output: %f\tCurr Err: %f\n ", PID->control_output, *current_error);
+
 	  /* Update state variables */
 	  PID->state_a[1] = PID->state_a[0];
 	  PID->state_a[0] = *current_error;

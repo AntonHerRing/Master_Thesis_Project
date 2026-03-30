@@ -45,9 +45,10 @@ GPIO12::    MISO
 #define T_Contr 100
 #define T_Print 100*/
 
-#define T_Enc   2
-#define T_Motor 2
-#define T_Contr 2
+//2
+#define T_Enc   50
+#define T_Motor 50
+#define T_Contr 50
 #define T_Print 100
 
 /*
@@ -260,6 +261,7 @@ void vLetMotorTask_job(void) {
     static int l_dir = 1;
 
     static float motor_deg = 0.0;
+    static float desired_pos = 0.0;
     static float relativ_deg = 0.0;
     static float offset = 0.0;
     static int first_time = 20;
@@ -270,9 +272,11 @@ void vLetMotorTask_job(void) {
     motor_deg = (get_stepper_angle() - offset);
     (*task_Motor) = (int32_t)motor_deg; //write any inputs
 
+    desired_pos = (float)(*MotorTask_Contr / MOTOR_STEPS_PER_DEGREE);
+
     if(first_time > 1){     //wait until the stepper motor value has stabilized
         first_time--;
-        offset = get_stepper_angle();
+        //offset = get_stepper_angle();
         move_stepper_by(0.2);
         sleep_ms(10);
         move_stepper_by(-0.2);
@@ -281,9 +285,15 @@ void vLetMotorTask_job(void) {
     }
     else if(first_time == 1){
         first_time--;
-        offset = get_stepper_angle();
+        //offset = get_stepper_angle();
         printf("First Time: %d\tOffset: %f\n", first_time, offset);
         //move_stepper_by(-offset);
+        if(get_stepper_angle() != 0){
+            printf("Incorrect Start Position::Stepper Not at 0. Recalibrating...\n");
+            move_stepper_to(0);
+        }
+        else
+            printf("Success! Stepper is positioned at 0\n");
         sleep_ms(10);
     }
     /*else{
@@ -304,13 +314,16 @@ void vLetMotorTask_job(void) {
 
         (*task_Motor) = (int32_t)motor_deg; //write any inputs
     }*/
-    else if(motor_deg >= -90 && motor_deg <= 90){
-        L6474_GoTo(0, *MotorTask_Contr);
+    else if(abs(motor_deg) <= 180 && abs(desired_pos) <= 180){
+        //L6474_GoTo(0, *MotorTask_Contr);
+        move_stepper_by(desired_pos);
+        L6474_WaitWhileActive(0);
     }
     else{
         printf("Error: Control task overshoot\n");
         move_stepper_by(0.0);
     }
+    printf("Go to DEG: %f\n", desired_pos);
 }
 /*-----------------------------------------------------------*/
 
@@ -326,7 +339,7 @@ void vLetPrintTask_init(void) {
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %d\tMotor Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
+    printf("Deg: %d\tMotor Deg: %d\r\n", *PrintTask_Enc/4, *PrintTask_Motor); //Read any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -444,9 +457,9 @@ void vLetContrTask_job(void) {
         //encoder_position = count;   // steps/pulses instead of deg
 
         *current_error_steps = encoder_angle_slope_corr_steps
-                + ENCODER_ANGLE_POLARITY * (encoder_position / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
+                + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
         
-                printf("P5: %f\n", *current_error_steps);
+        //printf("P5: %f\n", *current_error_steps);
 
         pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
 
@@ -454,6 +467,7 @@ void vLetContrTask_job(void) {
 
 		//rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
         rotor_control_target_steps = PID_Pend.control_output;
+        printf("Target steps: %f\tDec/2: %d\n", rotor_control_target_steps, (int32_t)(rotor_control_target_steps/2));
 
         //L6474_GoTo(0, rotor_control_target_steps/2);
         (*task_Contr) = (int32_t)(rotor_control_target_steps/2);

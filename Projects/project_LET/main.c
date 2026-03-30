@@ -305,7 +305,7 @@ void vLetMotorTask_job(void) {
         (*task_Motor) = (int32_t)motor_deg; //write any inputs
     }*/
     else if(motor_deg >= -90 && motor_deg <= 90){
-        //L6474_GoTo(0, *MotorTask_Contr);
+        L6474_GoTo(0, *MotorTask_Contr);
     }
     else{
         printf("Error: Control task overshoot\n");
@@ -385,8 +385,13 @@ void vLetContrTask_job(void) {
         Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
         Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
 
-        *current_error_steps        = 0;
-        *current_error_rotor_steps  = 0;
+        current_error_steps         = malloc(sizeof(float));
+        current_error_rotor_steps   = malloc(sizeof(float));
+        *current_error_steps         = 0;
+        *current_error_rotor_steps   = 0;
+
+
+        printf("First Curr Err: %f\n", *current_error_steps);
         PID_Pend.state_a[0] = 0;
         PID_Pend.state_a[1] = 0;
         PID_Pend.state_a[2] = 0;
@@ -422,6 +427,7 @@ void vLetContrTask_job(void) {
         pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
 
 		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor, Deriv_Filt_Rotor);
+        printf("Last Curr Err: %f\n", *current_error_steps);
     }
 
     /******** Main function ********/

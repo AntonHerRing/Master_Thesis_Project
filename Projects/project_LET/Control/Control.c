@@ -59,14 +59,18 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 
 	  /* Compute time integral of error by trapezoidal rule */
 	  int_term = PID->Ki*(sample_period)*((*current_error) + PID->state_a[0])/2;
+	  printf("PID-Ki: %f\tsample_period: %f\tPID->state_a: %f\n ", PID->Ki, sample_period, PID->state_a[0]);
 
 	  /* Compute time derivative of error */
 	  diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
+	  printf("PID-Kd: %f\tsample_period: %f\tPID->state_a[0]: %f\n ", PID->Kd, sample_period, PID->state_a[0]);
 
 	  /* Compute first order low pass filter of time derivative */
 	  diff_filt = Deriv_Filt[0] * diff
 				+ Deriv_Filt[0] * PID->state_a[2]
 				- Deriv_Filt[1] * PID->state_a[3];
+
+      printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
 
 	  /* Accumulate PID output with Integral, Derivative and Proportional contributions*/
 

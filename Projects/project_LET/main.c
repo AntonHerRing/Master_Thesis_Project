@@ -87,12 +87,12 @@ LetTask_t letMotorTsk;  /*Handle for the LET stepper motor task. */
 LetTask_t letContrTsk;  /*Handle for the LET Control task. */
 LetTask_t letPrintTsk;  /*Handle for the LET Print task. */
 
-int32_t* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
-int32_t  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
-int32_t* PrintTask_Enc;      /* Pointer to the local data of label Enc by Print task. */
-int32_t  PrintTask_Enc_data; /* Local copy of label Enc owned by Print LET task. */
-int32_t* ContrTask_Enc;      /* Pointer to the local data of label ENC by Control task. */
-int32_t  ContrTask_Enc_data; /* Local copy of label ENC owned by Control LET task. */
+float* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
+float  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
+float* PrintTask_Enc;      /* Pointer to the local data of label Enc by Print task. */
+float  PrintTask_Enc_data; /* Local copy of label Enc owned by Print LET task. */
+float* ContrTask_Enc;      /* Pointer to the local data of label ENC by Control task. */
+float  ContrTask_Enc_data; /* Local copy of label ENC owned by Control LET task. */
 
 int32_t* task_Motor;      /* Pointer to the local data of label Motor by Motor task. */
 int32_t  task_Motor_data; /* Local copy of label Motor owned by LET Motor task. */
@@ -201,7 +201,7 @@ int main()
     gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 
     /* Create a label and LET tasks that read/write from it. */
-    xLetInitLabel("Enc", sizeof(int32_t), &label_Enc, LET_COM_COPY);
+    xLetInitLabel("Enc", sizeof(float), &label_Enc, LET_COM_COPY);
     xLetInitLabel("Motor", sizeof(int32_t), &label_Motor, LET_COM_COPY);
     xLetInitLabel("Contr", sizeof(int32_t), &label_Contr, LET_COM_COPY);
 
@@ -228,17 +228,10 @@ void vLetEncTask_init(void) {
 
 void vLetEncTask_job(void) {
     /******** Init static var ********/
-    static float deg = 0.0;
 
     /******** Main function ********/
 
-    //deg = get_encoder_angle(count);
-
     (*task_Enc) = get_encoder_radian(count);
-
-    //printf("Test ang: %d\n", (int)get_encoder_angle_alt(count));
-
-    //(*task_Enc) = (int32_t)deg; //write any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -264,7 +257,7 @@ void vLetMotorTask_job(void) {
     static float desired_pos = 0.0;
     static float relativ_deg = 0.0;
     static float offset = 0.0;
-    static int first_time = 20;
+    static bool first_time = true;
 
     static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
@@ -274,20 +267,13 @@ void vLetMotorTask_job(void) {
 
     desired_pos = (float)(*MotorTask_Contr / MOTOR_STEPS_PER_DEGREE);
 
-    if(first_time > 1){     //wait until the stepper motor value has stabilized
-        first_time--;
-        //offset = get_stepper_angle();
-        move_stepper_by(0.2);
-        sleep_ms(10);
-        move_stepper_by(-0.2);
-        //printf("First Time: %d\tOffset: %f\n", first_time, offset);
-        sleep_ms(10);
-    }
-    else if(first_time == 1){
-        first_time--;
-        //offset = get_stepper_angle();
+    if(first_time){
+        first_time = false;
+        move_stepper_by(0.5);
+        sleep_ms(30);
+        move_stepper_by(-0.5);
+        sleep_ms(30);
         printf("First Time: %d\tOffset: %f\n", first_time, offset);
-        //move_stepper_by(-offset);
         if(get_stepper_angle() != 0){
             printf("Incorrect Start Position::Stepper Not at 0. Recalibrating...\n");
             move_stepper_to(0);
@@ -317,13 +303,12 @@ void vLetMotorTask_job(void) {
     else if(abs(motor_deg) <= 180 && abs(desired_pos) <= 180){
         //L6474_GoTo(0, *MotorTask_Contr);
         move_stepper_by(desired_pos);
-        L6474_WaitWhileActive(0);
     }
     else{
         printf("Error: Control task overshoot\n");
         move_stepper_by(0.0);
     }
-    //printf("Go to DEG: %f\n", desired_pos);
+    printf("Go to DEG: %f\n", desired_pos);
 }
 /*-----------------------------------------------------------*/
 
@@ -339,7 +324,7 @@ void vLetPrintTask_init(void) {
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %d\tMotor Deg: %d\r\n", *PrintTask_Enc/4, *PrintTask_Motor); //Read any inputs
+    printf("Deg: %f\tMotor Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
 }
 /*-----------------------------------------------------------*/
 
@@ -444,22 +429,15 @@ void vLetContrTask_job(void) {
     }
 
     /******** Main function ********/
-    //if (*ContrTask_Enc >= 178 && *ContrTask_Enc <= 182)
-    if (abs(*ContrTask_Enc) >= 2.4 && abs(*ContrTask_Enc) <= 3.9)
+    if (abs(*ContrTask_Enc) >= (PI - 0.2) && abs(*ContrTask_Enc) <= (PI + 0.2))
         balance_on = true;
-    //else if (*ContrTask_Enc <= 600 && *ContrTask_Enc >= -600)
-    //    balance_on = false;
-    //printf("Balance On: %d\tContr Enc: %d\n", balance_on, *ContrTask_Enc);
 
 
     if (balance_on){
-        encoder_position = (float)*ContrTask_Enc;
-        //encoder_position = count;   // steps/pulses instead of deg
+        encoder_position = *ContrTask_Enc;
 
         *current_error_steps = encoder_angle_slope_corr_steps
                 + ENCODER_ANGLE_POLARITY * ((encoder_position) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
-        
-        //printf("P5: %f\n", *current_error_steps);
 
         pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
 
@@ -469,7 +447,6 @@ void vLetContrTask_job(void) {
         rotor_control_target_steps = PID_Pend.control_output;
         printf("Target steps: %f\tDec/2: %d\n", rotor_control_target_steps, (int32_t)(rotor_control_target_steps/2));
 
-        //L6474_GoTo(0, rotor_control_target_steps/2);
         (*task_Contr) = (int32_t)(rotor_control_target_steps/2);
         //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);
     }

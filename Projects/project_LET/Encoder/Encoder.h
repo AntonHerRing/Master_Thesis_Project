@@ -26,6 +26,8 @@
 #define ENCODER_SPR         2400        // steps / revolution
 #define ENCODER_ANGLE_SCALE 1/6.666667    // step counts / degree. -> degree/step count
 
+#define PI 3.141592654
+
 /****************** Func Inits ******************/
 
 
@@ -34,3 +36,4 @@ float get_encoder_angle(int local_count);
 float get_encoder_relative_angle(int local_count);
 float get_encoder_angle_alt(int local_count);
 float get_encoder_steps(int local_count);
+float get_encoder_radian(int local_count);

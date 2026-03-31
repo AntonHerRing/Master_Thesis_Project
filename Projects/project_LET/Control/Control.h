@@ -23,6 +23,8 @@
 #define l 0.235 //m --> Pendulum Arm
 #define r 0.14 //m  --> Rotor Arm
 
+#define PI 3.141592654
+
 
 // From STM example
 #define PRIMARY_PROPORTIONAL_MODE_1 300

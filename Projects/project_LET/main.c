@@ -46,9 +46,9 @@ GPIO12::    MISO
 #define T_Print 100*/
 
 //2
-#define T_Enc   50
-#define T_Motor 50
-#define T_Contr 50
+#define T_Enc   20
+#define T_Motor 20
+#define T_Contr 20
 #define T_Print 100
 
 /*
@@ -234,7 +234,7 @@ void vLetEncTask_job(void) {
 
     //deg = get_encoder_angle(count);
 
-    (*task_Enc) = get_encoder_steps(count);
+    (*task_Enc) = get_encoder_radian(count);
 
     //printf("Test ang: %d\n", (int)get_encoder_angle_alt(count));
 
@@ -323,7 +323,7 @@ void vLetMotorTask_job(void) {
         printf("Error: Control task overshoot\n");
         move_stepper_by(0.0);
     }
-    printf("Go to DEG: %f\n", desired_pos);
+    //printf("Go to DEG: %f\n", desired_pos);
 }
 /*-----------------------------------------------------------*/
 
@@ -387,13 +387,13 @@ void vLetContrTask_job(void) {
         first_time = false;
 
         fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
-        Wo_t = 2 * 3.141592654 * fo_t;
+        Wo_t = 2 * PI * fo_t;
         IWon_t = 2 / (Wo_t * (T_Enc));
         Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
         Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
 
         fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
-        Wo_t = 2 * 3.141592654 * fo_t;
+        Wo_t = 2 * PI * fo_t;
         IWon_t = 2 / (Wo_t * (T_Motor));
         Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
         Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
@@ -445,7 +445,7 @@ void vLetContrTask_job(void) {
 
     /******** Main function ********/
     //if (*ContrTask_Enc >= 178 && *ContrTask_Enc <= 182)
-    if (abs(*ContrTask_Enc) >= 1100 && abs(*ContrTask_Enc) <= 1300)
+    if (abs(*ContrTask_Enc) >= 2.4 && abs(*ContrTask_Enc) <= 3.9)
         balance_on = true;
     //else if (*ContrTask_Enc <= 600 && *ContrTask_Enc >= -600)
     //    balance_on = false;
@@ -457,7 +457,7 @@ void vLetContrTask_job(void) {
         //encoder_position = count;   // steps/pulses instead of deg
 
         *current_error_steps = encoder_angle_slope_corr_steps
-                + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
+                + ENCODER_ANGLE_POLARITY * ((encoder_position) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
         
         //printf("P5: %f\n", *current_error_steps);
 

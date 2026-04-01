@@ -60,6 +60,7 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 	  /* Compute time integral of error by trapezoidal rule */
 	  int_term = PID->Ki*(sample_period)*((*current_error) + PID->state_a[0])/2;
 	  //printf("PID-Ki: %f\tsample_period: %f\tPID->state_a: %f\n ", PID->Ki, sample_period, PID->state_a[0]);
+	  printf("Current Error: %f\n ", (*current_error));
 
 	  /* Compute time derivative of error */
 	  diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);

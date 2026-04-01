@@ -46,9 +46,9 @@ GPIO12::    MISO
 #define T_Print 100*/
 
 //2
-#define T_Enc   20
-#define T_Motor 20
-#define T_Contr 20
+#define T_Enc   2
+#define T_Motor 2
+#define T_Contr 2
 #define T_Print 100
 
 /*
@@ -301,9 +301,9 @@ void vLetMotorTask_job(void) {
 
         (*task_Motor) = (int32_t)motor_deg; //write any inputs
     }*/
-    else if(abs(motor_deg) <= 180 && abs(desired_pos) <= 180){
+    else if(abs(motor_deg) <= 270 && abs(desired_pos) <= 270){
         //L6474_GoTo(0, *MotorTask_Contr);
-        move_stepper_by(desired_pos);
+        move_stepper_to(desired_pos);
     }
     else{
         printf("Error: Control task overshoot\n");
@@ -369,8 +369,8 @@ void vLetContrTask_job(void) {
     static float Deriv_Filt_Rotor[2];
     static float Wo_t, fo_t, IWon_t;
 
-    static float pend_period    = T_Enc/1000.0;
-    static float motor_period   = T_Motor/1000.0;
+    static float pend_period    = T_Enc / 1000.0;
+    static float motor_period   = T_Motor / 1000.0;
 
     static float encoder_position_down;
 
@@ -395,7 +395,7 @@ void vLetContrTask_job(void) {
         *current_error_rotor_steps   = 0;
 
 
-        printf("First Curr Err: %f\n", *current_error_steps);
+        //printf("First Curr Err: %f\n", *current_error_steps);
         PID_Pend.state_a[0] = 0;
         PID_Pend.state_a[1] = 0;
         PID_Pend.state_a[2] = 0;
@@ -427,12 +427,12 @@ void vLetContrTask_job(void) {
         encoder_position                = 0; 
         //encoder_position_down           = *ContrTask_Enc;
 
-        printf("Rotor PID ki: %f\tPend PID ki: %f\n", PID_Rotor.Ki, PID_Pend.Ki);
-        printf("Curr Err: %f\n", *current_error_steps);
+        //printf("Rotor PID ki: %f\tPend PID ki: %f\n", PID_Rotor.Ki, PID_Pend.Ki);
+        //printf("Curr Err: %f\n", *current_error_steps);
         pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
 
 		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
-        printf("Last Curr Err: %f\n", *current_error_steps);
+        //printf("Last Curr Err: %f\n", *current_error_steps);
     }
 
     /******** Main function ********/
@@ -454,7 +454,7 @@ void vLetContrTask_job(void) {
         //printf("Encoder position: %f\n",encoder_position);
 
         *current_error_steps = encoder_angle_slope_corr_steps
-                + ENCODER_ANGLE_POLARITY * ((encoder_position) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
+                + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
 
         pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
 

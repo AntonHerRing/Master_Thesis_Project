@@ -231,7 +231,8 @@ void vLetEncTask_job(void) {
 
     /******** Main function ********/
 
-    (*task_Enc) = get_encoder_radian(count);
+    //(*task_Enc) = get_encoder_radian(count);
+    (*task_Enc) = get_encoder_steps(count);
 }
 /*-----------------------------------------------------------*/
 
@@ -368,6 +369,8 @@ void vLetContrTask_job(void) {
     static float Deriv_Filt_Rotor[2];
     static float Wo_t, fo_t, IWon_t;
 
+    static float encoder_position_down;
+
     if(first_time){
         first_time = false;
 
@@ -418,7 +421,8 @@ void vLetContrTask_job(void) {
         rotor_position_steps            = 0;
         rotor_position_command_steps    = 0;
         feedforward_gain                = 1;
-        encoder_position                = 0;   
+        encoder_position                = 0; 
+        //encoder_position_down           = *ContrTask_Enc;
 
         printf("Rotor PID ki: %f\tPend PID ki: %f\n", PID_Rotor.Ki, PID_Pend.Ki);
         printf("Curr Err: %f\n", *current_error_steps);
@@ -429,12 +433,22 @@ void vLetContrTask_job(void) {
     }
 
     /******** Main function ********/
-    if (abs(*ContrTask_Enc) >= (PI - 0.2) && abs(*ContrTask_Enc) <= (PI + 0.2))
+    //if (abs(*ContrTask_Enc) >= (PI - 0.2) && abs(*ContrTask_Enc) <= (PI + 0.2))
+    if (abs(*ContrTask_Enc) >= 1100 && abs(*ContrTask_Enc) <= 1300 && balance_on == false){
         balance_on = true;
+        L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
+    }
+        
 
 
     if (balance_on){
+        
+
         encoder_position = *ContrTask_Enc;
+
+        //encoder_position = encoder_position_steps - encoder_position_down - (int)(180 * angle_scale);
+        encoder_position -= (int)(180.0 * 1.0/(ENCODER_ANGLE_SCALE));
+        //printf("Encoder position: %f\n",encoder_position);
 
         *current_error_steps = encoder_angle_slope_corr_steps
                 + ENCODER_ANGLE_POLARITY * ((encoder_position) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));

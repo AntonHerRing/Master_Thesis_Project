@@ -205,10 +205,11 @@ int main()
     xLetInitLabel("Motor", sizeof(int32_t), &label_Motor, LET_COM_COPY);
     xLetInitLabel("Contr", sizeof(int32_t), &label_Contr, LET_COM_COPY);
 
-    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 2, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
-    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 3, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
-    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 4, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
-    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 5, T_Print, T_Print, 0, CORE0, &letPrintTsk);
+    //low num = low prio, High num = high prio
+    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 5, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
+    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 4, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
+    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
+    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
     
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -263,18 +264,20 @@ void vLetMotorTask_job(void) {
     static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
     /******** Main function ********/
-    motor_deg = (get_stepper_angle() - offset);
+    motor_deg = (get_stepper_angle());
     (*task_Motor) = (int32_t)motor_deg; //write any inputs
 
     desired_pos = (float)(*MotorTask_Contr / MOTOR_STEPS_PER_DEGREE);
 
     if(first_time){
         first_time = false;
-        move_stepper_by(0.5);
-        sleep_ms(30);
-        move_stepper_by(-0.5);
-        sleep_ms(30);
-        printf("First Time: %d\tOffset: %f\n", first_time, offset);
+        printf("Calibrating Motor Position...\n");
+        sleep_ms(20);
+        L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
+        move_stepper_by(1.0);
+        sleep_ms(20);
+        move_stepper_by(-1.0);
+
         if(get_stepper_angle() != 0){
             printf("Incorrect Start Position::Stepper Not at 0. Recalibrating...\n");
             move_stepper_to(0);
@@ -282,32 +285,15 @@ void vLetMotorTask_job(void) {
         else
             printf("Success! Stepper is positioned at 0\n");
         sleep_ms(10);
+
     }
-    /*else{
-        motor_deg = (get_stepper_angle() - offset);
-        Contr_sig = *MotorTask_Contr;
-
-        if((int)motor_deg >= max_pos || Contr_sig == 2)
-            l_dir = -1;
-        else if((int)motor_deg <= min_pos || Contr_sig == 3)
-            l_dir = 1;
-
-        //Contr task sends STOP signal via MotorTask_Contr when around 180 Deg
-        if (Contr_sig == 0);    //do nothing
-        else if (l_dir == 1)
-            move_stepper_by(0.2);
-        else if (l_dir == -1 )
-            move_stepper_by(-0.2);
-
-        (*task_Motor) = (int32_t)motor_deg; //write any inputs
-    }*/
     else if(abs(motor_deg) <= 270 && abs(desired_pos) <= 270){
         //L6474_GoTo(0, *MotorTask_Contr);
         move_stepper_to(desired_pos);
     }
-    else{
+    else if(abs(motor_deg) > 270 && abs(desired_pos) > 270){
         printf("Error: Control task overshoot\n");
-        move_stepper_by(0.0);
+        L6474_HardStop(0);
     }
     //printf("Go to DEG: %f\n", desired_pos);
 }
@@ -336,27 +322,7 @@ void vLetContrTask_init(void) {
     xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);    /* Register the read access for label A */    
     xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);    /* Register the read access for label B */   
 }
-/*-----------------------------------------------------------*/
 
-//void vLetContrTask_job(void) {
-    /******** Init static var ********/
-    
-
-    /******** Main function ********/
-    // mock control functions
-    // Read Rotary Encoder angle, and send STOP signal to Control Variable for the Motor
-    /*if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190)     //STOP -- ~180
-        (*task_Contr) = 0;
-    else if(*ContrTask_Enc >= 80 && *ContrTask_Enc <= 100)  //LEFT -- ~90
-        (*task_Contr) = 2;
-    else if(*ContrTask_Enc >= 250 && *ContrTask_Enc <= 280) //RIGHT -- ~270 / -90
-        (*task_Contr) = 3;
-    else
-        (*task_Contr) = 1;*/                                  //GO
-
-
-    //printf("Deg in contr: %d\r\n", *ContrTask_Enc); //Read any inputs
-//}
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
@@ -376,6 +342,7 @@ void vLetContrTask_job(void) {
 
     if(first_time){
         first_time = false;
+        printf("Initiating Control Variables...\n");
 
         fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
         Wo_t = 2 * PI * fo_t;
@@ -394,8 +361,6 @@ void vLetContrTask_job(void) {
         *current_error_steps         = 0;
         *current_error_rotor_steps   = 0;
 
-
-        //printf("First Curr Err: %f\n", *current_error_steps);
         PID_Pend.state_a[0] = 0;
         PID_Pend.state_a[1] = 0;
         PID_Pend.state_a[2] = 0;
@@ -443,10 +408,8 @@ void vLetContrTask_job(void) {
     }
         
 
-
     if (balance_on){
         
-
         encoder_position = *ContrTask_Enc;
 
         //encoder_position = encoder_position_steps - encoder_position_down - (int)(180 * angle_scale);
@@ -471,3 +434,48 @@ void vLetContrTask_job(void) {
         encoder_position = 0;
 }
 /*-----------------------------------------------------------*/
+
+
+// Scrapped functions
+//previously in Control_job
+    /*else{
+        motor_deg = (get_stepper_angle() - offset);
+        Contr_sig = *MotorTask_Contr;
+
+        if((int)motor_deg >= max_pos || Contr_sig == 2)
+            l_dir = -1;
+        else if((int)motor_deg <= min_pos || Contr_sig == 3)
+            l_dir = 1;
+
+        //Contr task sends STOP signal via MotorTask_Contr when around 180 Deg
+        if (Contr_sig == 0);    //do nothing
+        else if (l_dir == 1)
+            move_stepper_by(0.2);
+        else if (l_dir == -1 )
+            move_stepper_by(-0.2);
+
+        (*task_Motor) = (int32_t)motor_deg; //write any inputs
+    }*/
+
+    //Old Control_job
+    /*-----------------------------------------------------------*/
+
+//void vLetContrTask_job(void) {
+    /******** Init static var ********/
+    
+
+    /******** Main function ********/
+    // mock control functions
+    // Read Rotary Encoder angle, and send STOP signal to Control Variable for the Motor
+    /*if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190)     //STOP -- ~180
+        (*task_Contr) = 0;
+    else if(*ContrTask_Enc >= 80 && *ContrTask_Enc <= 100)  //LEFT -- ~90
+        (*task_Contr) = 2;
+    else if(*ContrTask_Enc >= 250 && *ContrTask_Enc <= 280) //RIGHT -- ~270 / -90
+        (*task_Contr) = 3;
+    else
+        (*task_Contr) = 1;*/                                  //GO
+
+
+    //printf("Deg in contr: %d\r\n", *ContrTask_Enc); //Read any inputs
+//}

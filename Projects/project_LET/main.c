@@ -309,7 +309,7 @@ void vLetMotorTask_job(void) {
         printf("Error: Control task overshoot\n");
         move_stepper_by(0.0);
     }
-    printf("Go to DEG: %f\n", desired_pos);
+    //printf("Go to DEG: %f\n", desired_pos);
 }
 /*-----------------------------------------------------------*/
 
@@ -369,6 +369,9 @@ void vLetContrTask_job(void) {
     static float Deriv_Filt_Rotor[2];
     static float Wo_t, fo_t, IWon_t;
 
+    static float pend_period    = T_Enc/1000.0;
+    static float motor_period   = T_Motor/1000.0;
+
     static float encoder_position_down;
 
     if(first_time){
@@ -376,13 +379,13 @@ void vLetContrTask_job(void) {
 
         fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
         Wo_t = 2 * PI * fo_t;
-        IWon_t = 2 / (Wo_t * (T_Enc));
+        IWon_t = 2 / (Wo_t * (pend_period));
         Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
         Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
 
         fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
         Wo_t = 2 * PI * fo_t;
-        IWon_t = 2 / (Wo_t * (T_Motor));
+        IWon_t = 2 / (Wo_t * (motor_period));
         Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
         Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
 
@@ -426,9 +429,9 @@ void vLetContrTask_job(void) {
 
         printf("Rotor PID ki: %f\tPend PID ki: %f\n", PID_Rotor.Ki, PID_Pend.Ki);
         printf("Curr Err: %f\n", *current_error_steps);
-        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
+        pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
 
-		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor, Deriv_Filt_Rotor);
+		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
         printf("Last Curr Err: %f\n", *current_error_steps);
     }
 
@@ -453,9 +456,9 @@ void vLetContrTask_job(void) {
         *current_error_steps = encoder_angle_slope_corr_steps
                 + ENCODER_ANGLE_POLARITY * ((encoder_position) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
 
-        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
+        pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
 
-    	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor,  Deriv_Filt_Rotor);
+    	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
 
 		//rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
         rotor_control_target_steps = PID_Pend.control_output;

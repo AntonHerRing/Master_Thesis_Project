@@ -63,18 +63,18 @@ void PID_controller(struct PID *Pid_in, float encoder_angle){
 
 	  /* Compute time derivative of error */
 	  diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
-	  //printf("PID-Kd: %f\tsample_period: %f\tPID->state_a[0]: %f\n ", PID->Kd, sample_period, PID->state_a[0]);
+	  printf("PID-Kd: %f\tsample_period: %f\tPID->state_a[0]: %f\n ", PID->Kd, sample_period, PID->state_a[0]);
 
 	  /* Compute first order low pass filter of time derivative */
 	  diff_filt = Deriv_Filt[0] * diff
 				+ Deriv_Filt[0] * PID->state_a[2]
 				- Deriv_Filt[1] * PID->state_a[3];
 
-      //printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
+      printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
 
 	  /* Accumulate PID output with Integral, Derivative and Proportional contributions*/
 
-	  //printf("int_term: %f\tdiff: %f\tdiff_filt: %f\n ", int_term, diff, diff_filt);
+	printf("int_term: %f\tdiff: %f\tdiff_filt: %f\n ", int_term, diff, diff_filt);
 
 	  PID->control_output = diff_filt + int_term + PID->Kp*(*current_error);
 

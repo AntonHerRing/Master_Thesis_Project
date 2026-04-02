@@ -27,7 +27,7 @@ endif()
 # Find the ES-Lab-Kit board files
 set(PICO_BOARD_HEADER_DIRS ${CMAKE_CURRENT_LIST_DIR}/../../boards)
 
-set(PICO_BOARD es-lab-kit-v0_2 CACHE STRING "Board type")
+set(PICO_BOARD es-lab-kit-V1A CACHE STRING "Board type")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -36,7 +36,7 @@ include(pico_sdk_import.cmake)
 set(FREERTOS_KERNEL_PATH "../../../FreeRTOS-Kernel")
 include(FreeRTOS_Kernel_import.cmake)
 
-project(project_LET C CXX ASM)
+project(PROJECT_NAME C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
@@ -49,25 +49,19 @@ message(BSP_SOURCES="${BSP_SOURCES}")
 file(GLOB TRACE_SOURCES "../../../Tools/RT_Trace/target/*.c")
 message(TRACE_SOURCES="${TRACE_SOURCES}")
 
-# Create a variable with all FreeRTOS LET source files and print the list when running CMake.
-file(GLOB LET_SOURCES "../../FreeRTOS_LET/src/*.c")
-message(LET_SOURCES="${LET_SOURCES}")
-
 # Add executable. Default name is the project name, version 0.1
-#include_directories(../../bsp ../../FreeRTOS_LET/src) # Add include files for the bsp
-include_directories(../../bsp ../../../Tools/RT_Trace/target ../../FreeRTOS_LET/src) # Add include files for the bsp
-add_executable(project_LET main.c ${BSP_SOURCES} ${TRACE_SOURCES} ${LET_SOURCES} Drivers/L16474/l6474.c Drivers/L16474/motor_rpi3b_interface.c 
-                Drivers/L16474/steppermotor.c Control/Control.c Encoder/Encoder.c)
+include_directories(../../bsp ../../../Tools/RT_Trace/target) # Add include files for the bsp
+add_executable(PROJECT_NAME main.c ${BSP_SOURCES} ${TRACE_SOURCES})
 
-pico_set_program_name(project_LET "project_LET")
-pico_set_program_version(project_LET "0.1")
+pico_set_program_name(PROJECT_NAME "PROJECT_NAME")
+pico_set_program_version(PROJECT_NAME "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(project_LET 1)
-pico_enable_stdio_usb(project_LET 0)
+pico_enable_stdio_uart(PROJECT_NAME 1)
+pico_enable_stdio_usb(PROJECT_NAME 0)
 
 # Add the standard library to the build
-target_link_libraries(project_LET
+target_link_libraries(PROJECT_NAME
         pico_stdlib
         pico_multicore
         hardware_spi
@@ -78,8 +72,8 @@ target_link_libraries(project_LET
         FreeRTOS-Kernel-Heap4)
 
 # Add the standard include files to the build
-target_include_directories(project_LET PRIVATE
+target_include_directories(PROJECT_NAME PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
-pico_add_extra_outputs(project_LET)
+pico_add_extra_outputs(PROJECT_NAME)

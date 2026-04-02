@@ -103,6 +103,8 @@ int32_t* task_Contr;      /* Pointer to the local data of label Contr by Control
 int32_t  task_Contr_data; /* Local copy of label Contr owned by LET Control task. */
 int32_t* MotorTask_Contr;      /* Pointer to the local data of label Contr by Motor task. */
 int32_t  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
+int32_t* PrintTask_Contr;      /* Pointer to the local data of label Motor by Print task. */
+int32_t  PrintTask_Contr_data; /* Local copy of label Motor owned by Print LET task. */
 
 // Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
@@ -302,16 +304,18 @@ void vLetMotorTask_job(void) {
 void vLetPrintTask_init(void) {
     PrintTask_Enc = &PrintTask_Enc_data;  /* Initialize the pointer to the local buffers */
     PrintTask_Motor = &PrintTask_Motor_data;
+    PrintTask_Contr = &PrintTask_Contr_data;
 
     xLetTaskRegisterRead(&letPrintTsk, &label_Enc, (void*) &PrintTask_Enc);    /* Register the read access for label Enc */    
     xLetTaskRegisterRead(&letPrintTsk, &label_Motor, (void*) &PrintTask_Motor);    /* Register the read access for label Motor */   
+    xLetTaskRegisterRead(&letPrintTsk, &label_Contr, (void*) &PrintTask_Contr);    /* Register the read access for label Control */  
 }
 /*-----------------------------------------------------------*/
 
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %f\tMotor Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor); //Read any inputs
+    printf("Deg: %f\tMotor Deg: %d\tTarget Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr); //Read any inputs
 }
 /*-----------------------------------------------------------*/
 

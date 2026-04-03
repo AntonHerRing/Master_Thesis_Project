@@ -7,6 +7,7 @@
 #include "semphr.h"
 #include "bsp.h"
 #include "let.h"
+#include "trace.h"
 
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
@@ -111,11 +112,11 @@ volatile int32_t count = 0;
 volatile int dir = 0;
 
 // PID variables
-struct PID Pid1;
+/*struct PID Pid1;
 struct PID *PID_Pend = &Pid1;
 
 struct PID Pid2;
-struct PID *PID_Rotor = &Pid2;
+struct PID *PID_Rotor = &Pid2;*/
 
 /**
  * @brief Initialization function of Rotary Encoder LET task.
@@ -191,8 +192,9 @@ int main()
     BSP_Init();             /* Initialize all components on the lab-kit. */
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
     init_motor();           /* Initialize the Stepper Motor*/
+    trace_init();           /* Initialize the Tracing function*/
 
-    init_pid(PID_Pend, PID_Rotor);         /* Initialize PID variables with initial values*/
+    //init_pid(PID_Pend, PID_Rotor);         /* Initialize PID variables with initial values*/
     
     if (xLetInit() == pdFALSE) {                    /* Initialize the LET module. */
         while (true);

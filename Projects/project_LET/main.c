@@ -72,6 +72,10 @@ int rotor_position_steps;
 float rotor_position_command_steps;
 float feedforward_gain;
 float encoder_position;
+float rotor_position_command_steps_pf, rotor_position_command_steps_pf_prev;
+int rotor_position_step_polarity;
+float rotor_position_command_steps_prev;
+float rotor_position_steps_prev, rotor_position_filter_steps, rotor_position_filter_steps_prev;
 
 
 //function definition
@@ -99,6 +103,8 @@ int32_t* task_Motor;      /* Pointer to the local data of label Motor by Motor t
 int32_t  task_Motor_data; /* Local copy of label Motor owned by LET Motor task. */
 int32_t* PrintTask_Motor;      /* Pointer to the local data of label Motor by Print task. */
 int32_t  PrintTask_Motor_data; /* Local copy of label Motor owned by Print LET task. */
+int32_t* ContrTask_Motor;      /* Pointer to the local data of label ENC by Control task. */
+int32_t  ContrTask_Motor_data; /* Local copy of label ENC owned by Control LET task. */
 
 int32_t* task_Contr;      /* Pointer to the local data of label Contr by Control task. */
 int32_t  task_Contr_data; /* Local copy of label Contr owned by LET Control task. */
@@ -110,6 +116,13 @@ int32_t  PrintTask_Contr_data; /* Local copy of label Motor owned by Print LET t
 // Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
 volatile int dir = 0;
+
+
+/* Low pass filter variables */
+float fo, Wo, IWon, iir_0, iir_1, iir_2;
+float fo_LT, Wo_LT, IWon_LT;
+float iir_LT_0, iir_LT_1, iir_LT_2;
+float fo_s, Wo_s, IWon_s, iir_0_s, iir_1_s, iir_2_s;
 
 // PID variables
 /*struct PID Pid1;
@@ -289,11 +302,11 @@ void vLetMotorTask_job(void) {
         else
             printf("Success! Stepper is positioned at 0\n");
         sleep_ms(10);
-
     }
     else if(abs(motor_deg) <= 270 && abs(desired_pos) <= 270){
         //L6474_GoTo(0, *MotorTask_Contr);
         move_stepper_to(desired_pos);
+        //rotor_position_command_steps_prev = *MotorTask_Contr;   //record past data
     }
     else if(abs(motor_deg) > 270 && abs(desired_pos) > 270){
         printf("Error: Control task overshoot\n");
@@ -317,16 +330,22 @@ void vLetPrintTask_init(void) {
 void vLetPrintTask_job(void) {
 
     /******** Main function ********/
-    printf("Deg: %f\tMotor Deg: %d\tTarget Deg: %d\r\n", *PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr); //Read any inputs
+    //trace_readyStart(0);
+    //trace_start();
+    printf("Deg: %f\tMotor Deg: %d\tTarget Deg: %f\r\n", *PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
+    //trace_stop();
+    //trace_readyStop(0);
 }
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_init(void) {
     task_Contr = &task_Contr_data;  /* Initialize the pointer to the local buffers */
     ContrTask_Enc = &ContrTask_Enc_data;
+    ContrTask_Motor = &ContrTask_Motor_data;
 
-    xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);    /* Register the read access for label A */    
-    xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);    /* Register the read access for label B */   
+    xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);     /* Register the read access for label Enc */    
+    xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);     /* Register the write access for label Contr */   
+    xLetTaskRegisterRead(&letContrTsk, &label_Motor, (void*) &ContrTask_Motor); /* Register the read access for label Motor */   
 }
 
 /*-----------------------------------------------------------*/
@@ -350,17 +369,37 @@ void vLetContrTask_job(void) {
         first_time = false;
         printf("Initiating Control Variables...\n");
 
-        fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
-        Wo_t = 2 * PI * fo_t;
-        IWon_t = 2 / (Wo_t * (pend_period));
+        fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
+        Wo_t    = 2 * PI * fo_t;
+        IWon_t  = 2 / (Wo_t * (pend_period));
         Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
         Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
 
-        fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
-        Wo_t = 2 * PI * fo_t;
-        IWon_t = 2 / (Wo_t * (motor_period));
+        fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
+        Wo_t    = 2 * PI * fo_t;
+        IWon_t  = 2 / (Wo_t * (motor_period));
         Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
         Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
+
+    	/* Compute Low Pass Filter Coefficients for Rotor Position filter and Encoder Angle Slope Correction */
+        fo       = LP_CORNER_FREQ_ROTOR;
+        Wo       = 2 * PI * fo;
+        IWon     = 2 / (Wo * motor_period);
+        iir_0    = 1 / (1 + IWon);
+        iir_1    = iir_0;
+        iir_2    = iir_0 * (1 - IWon);
+        fo_s     = LP_CORNER_FREQ_STEP;
+        Wo_s     = 2 * PI * fo_s;
+        IWon_s   = 2 / (Wo_s * motor_period);
+        iir_0_s  = 1 / (1 + IWon_s);
+        iir_1_s  = iir_0_s;
+        iir_2_s  = iir_0_s * (1 - IWon_s);
+        fo_LT    = LP_CORNER_FREQ_LONG_TERM;
+        Wo_LT    = 2 * PI * fo_LT;
+        IWon_LT  = 2 / (Wo_LT * motor_period);
+        iir_LT_0 = 1 / (1 + IWon_LT);
+        iir_LT_1 = iir_LT_0;
+        iir_LT_2 = iir_LT_0 * (1 - IWon_LT);
 
         current_error_steps         = malloc(sizeof(float));
         current_error_rotor_steps   = malloc(sizeof(float));
@@ -396,14 +435,25 @@ void vLetContrTask_job(void) {
         rotor_position_command_steps    = 0;
         feedforward_gain                = 1;
         encoder_position                = 0; 
+
+    	rotor_position_steps_prev        = 0;
+		rotor_position_filter_steps      = 0;
+		rotor_position_filter_steps_prev = 0;
+
+        //other extra variable inits(maybe remove later)
+
+        rotor_position_step_polarity = 1;
+        rotor_position_command_steps_prev = 0;
+        rotor_position_command_steps_pf_prev = 0;
+        rotor_position_command_steps_pf = (float) ((rotor_position_step_polarity)
+								* ROTOR_POSITION_STEP_RESPONSE_CYCLE_AMPLITUDE
+								* STEPPER_READ_POSITION_STEPS_PER_DEGREE);
+        printf("rotor pos command: %f\n", rotor_position_command_steps_pf);
+
         //encoder_position_down           = *ContrTask_Enc;
 
-        //printf("Rotor PID ki: %f\tPend PID ki: %f\n", PID_Rotor.Ki, PID_Pend.Ki);
-        //printf("Curr Err: %f\n", *current_error_steps);
         pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-
 		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
-        //printf("Last Curr Err: %f\n", *current_error_steps);
     }
 
     /******** Main function ********/
@@ -427,13 +477,25 @@ void vLetContrTask_job(void) {
 
         pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
 
+		/*rotor_position_command_steps = rotor_position_command_steps_pf * iir_0_s
+				+ rotor_position_command_steps_pf_prev * iir_1_s
+				- rotor_position_command_steps_prev * iir_2_s;
+		rotor_position_command_steps_pf_prev = rotor_position_command_steps_pf;*/
+
+        printf("rotor command step: %f\n", rotor_position_command_steps);
+        //printf("iir_0_s: %f\tiir_1_s: %f\tiir_2_s: %f\n", iir_0_s, iir_1_s, iir_2_s);
+
+        //*current_error_rotor_steps = rotor_position_filter_steps - rotor_position_command_steps;
+
     	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
 
 		//rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
         rotor_control_target_steps = PID_Pend.control_output;
+        
         printf("Target steps: %f\tDec/2: %d\n", rotor_control_target_steps, (int32_t)(rotor_control_target_steps/2));
 
         (*task_Contr) = (int32_t)(rotor_control_target_steps/2);
+        rotor_position_command_steps_prev = *MotorTask_Contr;   //record past data
         //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);
     }
     else

@@ -246,11 +246,31 @@ void vLetEncTask_init(void) {
 
 void vLetEncTask_job(void) {
     /******** Init static var ********/
+    //static bool first_time = true;
+    static int calibration_delay = 10;
 
+    static float prev_value = 0;
+    static float offset = 0;
+
+    if(calibration_delay > 1)
+        calibration_delay--;
+
+    //Calibration step
+    if((calibration_delay == 1) && (prev_value - get_encoder_steps(count)) == 0){
+        calibration_delay = 0;
+        printf("Calibrating Encoder..");
+        offset = get_encoder_steps(count);
+        printf("Offset set at: %f\n", offset);
+
+    }
     /******** Main function ********/
-
-    //(*task_Enc) = get_encoder_radian(count);
-    (*task_Enc) = get_encoder_steps(count);
+    if(calibration_delay != 0){
+        prev_value = get_encoder_steps(count);
+        printf("Test Zero: %f\n", (prev_value - get_encoder_steps(count)));
+    }
+    else 
+        (*task_Enc) = get_encoder_steps(count) - offset;
+    
 }
 /*-----------------------------------------------------------*/
 

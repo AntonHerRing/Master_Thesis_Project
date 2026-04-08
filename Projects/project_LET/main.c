@@ -357,13 +357,14 @@ void vLetPrintTask_job(void) {
     //print data
     //printf("Run Time(s): %f\tDeg: %f\tMotor Deg: %d\tTarget Deg: %f\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
 
-    printf("Run Time(s): %f", (float)run_time/1000.0);
-    printf("\t");
-    printf("Deg: %f", *PrintTask_Enc);
-    printf("\t");
-    printf("Motor Deg: %d", *PrintTask_Motor);
-    printf("\t");
-    printf("Target Deg: %f", *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE);
+    printf("Run Time(s): ");
+    printf("%f", (float)run_time/1000.0);
+    printf("\tDeg: ");
+    printf("%f", *PrintTask_Enc);
+    printf("\tMotor Deg: ");
+    printf("%d", *PrintTask_Motor);
+    printf("\tTarget Deg: ");
+    printf("%f", *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE);
     printf("\r\n");
 }
 /*-----------------------------------------------------------*/

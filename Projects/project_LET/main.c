@@ -206,6 +206,7 @@ int main()
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
     init_motor();           /* Initialize the Stepper Motor*/
     trace_init();           /* Initialize the Tracing function*/
+    
 
     //init_pid(PID_Pend, PID_Rotor);         /* Initialize PID variables with initial values*/
     
@@ -246,7 +247,6 @@ void vLetEncTask_init(void) {
 
 void vLetEncTask_job(void) {
     /******** Init static var ********/
-    //static bool first_time = true;
     static int calibration_delay = 10;
 
     static float prev_value = 0;
@@ -257,7 +257,8 @@ void vLetEncTask_job(void) {
 
     //Calibration step
     if((calibration_delay == 1) && (prev_value - get_encoder_steps(count)) == 0){
-        calibration_delay = 0;
+        if((get_encoder_steps(count) - offset) == 0)
+            calibration_delay = 0;
         printf("Calibrating Encoder..");
         offset = get_encoder_steps(count);
         printf("Offset set at: %f\n", offset);
@@ -266,7 +267,7 @@ void vLetEncTask_job(void) {
     /******** Main function ********/
     if(calibration_delay != 0){
         prev_value = get_encoder_steps(count);
-        printf("Test Zero: %f\n", (prev_value - get_encoder_steps(count)));
+        //printf("Test Zero: %f\n", (prev_value - get_encoder_steps(count)));
     }
     else 
         (*task_Enc) = get_encoder_steps(count) - offset;
@@ -324,15 +325,12 @@ void vLetMotorTask_job(void) {
         sleep_ms(10);
     }
     else if(abs(motor_deg) <= 270 && abs(desired_pos) <= 270){
-        //L6474_GoTo(0, *MotorTask_Contr);
         move_stepper_to(desired_pos);
-        //rotor_position_command_steps_prev = *MotorTask_Contr;   //record past data
     }
     else if(abs(motor_deg) > 270 && abs(desired_pos) > 270){
         printf("Error: Control task overshoot\n");
         L6474_HardStop(0);
     }
-    //printf("Go to DEG: %f\n", desired_pos);
 }
 /*-----------------------------------------------------------*/
 
@@ -348,13 +346,25 @@ void vLetPrintTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetPrintTask_job(void) {
+    /******* Init static var *******/
+    static bool first_time = true;
+    static uint32_t run_time = 0; 
+    
 
     /******** Main function ********/
-    //trace_readyStart(0);
-    //trace_start();
-    printf("Deg: %f\tMotor Deg: %d\tTarget Deg: %f\r\n", *PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
-    //trace_stop();
-    //trace_readyStop(0);
+    run_time += T_Print;
+
+    //print data
+    //printf("Run Time(s): %f\tDeg: %f\tMotor Deg: %d\tTarget Deg: %f\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
+
+    printf("Run Time(s): %f", (float)run_time/1000.0);
+    printf("\t");
+    printf("Deg: %f", *PrintTask_Enc);
+    printf("\t");
+    printf("Motor Deg: %d", *PrintTask_Motor);
+    printf("\t");
+    printf("Target Deg: %f", *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE);
+    printf("\r\n");
 }
 /*-----------------------------------------------------------*/
 

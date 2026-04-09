@@ -12,6 +12,8 @@ ser = serial.Serial(
     baudrate=115200
 )
 
+delay = 10
+
 Enc_plot = [0]
 Run_time_plot = [0]
 
@@ -39,24 +41,20 @@ while(True):
     Enc_plot.append((float(Encoder))/6.66667)
     Run_time_plot.append(float(Run_Time))
 
-    print((float(Encoder))/6.66667)
+    #print((float(Encoder))/6.66667)
 
-    #replace old frame
-    graph.remove()
+    #replace old frame every second
+    if delay == 0:
+        delay = 10
+        graph.remove()
     
-    graph = plt.plot(Run_time_plot, Enc_plot, color = 'g')[0]
-    plt.xlim(Run_time_plot[0], Run_time_plot[-1])
+        graph = plt.plot(Run_time_plot, Enc_plot, color = 'g')[0]
+        plt.xlim(Run_time_plot[0], Run_time_plot[-1])
     
-    # short pause
-    plt.pause(0.25)
+        # short pause
+        plt.pause(0.25)
 
-
-
-    #xpoints = np.array([1, 8])
-    #ypoints = np.array([3, 10])
-
-    #plt.plot(Enc_plot, Run_time)
-    #plt.show()
+    delay -= 1
 
     print(StringValue)
 

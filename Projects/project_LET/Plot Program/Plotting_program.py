@@ -13,7 +13,6 @@ ser = serial.Serial(
 )
 
 delay = 20
-
 rotations = 0
 
 Enc_plot        = [0]
@@ -21,6 +20,7 @@ Motor_plot      = [0]
 Contr_plot      = [0]
 Run_time_plot   = [0]
 
+# create initial plot
 fig, graph = plt.subplots(2, 2, figsize=(12, 5))
 fig.suptitle('Control System Monitoring')
 graph[0, 0].plot(Run_time_plot, Enc_plot, 'tab:green')
@@ -30,6 +30,7 @@ graph[0, 1].set_title('Motor Degree')
 graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
 graph[1, 0].set_title('Target Degree')
 
+# set plot labels
 for plot in graph.flat:
     plot.set(xlabel='time(s)', ylabel='Degree')
 
@@ -38,7 +39,6 @@ for plot in graph.flat:
 
 plt.ylim(-360,360)
 plt.pause(1)
-
 
 while(True):
     value = ser.readline()
@@ -61,7 +61,6 @@ while(True):
                 rotations -= 1
             elif ((float(Encoder))/6.66667) >= 360:
                 rotations += 1
-            print("Rotations: ", rotations)
 
             #append values to plots
             Enc_plot.append(360*rotations - ((float(Encoder))/6.66667))
@@ -73,7 +72,8 @@ while(True):
             if delay == 0:
                 delay = 20
                 #fig.delaxes(graph[0, 0])
-            
+
+                #Dynamically update the plots
                 graph[0, 0].plot(Run_time_plot, Enc_plot, 'tab:green')
                 graph[0, 0].set_title('Encoder Degree')
                 graph[0, 1].plot(Run_time_plot, Motor_plot, 'tab:orange')
@@ -81,6 +81,7 @@ while(True):
                 graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
                 graph[1, 0].set_title('Target Degree')  
 
+                # set plot labels
                 for plot in graph.flat:
                     plot.set(xlabel='time(s)', ylabel='Degree')
 
@@ -94,7 +95,7 @@ while(True):
 
             delay -= 1
         else:
-            print("Invalid String Input")
+            print("Error! Invalid String Input! Expected '42' but got'", extracted,"'")
 
 ser.close()
 

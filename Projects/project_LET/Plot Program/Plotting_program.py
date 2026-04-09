@@ -16,12 +16,26 @@ delay = 20
 
 rotations = 0
 
-Enc_plot = [0]
-Motor_plot = [0]
-Contr_plot = [0]
-Run_time_plot = [0]
+Enc_plot        = [0]
+Motor_plot      = [0]
+Contr_plot      = [0]
+Run_time_plot   = [0]
 
-graph = plt.plot(Run_time_plot, Enc_plot, color = 'g')[0]
+fig, graph = plt.subplots(2, 2, figsize=(12, 5))
+fig.suptitle('Control System Monitoring')
+graph[0, 0].plot(Run_time_plot, Enc_plot, 'tab:green')
+graph[0, 0].set_title('Encoder Degree')
+graph[0, 1].plot(Run_time_plot, Motor_plot, 'tab:orange')
+graph[0, 1].set_title('Motor Degree')
+graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
+graph[1, 0].set_title('Target Degree')
+
+for plot in graph.flat:
+    plot.set(xlabel='time(s)', ylabel='Degree')
+
+for plot in graph.flat:
+    plot.label_outer()
+
 plt.ylim(-360,360)
 plt.pause(1)
 
@@ -53,13 +67,26 @@ while(True):
             Enc_plot.append(360*rotations - ((float(Encoder))/6.66667))
             Run_time_plot.append(float(Run_Time))
             Motor_plot.append(float(Motor))
+            Contr_plot.append((float(Control)/8.88889)%360)
 
             #replace old frame every 2 seconds
             if delay == 0:
                 delay = 20
-                graph.remove()
+                #fig.delaxes(graph[0, 0])
             
-                graph = plt.plot(Run_time_plot, Enc_plot, color = 'g')[0]
+                graph[0, 0].plot(Run_time_plot, Enc_plot, 'tab:green')
+                graph[0, 0].set_title('Encoder Degree')
+                graph[0, 1].plot(Run_time_plot, Motor_plot, 'tab:orange')
+                graph[0, 1].set_title('Motor Degree')
+                graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
+                graph[1, 0].set_title('Target Degree')  
+
+                for plot in graph.flat:
+                    plot.set(xlabel='time(s)', ylabel='Degree')
+
+                for plot in graph.flat:
+                    plot.label_outer()     
+
                 plt.xlim(Run_time_plot[0], Run_time_plot[-1])
             
                 # short pause

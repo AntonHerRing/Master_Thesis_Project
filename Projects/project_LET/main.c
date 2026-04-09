@@ -355,9 +355,9 @@ void vLetPrintTask_job(void) {
     run_time += T_Print;
 
     //print data
-    //printf("Run Time(s): %f\tDeg: %f\tMotor Deg: %d\tTarget Deg: %f\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
-
-    printf("Run Time(s): ");
+    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %d\tTarget Deg: %f\tEnd\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
+    // #-42-# == tag for python program
+    /*printf("#-42-#: Run Time(s): ");
     printf("%f", (float)run_time/1000.0);
     printf("\tDeg: ");
     printf("%f", *PrintTask_Enc);
@@ -365,7 +365,7 @@ void vLetPrintTask_job(void) {
     printf("%d", *PrintTask_Motor);
     printf("\tTarget Deg: ");
     printf("%f", *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE);
-    printf("\r\n");
+    printf("\tEnd\r\n");*/
 }
 /*-----------------------------------------------------------*/
 

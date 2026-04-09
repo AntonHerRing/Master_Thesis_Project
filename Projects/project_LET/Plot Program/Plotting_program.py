@@ -12,51 +12,62 @@ ser = serial.Serial(
     baudrate=115200
 )
 
-delay = 10
+delay = 20
+
+rotations = 0
 
 Enc_plot = [0]
+Motor_plot = [0]
+Contr_plot = [0]
 Run_time_plot = [0]
 
 graph = plt.plot(Run_time_plot, Enc_plot, color = 'g')[0]
 plt.ylim(-360,360)
 plt.pause(1)
 
-'''
-def update(frame):
-    global graph
-
-    # creating a new graph or updating the graph
-    graph.set_xdata(Run_time_plot)
-    graph.set_ydata(Enc_plot)
-    plt.xlim(Run_time_plot[0], Run_time_plot[-1])
-'''
 
 while(True):
     value = ser.readline()
     StringValue = str(value,'UTF-8')
 
-    Run_Time = StringValue.split("Run Time(s): ")[1].split("Deg:")[0].replace(" ", "")
-    Encoder = StringValue.split("Deg: ")[1].split("Motor")[0].replace(" ", "")
+    #Only parse the values for plotting if valid ID
+    if "#-" in StringValue and "-#" in StringValue:
+        extracted = StringValue.split("#-")[1].split("-#")[0]
+        if extracted == "42":
+            print(StringValue)
 
-    Enc_plot.append((float(Encoder))/6.66667)
-    Run_time_plot.append(float(Run_Time))
+            #parse values from print
+            Run_Time = StringValue.split("Run Time(s): ")[1].split("Deg:")[0].replace(" ", "")
+            Encoder = StringValue.split("Deg: ")[1].split("Motor")[0].replace(" ", "")
+            Motor = StringValue.split("Motor Deg: ")[1].split("Target")[0].replace(" ", "")
+            Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
 
-    #print((float(Encoder))/6.66667)
+            # Keep rotation within 360 degrees
+            if ((float(Encoder))/6.66667) <= -360:
+                rotations -= 1
+            elif ((float(Encoder))/6.66667) >= 360:
+                rotations += 1
+            print("Rotations: ", rotations)
 
-    #replace old frame every second
-    if delay == 0:
-        delay = 10
-        graph.remove()
-    
-        graph = plt.plot(Run_time_plot, Enc_plot, color = 'g')[0]
-        plt.xlim(Run_time_plot[0], Run_time_plot[-1])
-    
-        # short pause
-        plt.pause(0.25)
+            #append values to plots
+            Enc_plot.append(360*rotations - ((float(Encoder))/6.66667))
+            Run_time_plot.append(float(Run_Time))
+            Motor_plot.append(float(Motor))
 
-    delay -= 1
+            #replace old frame every 2 seconds
+            if delay == 0:
+                delay = 20
+                graph.remove()
+            
+                graph = plt.plot(Run_time_plot, Enc_plot, color = 'g')[0]
+                plt.xlim(Run_time_plot[0], Run_time_plot[-1])
+            
+                # short pause
+                plt.pause(0.25)
 
-    print(StringValue)
+            delay -= 1
+        else:
+            print("Invalid String Input")
 
 ser.close()
 

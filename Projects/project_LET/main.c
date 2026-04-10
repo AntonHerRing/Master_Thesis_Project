@@ -99,19 +99,19 @@ float  PrintTask_Enc_data; /* Local copy of label Enc owned by Print LET task. *
 float* ContrTask_Enc;      /* Pointer to the local data of label ENC by Control task. */
 float  ContrTask_Enc_data; /* Local copy of label ENC owned by Control LET task. */
 
-int32_t* task_Motor;      /* Pointer to the local data of label Motor by Motor task. */
-int32_t  task_Motor_data; /* Local copy of label Motor owned by LET Motor task. */
-int32_t* PrintTask_Motor;      /* Pointer to the local data of label Motor by Print task. */
-int32_t  PrintTask_Motor_data; /* Local copy of label Motor owned by Print LET task. */
-int32_t* ContrTask_Motor;      /* Pointer to the local data of label ENC by Control task. */
-int32_t  ContrTask_Motor_data; /* Local copy of label ENC owned by Control LET task. */
+float* task_Motor;      /* Pointer to the local data of label Motor by Motor task. */
+float  task_Motor_data; /* Local copy of label Motor owned by LET Motor task. */
+float* PrintTask_Motor;      /* Pointer to the local data of label Motor by Print task. */
+float  PrintTask_Motor_data; /* Local copy of label Motor owned by Print LET task. */
+float* ContrTask_Motor;      /* Pointer to the local data of label ENC by Control task. */
+float  ContrTask_Motor_data; /* Local copy of label ENC owned by Control LET task. */
 
-int32_t* task_Contr;      /* Pointer to the local data of label Contr by Control task. */
-int32_t  task_Contr_data; /* Local copy of label Contr owned by LET Control task. */
-int32_t* MotorTask_Contr;      /* Pointer to the local data of label Contr by Motor task. */
-int32_t  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
-int32_t* PrintTask_Contr;      /* Pointer to the local data of label Motor by Print task. */
-int32_t  PrintTask_Contr_data; /* Local copy of label Motor owned by Print LET task. */
+float* task_Contr;      /* Pointer to the local data of label Contr by Control task. */
+float  task_Contr_data; /* Local copy of label Contr owned by LET Control task. */
+float* MotorTask_Contr;      /* Pointer to the local data of label Contr by Motor task. */
+float  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
+float* PrintTask_Contr;      /* Pointer to the local data of label Motor by Print task. */
+float  PrintTask_Contr_data; /* Local copy of label Motor owned by Print LET task. */
 
 // Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
@@ -235,8 +235,8 @@ int main()
 
     /* Create a label and LET tasks that read/write from it. */
     xLetInitLabel("Enc", sizeof(float), &label_Enc, LET_COM_COPY);
-    xLetInitLabel("Motor", sizeof(int32_t), &label_Motor, LET_COM_COPY);
-    xLetInitLabel("Contr", sizeof(int32_t), &label_Contr, LET_COM_COPY);
+    xLetInitLabel("Motor", sizeof(float), &label_Motor, LET_COM_COPY);
+    xLetInitLabel("Contr", sizeof(float), &label_Contr, LET_COM_COPY);
 
     //low num = low prio, High num = high prio
     xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 5, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
@@ -268,7 +268,7 @@ void vLetEncTask_job(void) {
     static float prev_value = 0;
     static float offset = 0;
 
-    if(calibration_delay > 1)
+    /*if(calibration_delay > 1)
         calibration_delay--;
 
     //Calibration step
@@ -279,14 +279,14 @@ void vLetEncTask_job(void) {
         offset = get_encoder_steps(count);
         //printf("Offset set at: %f\n", offset);
 
-    }
+    }*/
     /******** Main function ********/
-    if(calibration_delay != 0){
+    /*if(calibration_delay != 0){
         prev_value = get_encoder_steps(count);
         //printf("Test Zero: %f\n", (prev_value - get_encoder_steps(count)));
     }
-    else 
-        (*task_Enc) = get_encoder_steps(count) - offset;
+    else*/
+        (*task_Enc) = get_encoder_angle_alt(count);
     
 }
 /*-----------------------------------------------------------*/
@@ -326,9 +326,10 @@ void vLetMotorTask_job(void) {
 
     /******** Main function ********/
     motor_deg = get_stepper_angle();
-    (*task_Motor) = (int32_t)motor_deg; //write any inputs
+    (*task_Motor) = motor_deg; //write any inputs
 
-    desired_pos = (float)(*MotorTask_Contr / MOTOR_STEPS_PER_DEGREE);
+    //desired_pos = *MotorTask_Contr / MOTOR_STEPS_PER_DEGREE;
+    desired_pos = *MotorTask_Contr;
 
     if(abs(motor_deg) <= 270 && abs(desired_pos) <= 270){
         move_stepper_to(desired_pos);
@@ -360,7 +361,7 @@ void vLetPrintTask_job(void) {
     run_time += T_Print;
 
     //print data
-    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %d\tTarget Deg: %f\tEnd\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
+    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
     // #-42-# == tag for python program
     /*printf("#-42-#: Run Time(s): ");
     printf("%f", (float)run_time/1000.0);
@@ -475,8 +476,11 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
+    static float Pend_target = 180;
+    static float Motor_target = 0;
+
     /******** Main function ********/
-    if (abs(*ContrTask_Enc) >= 1100 && abs(*ContrTask_Enc) <= 1300 && balance_on == false){
+    if (abs(*ContrTask_Enc) >= 170 && abs(*ContrTask_Enc) <= 190 && balance_on == false){
         balance_on = true;
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
@@ -486,11 +490,12 @@ void vLetContrTask_job(void) {
         encoder_position = *ContrTask_Enc;
 
         //encoder_position = encoder_position_steps - encoder_position_down - (int)(180 * angle_scale);
-        encoder_position -= (int)(180.0 * 1.0/(ENCODER_ANGLE_SCALE));
+        //encoder_position -= (int)(180.0 * 1.0/(ENCODER_ANGLE_SCALE));
         //printf("Encoder position: %f\n",encoder_position);
 
-        *current_error_steps = encoder_angle_slope_corr_steps
-                + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
+        //*current_error_steps = encoder_angle_slope_corr_steps
+        //        + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
+        *current_error_steps = Pend_target  - encoder_position; 
 
         pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
 
@@ -499,24 +504,25 @@ void vLetContrTask_job(void) {
 				- rotor_position_command_steps_prev * iir_2_s;
 		rotor_position_command_steps_pf_prev = rotor_position_command_steps_pf;*/
 
-        printf("rotor command step: %f\n", rotor_position_command_steps);
+        //printf("rotor command step: %f\n", rotor_position_command_steps);
         //printf("iir_0_s: %f\tiir_1_s: %f\tiir_2_s: %f\n", iir_0_s, iir_1_s, iir_2_s);
 
         //*current_error_rotor_steps = rotor_position_filter_steps - rotor_position_command_steps;
+        *current_error_rotor_steps = Motor_target - *ContrTask_Motor;
+    	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
 
-    	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
-
-		//rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
-        rotor_control_target_steps = PID_Pend.control_output;
+		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
+        //rotor_control_target_steps = PID_Pend.control_output;
         
-        printf("Target steps: %f\tDec/2: %d\n", rotor_control_target_steps, (int32_t)(rotor_control_target_steps/2));
+        //printf("Target steps: %f\tDec/2: %d\n", rotor_control_target_steps, (int32_t)(rotor_control_target_steps/2));
 
-        (*task_Contr) = (int32_t)(rotor_control_target_steps/2);
-        rotor_position_command_steps_prev = *MotorTask_Contr;   //record past data
+        //(*task_Contr) = (int32_t)(rotor_control_target_steps/2);
+        (*task_Contr) = rotor_control_target_steps;
+        //rotor_position_command_steps_prev = *MotorTask_Contr;   //record past data
         //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);
     }
     else
-        encoder_position = 0;
+        (*task_Contr) = 0;
 }
 /*-----------------------------------------------------------*/
 

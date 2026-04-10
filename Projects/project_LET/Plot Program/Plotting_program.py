@@ -3,16 +3,16 @@ from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import numpy as np
 import time
+from datetime import datetime
 
 #pip install [module]
 
 plt.ion()
 
-
 # Ping COM9 to see if available
 while True:
     try:
-        ser = serial.Serial(port='/COM9', baudrate=115200)
+        ser = serial.Serial(port='/COM9', baudrate=115200) #/COM9
         break
     except serial.serialutil.SerialException:
         print("No Connection found") 
@@ -20,6 +20,12 @@ while True:
 
 print("Connected to COM9")
 
+# Generate file for logging with date and time
+CurrDateTime = str(datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
+fileName = filePath + "log-" + CurrDateTime + ".txt"
+#print(fileName)
+file = open(fileName, 'w')
 
 delay = 20
 rotations = 0
@@ -77,6 +83,14 @@ while(True):
             Motor_plot.append(float(Motor))
             Contr_plot.append((float(Control)/8.88889)%360)
 
+            # Logg data in the file
+            #file = open(fileName, 'a')
+            with open(fileName, 'a') as log_file:
+                print("#StartRunTime#" + float(Run_Time) + "#EndRunTime#", file=log_file)
+                print("#StartEnc#" + 360*rotations - ((float(Encoder))/6.66667) + "#EndEnc#", file=log_file)
+                print("#StartMotor#" + float(Motor) + "#EndMotor#", file=log_file)
+                print("#StartConr#" + (float(Control)/8.88889)%360 + "#EndContr#", file=log_file)
+
             #replace old frame every 2 seconds
             if delay == 0:
                 delay = 20
@@ -107,4 +121,4 @@ while(True):
             print("Error! Invalid String Input! Expected '42' but got'", extracted,"'")
 
 ser.close()
-
+file.close()

@@ -217,7 +217,7 @@ void gpio_callback(uint gpio, uint32_t events) {
 int main()
 {
     BSP_Init();             /* Initialize all components on the lab-kit. */
-    sleep_ms(5000);
+    sleep_ms(1000);
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
     init_motor();           /* Initialize the Stepper Motor*/
     trace_init();           /* Initialize the Tracing function*/
@@ -322,10 +322,10 @@ void vLetMotorTask_job(void) {
     static float motor_deg = 0.0;
     static float desired_pos = 0.0;
 
-    static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
+    //static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
     /******** Main function ********/
-    motor_deg = (get_stepper_angle());
+    motor_deg = get_stepper_angle();
     (*task_Motor) = (int32_t)motor_deg; //write any inputs
 
     desired_pos = (float)(*MotorTask_Contr / MOTOR_STEPS_PER_DEGREE);
@@ -334,7 +334,7 @@ void vLetMotorTask_job(void) {
         move_stepper_to(desired_pos);
     }
     else if(abs(motor_deg) > 270 || abs(desired_pos) > 270){
-        printf("Error: Control task overshoot\n");
+        //printf("Error: Control task overshoot\n");
         L6474_HardStop(0);
     }
 }
@@ -475,105 +475,11 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
-
-    /*if(first_time){
-        first_time = false;
-        printf("Initiating Control Variables...\n");
-
-        fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
-        Wo_t    = 2 * PI * fo_t;
-        IWon_t  = 2 / (Wo_t * (pend_period));
-        Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
-        Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
-
-        fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
-        Wo_t    = 2 * PI * fo_t;
-        IWon_t  = 2 / (Wo_t * (motor_period));
-        Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
-        Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
-
-    	// Compute Low Pass Filter Coefficients for Rotor Position filter and Encoder Angle Slope Correction 
-        fo       = LP_CORNER_FREQ_ROTOR;
-        Wo       = 2 * PI * fo;
-        IWon     = 2 / (Wo * motor_period);
-        iir_0    = 1 / (1 + IWon);
-        iir_1    = iir_0;
-        iir_2    = iir_0 * (1 - IWon);
-        fo_s     = LP_CORNER_FREQ_STEP;
-        Wo_s     = 2 * PI * fo_s;
-        IWon_s   = 2 / (Wo_s * motor_period);
-        iir_0_s  = 1 / (1 + IWon_s);
-        iir_1_s  = iir_0_s;
-        iir_2_s  = iir_0_s * (1 - IWon_s);
-        fo_LT    = LP_CORNER_FREQ_LONG_TERM;
-        Wo_LT    = 2 * PI * fo_LT;
-        IWon_LT  = 2 / (Wo_LT * motor_period);
-        iir_LT_0 = 1 / (1 + IWon_LT);
-        iir_LT_1 = iir_LT_0;
-        iir_LT_2 = iir_LT_0 * (1 - IWon_LT);
-
-        current_error_steps         = malloc(sizeof(float));
-        current_error_rotor_steps   = malloc(sizeof(float));
-        *current_error_steps         = 0;
-        *current_error_rotor_steps   = 0;
-
-        PID_Pend.state_a[0] = 0;
-        PID_Pend.state_a[1] = 0;
-        PID_Pend.state_a[2] = 0;
-        PID_Pend.state_a[3] = 0;
-        PID_Pend.int_term   = 0;
-        PID_Pend.control_output = 0;
-
-        PID_Rotor.state_a[0]    = 0;
-        PID_Rotor.state_a[1]    = 0;
-        PID_Rotor.state_a[2]    = 0;
-        PID_Rotor.state_a[3]    = 0;
-        PID_Rotor.int_term      = 0;
-        PID_Rotor.control_output = 0;
-
-        PID_Pend.Kp = PRIMARY_PROPORTIONAL_MODE_1;
-        PID_Pend.Ki = PRIMARY_INTEGRAL_MODE_1;
-        PID_Pend.Kd = PRIMARY_DERIVATIVE_MODE_1;
-
-        PID_Rotor.Kp = SECONDARY_PROPORTIONAL_MODE_1;
-        PID_Rotor.Ki = SECONDARY_INTEGRAL_MODE_1;
-        PID_Rotor.Kd = SECONDARY_DERIVATIVE_MODE_1;
-
-        encoder_angle_slope_corr_steps  = 0;
-        pendulum_position_command_steps = 0;
-        rotor_control_target_steps      = 0;
-        rotor_position_steps            = 0;
-        rotor_position_command_steps    = 0;
-        feedforward_gain                = 1;
-        encoder_position                = 0; 
-
-    	rotor_position_steps_prev        = 0;
-		rotor_position_filter_steps      = 0;
-		rotor_position_filter_steps_prev = 0;
-
-        //other extra variable inits(maybe remove later)
-
-        rotor_position_step_polarity = 1;
-        rotor_position_command_steps_prev = 0;
-        rotor_position_command_steps_pf_prev = 0;
-        rotor_position_command_steps_pf = (float) ((rotor_position_step_polarity)
-								* ROTOR_POSITION_STEP_RESPONSE_CYCLE_AMPLITUDE
-								* STEPPER_READ_POSITION_STEPS_PER_DEGREE);
-        printf("rotor pos command: %f\n", rotor_position_command_steps_pf);
-
-        //encoder_position_down           = *ContrTask_Enc;
-
-        pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
-    }*/
-
     /******** Main function ********/
-    //if (abs(*ContrTask_Enc) >= (PI - 0.2) && abs(*ContrTask_Enc) <= (PI + 0.2))
     if (abs(*ContrTask_Enc) >= 1100 && abs(*ContrTask_Enc) <= 1300 && balance_on == false){
         balance_on = true;
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
-        
 
     if (balance_on){
         

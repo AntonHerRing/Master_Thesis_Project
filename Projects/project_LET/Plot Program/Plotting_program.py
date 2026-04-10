@@ -2,22 +2,24 @@ import serial
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 #pip install [module]
 
 plt.ion()
 
-'''
-ser = serial.Serial(
-    port='/COM8',
-    baudrate=115200
-)
-'''
 
-ser = serial.Serial(
-    port='/COM9',
-    baudrate=115200
-)
+# Ping COM9 to see if available
+while True:
+    try:
+        ser = serial.Serial(port='/COM9', baudrate=115200)
+        break
+    except serial.serialutil.SerialException:
+        print("No Connection found") 
+    time.sleep(1)
+
+print("Connected to COM9")
+
 
 delay = 20
 rotations = 0

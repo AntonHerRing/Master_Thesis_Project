@@ -29,6 +29,8 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+# include "Trace.h"
+
 /*-----------------------------------------------------------
  * Application specific definitions.
  *

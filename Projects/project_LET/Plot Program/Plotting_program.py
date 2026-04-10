@@ -7,8 +7,15 @@ import numpy as np
 
 plt.ion()
 
+'''
 ser = serial.Serial(
     port='/COM8',
+    baudrate=115200
+)
+'''
+
+ser = serial.Serial(
+    port='/COM9',
     baudrate=115200
 )
 

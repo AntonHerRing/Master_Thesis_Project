@@ -15,9 +15,6 @@ plt.ion()
 # Innit Variables
 filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
 
-delay = 20
-rotations = 0
-
 Enc_plot        = [0]
 Motor_plot      = [0]
 Contr_plot      = [0]
@@ -61,8 +58,11 @@ def Record_Graph():
         plot.label_outer()
 
     plt.ylim(-360,360)
-    plt.show(block=True)
+    #plt.show(block=True)
     plt.pause(1)
+
+    delay = 20
+    rotations = 0
 
     while(True):
         value = ser.readline()
@@ -95,10 +95,10 @@ def Record_Graph():
                 # Logg data in the file
                 #file = open(fileName, 'a')
                 with open(fileName, 'a') as log_file:
-                    print("#StartRunTime#" + float(Run_Time) + "#EndRunTime#", file=log_file)
-                    print("#StartEnc#" + 360*rotations - ((float(Encoder))/6.66667) + "#EndEnc#", file=log_file)
-                    print("#StartMotor#" + float(Motor) + "#EndMotor#", file=log_file)
-                    print("#StartContr#" + (float(Control)/8.88889)%360 + "#EndContr#", file=log_file)
+                    print("#StartRunTime#" + Run_Time + "#EndRunTime#", file=log_file)
+                    print("#StartEnc#" + str(360*rotations - ((float(Encoder))/6.66667)) + "#EndEnc#", file=log_file)
+                    print("#StartMotor#" + Motor + "#EndMotor#", file=log_file)
+                    print("#StartContr#" + str((float(Control)/8.88889)%360) + "#EndContr#", file=log_file)
 
                 #replace old frame every 2 seconds
                 if delay == 0:
@@ -112,7 +112,7 @@ def Record_Graph():
                     graph[0, 1].set_title('Motor Degree')
                     graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
                     graph[1, 0].set_title('Target Degree')
-                    fig.delaxes(graph[1, 1])
+                    #fig.delaxes(graph[1, 1])
 
                     # set plot labels
                     for plot in graph.flat:
@@ -122,7 +122,7 @@ def Record_Graph():
                         plot.label_outer()     
 
                     plt.xlim(Run_time_plot[0], Run_time_plot[-1])
-                    plt.show(block=True)
+                    #plt.show(block=True)
                     # short pause
                     plt.pause(0.25)
 

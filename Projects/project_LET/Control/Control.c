@@ -71,7 +71,7 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float * current_err
 		int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
 	}
 	//printf("PID-Ki: %f\tsample_period: %f\tPID->state_a: %f\n ", PID->Ki, sample_period, PID->state_a[0]);
-	//printf("Current Error: %f\n ", (*current_error));
+	printf("Current Error: %f\n ", (*current_error));
 
 	/* Compute time derivative of error */
 	//diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);

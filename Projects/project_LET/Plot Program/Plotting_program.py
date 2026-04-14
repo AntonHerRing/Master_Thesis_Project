@@ -67,12 +67,13 @@ def Record_Graph():
     while(True):
         value = ser.readline()
         StringValue = str(value,'UTF-8')
+        print(StringValue)
 
         #Only parse the values for plotting if valid ID
         if "#-" in StringValue and "-#" in StringValue:
             extracted = StringValue.split("#-")[1].split("-#")[0]
             if extracted == "42":
-                print(StringValue)
+                #print(StringValue)
 
                 #parse values from print
                 Run_Time = StringValue.split("Run Time(s): ")[1].split("Deg:")[0].replace(" ", "")
@@ -81,24 +82,25 @@ def Record_Graph():
                 Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
 
                 # Keep rotation within 360 degrees
-                if ((float(Encoder))/6.66667) <= -360:
+                if (float(Encoder)) <= -360:
                     rotations -= 1
-                elif ((float(Encoder))/6.66667) >= 360:
+                elif (float(Encoder)) >= 360:
                     rotations += 1
 
                 #append values to plots
-                Enc_plot.append(360*rotations - ((float(Encoder))/6.66667))
+                Enc_plot.append(float(Encoder))
                 Run_time_plot.append(float(Run_Time))
                 Motor_plot.append(float(Motor))
-                Contr_plot.append((float(Control)/8.88889)%360)
+                Contr_plot.append(float(Control))
 
                 # Logg data in the file
                 #file = open(fileName, 'a')
                 with open(fileName, 'a') as log_file:
                     print("#StartRunTime#" + Run_Time + "#EndRunTime#", file=log_file)
-                    print("#StartEnc#" + str(360*rotations - ((float(Encoder))/6.66667)) + "#EndEnc#", file=log_file)
+                    print("#StartEnc#" + str(Encoder) + "#EndEnc#", file=log_file)
                     print("#StartMotor#" + Motor + "#EndMotor#", file=log_file)
-                    print("#StartContr#" + str((float(Control)/8.88889)%360) + "#EndContr#", file=log_file)
+                    #print("#StartContr#" + str((float(Control)/8.88889)%360) + "#EndContr#", file=log_file)
+                    print("#StartContr#" + str(Control) + "#EndContr#", file=log_file)
 
                 #replace old frame every 2 seconds
                 if delay == 0:

@@ -286,7 +286,7 @@ void vLetEncTask_job(void) {
         //printf("Test Zero: %f\n", (prev_value - get_encoder_steps(count)));
     }
     else*/
-        (*task_Enc) = get_encoder_angle_alt(count);
+        (*task_Enc) = get_encoder_angle_continous(count);
     
 }
 /*-----------------------------------------------------------*/
@@ -331,12 +331,15 @@ void vLetMotorTask_job(void) {
     //desired_pos = *MotorTask_Contr / MOTOR_STEPS_PER_DEGREE;
     desired_pos = *MotorTask_Contr;
 
-    if(abs(motor_deg) <= 270 && abs(desired_pos) <= 270){
+    if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
         move_stepper_to(desired_pos);
+        //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
     }
-    else if(abs(motor_deg) > 270 || abs(desired_pos) > 270){
-        //printf("Error: Control task overshoot\n");
-        L6474_HardStop(0);
+    else if(abs(motor_deg) >= 180 || abs(desired_pos) >= 180){
+        printf("Error: Control task overshoot\n");
+        //L6474_HardStop(0);
+
+        //Do Nothing
     }
 }
 /*-----------------------------------------------------------*/
@@ -361,7 +364,7 @@ void vLetPrintTask_job(void) {
     run_time += T_Print;
 
     //print data
-    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr/STEPPER_READ_POSITION_STEPS_PER_DEGREE); //Read any inputs
+    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr); //Read any inputs
     // #-42-# == tag for python program
     /*printf("#-42-#: Run Time(s): ");
     printf("%f", (float)run_time/1000.0);

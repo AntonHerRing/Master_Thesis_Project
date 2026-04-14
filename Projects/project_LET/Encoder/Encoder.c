@@ -53,6 +53,12 @@ float get_encoder_angle_alt(int local_count){
     
     return deg;
 }
+//full continuity
+float get_encoder_angle_continous(int local_count){
+    float deg = (float)local_count * ENCODER_ANGLE_SCALE;
+    
+    return deg;
+}
 
 float get_encoder_steps(int local_count){
     return  local_count % ENCODER_SPR;

@@ -50,7 +50,7 @@ GPIO12::    MISO
 #define T_Enc   2
 #define T_Motor 2
 #define T_Contr 2
-#define T_Print 50
+#define T_Print 50  //50
 
 /*
 This configuration was unstable,
@@ -330,10 +330,11 @@ void vLetMotorTask_job(void) {
 
     //desired_pos = *MotorTask_Contr / MOTOR_STEPS_PER_DEGREE;
     desired_pos = *MotorTask_Contr;
+    //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
 
     if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
         move_stepper_to(desired_pos);
-        //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
+        
     }
     else if(abs(motor_deg) >= 180 || abs(desired_pos) >= 180){
         printf("Error: Control task overshoot\n");

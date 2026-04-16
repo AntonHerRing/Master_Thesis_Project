@@ -8,6 +8,8 @@ from datetime import datetime
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
+import tkinter as tk
+
 #pip install [module]
 
 plt.ion()
@@ -19,6 +21,9 @@ Enc_plot        = [0]
 Motor_plot      = [0]
 Contr_plot      = [0]
 Run_time_plot   = [0]
+
+#button choice when starting
+State_input = 0
 
 # Function handling live recording of variables
 def Record_Graph():
@@ -196,17 +201,40 @@ def load_log(logname):
         plt.pause(1)
         while True: pass
 
+# Window pop up for choice selection
+def open_window():
+    window = tk.Tk()
+    window.title("Plotting Options:")
+
+    #nested button function
+    def read_button(choice):
+        global State_input
+        State_input = choice
+
+        print(State_input)
+        window.destroy()
+
+    #button1 = tk.Button(window, text="(1))", width=25, command=window.destroy)
+    button1 = tk.Button(window, text="Record Graph", width=25, command=lambda: read_button(1))
+    button2 = tk.Button(window, text="Load Graph", width=25, command=lambda: read_button(2))
+    button1.pack()
+    button2.pack()
+
+    window.mainloop()
+
+
 #Input to change state
-State_input = int(input("(1): Record Graph\t(2): Load Graph\n"))
+#State_input = int(input("(1): Record Graph\t(2): Load Graph\n"))
 
 # Main function loop
 while True:
+    open_window()
     if State_input == 1:
         Record_Graph()
     elif State_input == 2:
         log_handler()
     else:
-        print("Error: Incorrect Option! Expected 1 or 2. Got: " + State_input)
-        State_input = int(input("(1): Record Graph\t(2): Load Graph\n"))
+        print("Error: Incorrect Option! Expected 1 or 2. Got: " + str(State_input))
+        open_window()
 
 

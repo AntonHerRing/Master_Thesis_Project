@@ -35,13 +35,29 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 0.003
-#define PRIMARY_INTEGRAL_MODE_1     0.0003
-#define PRIMARY_DERIVATIVE_MODE_1   0
+#define PRIMARY_PROPORTIONAL_MODE_1 0.3   // 3 too much
+#define PRIMARY_INTEGRAL_MODE_1     10    //10 too much
+#define PRIMARY_DERIVATIVE_MODE_1   0  //0.1 too much
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.015
-#define SECONDARY_INTEGRAL_MODE_1     	0
-#define SECONDARY_DERIVATIVE_MODE_1   	0.75
+#define SECONDARY_PROPORTIONAL_MODE_1 	0.15
+#define SECONDARY_INTEGRAL_MODE_1     	0.75
+#define SECONDARY_DERIVATIVE_MODE_1   	0         
+
+/**
+ * Problem Encountered with Derivative values. 
+ * When the difference between the current_error and current angle
+ * becomes to large, the sample_time blows up the value in the 
+ * order of thousands, or tens of thousands.
+ * Problem occurs when stepper motor moves quickly from one position,
+ * to the next position. EX ::
+ * 
+ * Curr_error = 0.1125, Current_angle = -46. Sample time 2ms
+ * (-46-(0.1125))/0.002 = -23 056.25
+ * Which overflows the output value, and Gives the stepper
+ * motor a false movment
+ * 
+ * Dont use Derivative_Mode right now, and look for solution.
+ **/
 
 //Test Other group values
 /*#define PRIMARY_PROPORTIONAL_MODE_1 0.3

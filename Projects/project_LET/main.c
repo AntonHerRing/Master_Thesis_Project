@@ -330,6 +330,8 @@ void vLetMotorTask_job(void) {
 
     //desired_pos = *MotorTask_Contr / MOTOR_STEPS_PER_DEGREE;
     desired_pos = *MotorTask_Contr;
+
+    //printf("Motor Angle: %f\tTarget Pos: %f\n", motor_deg, desired_pos);
     //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
 
     if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
@@ -337,8 +339,8 @@ void vLetMotorTask_job(void) {
         
     }
     else if(abs(motor_deg) >= 180 || abs(desired_pos) >= 180){
-        printf("Error: Control task overshoot\n");
-        //L6474_HardStop(0);
+        //printf("Error: Control task overshoot\n");
+        L6474_HardStop(0);
 
         //Do Nothing
     }
@@ -482,9 +484,10 @@ void vLetContrTask_init(void) {
 void vLetContrTask_job(void) {
     static float Pend_target = 180;
     static float Motor_target = 0;
+    static float Polarity = -1;
 
     /******** Main function ********/
-    if (abs(*ContrTask_Enc) >= 170 && abs(*ContrTask_Enc) <= 190 && balance_on == false){
+    if (abs(*ContrTask_Enc) >= 175 && abs(*ContrTask_Enc) <= 185 && balance_on == false){
         balance_on = true;
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
@@ -499,9 +502,11 @@ void vLetContrTask_job(void) {
 
         //*current_error_steps = encoder_angle_slope_corr_steps
         //        + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
-        *current_error_steps = Pend_target  - encoder_position; 
+        *current_error_steps = (Pend_target  - encoder_position)*Polarity; 
 
+        //printf("Pendulum::\n");
         pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
+        printf("Pend Outpur: %f\n", PID_Pend.control_output);
 
 		/*rotor_position_command_steps = rotor_position_command_steps_pf * iir_0_s
 				+ rotor_position_command_steps_pf_prev * iir_1_s
@@ -513,7 +518,10 @@ void vLetContrTask_job(void) {
 
         //*current_error_rotor_steps = rotor_position_filter_steps - rotor_position_command_steps;
         *current_error_rotor_steps = Motor_target - *ContrTask_Motor;
+        
+        //printf("Motor::\n");
     	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
+        printf("Motor Output: %f\n", PID_Rotor.control_output);
 
 		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
         //rotor_control_target_steps = PID_Pend.control_output;

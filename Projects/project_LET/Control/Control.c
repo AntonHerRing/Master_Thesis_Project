@@ -58,8 +58,8 @@ float limit_value(float signal, float min, float max){
 }
 
 
-void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float * current_error,
-								float sample_period, float * Deriv_Filt) {
+void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_error,
+								float sample_period, float *Deriv_Filt) {
 
 	float int_term, diff, diff_filt, contr_sig;
 
@@ -75,13 +75,14 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float * current_err
 
 	/* Compute time derivative of error */
 	//diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
-	diff = ((*current_error) - PID->state_a[0])/(sample_period);
-	//printf("PID-Kd: %f\tsample_period: %f\tPID->state_a[0]: %f\n ", PID->Kd, sample_period, PID->state_a[0]);
-
-	/* Compute first order low pass filter of time derivative */
-	/*diff_filt = Deriv_Filt[0] * diff
+	diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
+	
+	/* Compute first order low pass filter of time derivative. Maybe used to lower sudden shifts 
+	* in (*current_error) - PID->state_a[0]). Not working so well tho. Still a problem.
+	*/
+	diff_filt = Deriv_Filt[0] * diff
 				+ Deriv_Filt[0] * PID->state_a[2]
-				- Deriv_Filt[1] * PID->state_a[3];*/
+				- Deriv_Filt[1] * PID->state_a[3];
 
 	//printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
 
@@ -90,8 +91,11 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float * current_err
 	//printf("int_term: %f\tdiff: %f\tdiff_filt: %f\n ", int_term, diff, diff_filt);
 
 	//PID->control_output = diff_filt + int_term + PID->Kp*(*current_error);
-	contr_sig = PID->Kd*diff + PID->Ki*int_term + PID->Kp*(*current_error);
+	//contr_sig =  PID->Kd*diff + PID->Ki*int_term + PID->Kp*(*current_error);
+	contr_sig =  diff_filt + PID->Ki*int_term + PID->Kp*(*current_error);
 	PID->control_output = limit_value(contr_sig, -180, 180);
+
+	//printf("PID-Kd: %f\tsample_period: %f\tPID->state_a[0]: %f\tcurr_err: %f\tdiff: %f\tdiff_filter %f\n ", PID->Kd, sample_period, PID->state_a[0], (*current_error), diff, diff_filt);
 
 	//printf("PID contr Output: %f\tRaw output %f\tCurr Err: %f\n ", PID->control_output, contr_sig, *current_error);
 

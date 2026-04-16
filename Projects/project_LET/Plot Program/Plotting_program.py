@@ -202,7 +202,7 @@ def load_log(logname):
         while True: pass
 
 # Window pop up for choice selection
-def open_window():
+def select_function():
     window = tk.Tk()
     window.title("Plotting Options:")
 
@@ -222,19 +222,18 @@ def open_window():
 
     window.mainloop()
 
-
 #Input to change state
 #State_input = int(input("(1): Record Graph\t(2): Load Graph\n"))
 
 # Main function loop
 while True:
-    open_window()
+    select_function()
     if State_input == 1:
         Record_Graph()
     elif State_input == 2:
         log_handler()
     else:
         print("Error: Incorrect Option! Expected 1 or 2. Got: " + str(State_input))
-        open_window()
+        select_function()
 
 

@@ -106,6 +106,7 @@ void L6474_Board_PwmInit()
 {
     gpio_init(PWM_PIN);
     gpio_set_function(PWM_PIN, GPIO_FUNC_PWM);
+    gpio_pull_up(PWM_PIN);
     
     uint slice_num = pwm_gpio_to_slice_num(PWM_PIN);
     pwm_set_wrap(slice_num, PWM_range);
@@ -116,6 +117,7 @@ void L6474_Board_PwmInit()
     pwm_set_gpio_level(PWM_PIN, 0.5 * PWM_range);
     pwm_set_enabled(slice_num, true);
 
+    // 1M * 1/f => us
     add_repeating_timer_us(1000000 / 20000, &pwm_pin_isr, NULL, &timer);
     
 }

@@ -1,3 +1,5 @@
+#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -22,16 +24,29 @@ extern void L6474_StepClockHandler(uint8_t deviceId);
 
 struct repeating_timer timer;
 
+volatile uint32_t timer_delay_us;
+
 void flag_pin_isr(void)
 {
     printf("flag pin interruption! \n");
 }
 
 //void pwm_pin_isr(void)
-bool pwm_pin_isr(struct repeating_timer *t)
+/*bool pwm_pin_isr(struct repeating_timer *t)
 {
     L6474_StepClockHandler(0);
     return true;
+
+}*/
+
+void pwm_pin_isr(void){
+    uint slice = pwm_gpio_to_slice_num(PWM_PIN);
+
+    if (pwm_get_irq_status_mask() & (1u << slice)) {
+        pwm_clear_irq(slice);
+
+        L6474_StepClockHandler(0);
+    }
 }
 
 /******************************************************//**
@@ -85,16 +100,25 @@ void L6474_Board_GpioInit() {
 void L6474_Board_PwmSetFreq(uint16_t newFreq)
 {
     uint slice = pwm_gpio_to_slice_num(PWM_PIN);
+    int dummy = 0;
 
-    float divisor = (float)SYSFREQ / ((PWM_range + 1) * newFreq);
+    float divisor = (float)SYSFREQ / (PWM_range * newFreq);
     pwm_set_clkdiv(slice, divisor);
 
-    uint16_t intensity = 0.5 * PWM_range;   // 50% duty
-    pwm_set_gpio_level(PWM_PIN, intensity);
+    pwm_set_gpio_level(PWM_PIN, 0.5 * PWM_range); // 50% duty
 
-    cancel_repeating_timer(&timer);
-    add_repeating_timer_us(1000000 / newFreq, &pwm_pin_isr, NULL, &timer);
+    /*if (cancel_repeating_timer(&timer) == false){
+        // Error: Could not cancel timer
+        dummy = 0;
+    }*/
 
+    /*timer_delay_us = 1000000 / newFreq;
+ 
+    //add_repeating_timer_us(1000000 / newFreq, &pwm_pin_isr, NULL, &timer);
+    if (add_repeating_timer_us(timer_delay_us, &pwm_pin_isr, NULL, &timer) == false){
+        // Error: Timer slot unavailable
+        dummy = 0;
+    }*/
 }
 
 
@@ -104,21 +128,33 @@ void L6474_Board_PwmSetFreq(uint16_t newFreq)
  **********************************************************/
 void L6474_Board_PwmInit()
 {
+    int dummy = 0;
+
+    timer_delay_us = 20000; // default 20kHz
+
     gpio_init(PWM_PIN);
     gpio_set_function(PWM_PIN, GPIO_FUNC_PWM);
     gpio_pull_up(PWM_PIN);
     
-    uint slice_num = pwm_gpio_to_slice_num(PWM_PIN);
-    pwm_set_wrap(slice_num, PWM_range);
+    uint slice = pwm_gpio_to_slice_num(PWM_PIN);
+    pwm_set_wrap(slice, PWM_range);
 
-    float divisor = (float)SYSFREQ / ((PWM_range + 1) * 20000); // default 20kHz
-    pwm_set_clkdiv(slice_num, divisor);
+    //float divisor = (float)SYSFREQ / ((PWM_range + 1) * 20000); // default 20kHz
+    float divisor = (float)SYSFREQ / (PWM_range * timer_delay_us); // default 20kHz
+    pwm_set_clkdiv(slice, divisor);
 
     pwm_set_gpio_level(PWM_PIN, 0.5 * PWM_range);
-    pwm_set_enabled(slice_num, true);
+    pwm_set_enabled(slice, true);
+
+    pwm_clear_irq(slice);             
+    pwm_set_irq_enabled(slice, true); 
+    irq_set_exclusive_handler(PWM_IRQ_WRAP, &pwm_pin_isr);
+    irq_set_enabled(PWM_IRQ_WRAP, true);
 
     // 1M * 1/f => us
-    add_repeating_timer_us(1000000 / 20000, &pwm_pin_isr, NULL, &timer);
+    /*if (add_repeating_timer_us(1000000 / timer_delay_us, &pwm_pin_isr, NULL, &timer) == false){
+        dummy = 0;
+    }*/
     
 }
 

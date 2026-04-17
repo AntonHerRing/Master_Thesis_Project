@@ -506,7 +506,7 @@ void vLetContrTask_job(void) {
 
         //printf("Pendulum::\n");
         pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-        printf("Pend Outpur: %f\n", PID_Pend.control_output);
+        //printf("Pend Outpur: %f\n", PID_Pend.control_output);
 
 		/*rotor_position_command_steps = rotor_position_command_steps_pf * iir_0_s
 				+ rotor_position_command_steps_pf_prev * iir_1_s
@@ -521,7 +521,7 @@ void vLetContrTask_job(void) {
         
         //printf("Motor::\n");
     	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
-        printf("Motor Output: %f\n", PID_Rotor.control_output);
+        //printf("Motor Output: %f\n", PID_Rotor.control_output);
 
 		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
         //rotor_control_target_steps = PID_Pend.control_output;

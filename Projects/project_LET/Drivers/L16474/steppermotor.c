@@ -1,3 +1,5 @@
+//#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+
 #include <stdio.h>
 #include "l6474.h"
 #include "steppermotor.h"

@@ -38,3 +38,4 @@ float get_encoder_angle_alt(int local_count);
 float get_encoder_steps(int local_count);
 float get_encoder_radian(int local_count);
 float get_encoder_angle_continous(int local_count);
+float get_encoder_radian_continous(int local_count);

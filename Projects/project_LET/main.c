@@ -367,7 +367,8 @@ void vLetPrintTask_job(void) {
     run_time += T_Print;
 
     //print data
-    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr); //Read any inputs
+    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", 
+            (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr); //Read any inputs
     // #-42-# == tag for python program
     /*printf("#-42-#: Run Time(s): ");
     printf("%f", (float)run_time/1000.0);
@@ -401,7 +402,7 @@ void vLetContrTask_init(void) {
     Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
 
     /* Compute Low Pass Filter Coefficients for Rotor Position filter and Encoder Angle Slope Correction */
-    fo       = LP_CORNER_FREQ_ROTOR;
+    /*fo       = LP_CORNER_FREQ_ROTOR;
     Wo       = 2 * PI * fo;
     IWon     = 2 / (Wo * motor_period);
     iir_0    = 1 / (1 + IWon);
@@ -418,7 +419,7 @@ void vLetContrTask_init(void) {
     IWon_LT  = 2 / (Wo_LT * motor_period);
     iir_LT_0 = 1 / (1 + IWon_LT);
     iir_LT_1 = iir_LT_0;
-    iir_LT_2 = iir_LT_0 * (1 - IWon_LT);
+    iir_LT_2 = iir_LT_0 * (1 - IWon_LT);*/
 
     current_error_steps         = malloc(sizeof(float));
     current_error_rotor_steps   = malloc(sizeof(float));

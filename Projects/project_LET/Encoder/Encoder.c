@@ -44,6 +44,12 @@ float get_encoder_radian(int local_count){
     return radian;
 }
 
+float get_encoder_radian_continous(int local_count){
+    //float deg = (float)local_count * ENCODER_ANGLE_SCALE;
+    
+    return (float)local_count * (2*PI/ ENCODER_SPR);;
+}
+
 // Utilizes angle scaler for continous reading of pos and neg
 //Note: several turns to one side require same amount of turns
 //back to reset it to between pos and neg. 

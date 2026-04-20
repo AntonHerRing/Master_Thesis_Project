@@ -39,6 +39,7 @@ void flag_pin_isr(void)
 
 }*/
 
+// Handler for PWM IRQ
 void pwm_pin_isr(void){
     uint slice = pwm_gpio_to_slice_num(PWM_PIN);
 
@@ -56,7 +57,6 @@ void pwm_pin_isr(void){
  **********************************************************/
 void L6474_Board_Delay(uint32_t milliseconds)
 {
-	//delay(milliseconds);
     sleep_ms(milliseconds);
 }
 
@@ -100,25 +100,11 @@ void L6474_Board_GpioInit() {
 void L6474_Board_PwmSetFreq(uint16_t newFreq)
 {
     uint slice = pwm_gpio_to_slice_num(PWM_PIN);
-    int dummy = 0;
 
     float divisor = (float)SYSFREQ / (PWM_range * newFreq);
     pwm_set_clkdiv(slice, divisor);
 
     pwm_set_gpio_level(PWM_PIN, 0.5 * PWM_range); // 50% duty
-
-    /*if (cancel_repeating_timer(&timer) == false){
-        // Error: Could not cancel timer
-        dummy = 0;
-    }*/
-
-    /*timer_delay_us = 1000000 / newFreq;
- 
-    //add_repeating_timer_us(1000000 / newFreq, &pwm_pin_isr, NULL, &timer);
-    if (add_repeating_timer_us(timer_delay_us, &pwm_pin_isr, NULL, &timer) == false){
-        // Error: Timer slot unavailable
-        dummy = 0;
-    }*/
 }
 
 
@@ -146,6 +132,7 @@ void L6474_Board_PwmInit()
     pwm_set_gpio_level(PWM_PIN, 0.5 * PWM_range);
     pwm_set_enabled(slice, true);
 
+    // Initiate PWM IRQ and trigger-callback 
     pwm_clear_irq(slice);             
     pwm_set_irq_enabled(slice, true); 
     irq_set_exclusive_handler(PWM_IRQ_WRAP, &pwm_pin_isr);

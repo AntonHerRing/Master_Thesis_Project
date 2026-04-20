@@ -1,3 +1,4 @@
+#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
 #include "Control.h"
 
 //L6474_GetAcceleration(0) // get acceleration from stepper motor
@@ -62,16 +63,15 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 								float sample_period, float *Deriv_Filt) {
 
 	float int_term, diff, diff_filt, contr_sig;
+	int dummy = 0;
 
 	/* Compute time integral of error by trapezoidal rule */
-	//int_term = PID->Ki*(sample_period)*((*current_error) + PID->state_a[0])/2;
-	int_term = PID->int_term + (sample_period)*((*current_error));
+	int_term = PID->Ki*(sample_period)*((*current_error) + PID->state_a[0])/2;
+	//int_term = PID->int_term + (sample_period)*((*current_error));
 
-	if(PID->Ki != 0){	//not sure what this does? Soem upper limit nonthenless.
+	if(PID->Ki != 0){	//not sure what this does? some upper limit nonthenless.
 		int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
 	}
-	//printf("PID-Ki: %f\tsample_period: %f\tPID->state_a: %f\n ", PID->Ki, sample_period, PID->state_a[0]);
-	//printf("Current Error: %f\n ", (*current_error));
 
 	/* Compute time derivative of error */
 	//diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
@@ -80,9 +80,13 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	/* Compute first order low pass filter of time derivative. Maybe used to lower sudden shifts 
 	* in (*current_error) - PID->state_a[0]). Not working so well tho. Still a problem.
 	*/
-	diff_filt = Deriv_Filt[0] * diff
-				+ Deriv_Filt[0] * PID->state_a[2]
-				- Deriv_Filt[1] * PID->state_a[3];
+	if (PID->Kd != 0){
+		diff_filt = Deriv_Filt[0] * diff
+					+ Deriv_Filt[0] * PID->state_a[2]
+					- Deriv_Filt[1] * PID->state_a[3];
+	}
+	else 
+		diff_filt = 0;
 
 	//printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
 
@@ -95,9 +99,11 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	contr_sig =  diff_filt + PID->Ki*int_term + PID->Kp*(*current_error);
 	PID->control_output = limit_value(contr_sig, -180, 180);
 
-	//printf("PID-Kd: %f\tsample_period: %f\tPID->state_a[0]: %f\tcurr_err: %f\tdiff: %f\tdiff_filter %f\n ", PID->Kd, sample_period, PID->state_a[0], (*current_error), diff, diff_filt);
+	printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", ((*current_error) - PID->state_a[0]), diff, diff_filt, PID->control_output);
 
-	//printf("PID contr Output: %f\tRaw output %f\tCurr Err: %f\n ", PID->control_output, contr_sig, *current_error);
+	if (abs(PID->control_output) == 180){
+		dummy = 0;
+	}
 
 	/* Update state variables */
 	PID->state_a[1] = PID->state_a[0];

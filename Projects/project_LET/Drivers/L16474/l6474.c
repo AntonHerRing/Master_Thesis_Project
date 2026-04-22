@@ -35,7 +35,7 @@
   *
   ******************************************************************************
   */
-//#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
 
 /* Includes ------------------------------------------------------------------*/
 #include "l6474.h"
@@ -95,6 +95,8 @@ static uint16_t l6474DriverInstance = 0;
 // L6474 Device Paramaters structure
 deviceParams_t devicePrm[MAX_NUMBER_OF_DEVICES];
 
+// Test probe variables
+//uint16_t dummy4 = 0;uint16_t dummy4 = 0;
 
 /**
   * @}
@@ -128,7 +130,8 @@ float L6474_Tval_Par_to_Current(uint8_t Par);
 /**
   * @}
   */ 
-
+uint32_t dummy5 = 0;
+bool dummy_cond = false;
 
 /** @defgroup L6474_Exported_Variables L6474 Exported Variables
   * @{
@@ -802,10 +805,13 @@ void L6474_GoTo(uint8_t deviceId, int32_t targetPosition)
   devicePrm[deviceId].currentPosition = L6474_ConvertPosition(L6474_CmdGetParam(deviceId,L6474_ABS_POS));
   
   /* Compute the number of steps to perform */
+  
   steps = targetPosition - devicePrm[deviceId].currentPosition;
   //steps *= 2; // account for PWM clock divider
+  //if(steps != 0)
+  //  printf("Steps: %d\tTarget_pos: %d\tCurrent_pos: %d\n", steps, targetPosition, devicePrm[deviceId].currentPosition);
   
-  // printf("Steps: %d\n", steps);
+  //printf("Steps: %d\n", steps);
   
   if (steps >= 0) 
   {
@@ -819,6 +825,14 @@ void L6474_GoTo(uint8_t deviceId, int32_t targetPosition)
     direction = BACKWARD;
   }
   
+  if(devicePrm[deviceId].stepsToTake > 50){
+    printf("Move:: steps: %d\tsteps_to_take: %d\tTarget: %d\tcurr: %d\n", steps, devicePrm[deviceId].stepsToTake, targetPosition, devicePrm[deviceId].currentPosition);
+    if(devicePrm[deviceId].stepsToTake > 100)
+      L6474_HardStop(0);
+    //sleep_ms(1);
+    dummy5 = 0;
+  }
+
   if (steps != 0) 
   {
     
@@ -826,6 +840,8 @@ void L6474_GoTo(uint8_t deviceId, int32_t targetPosition)
         
     /* Direction setup */
     L6474_SetDirection(deviceId,direction);
+
+    //printf("steps_to_take: %d\tTarget: %d\tcurr: %d\n", devicePrm[deviceId].stepsToTake, targetPosition, devicePrm[deviceId].currentPosition);
 
     L6474_ComputeSpeedProfile(deviceId, devicePrm[deviceId].stepsToTake);
     
@@ -896,6 +912,7 @@ void L6474_Move(uint8_t deviceId, motorDir_t direction, uint32_t stepCount)
   
   if (stepCount != 0) 
   {
+    //printf("ONLY RUN AT START\n");
     //stepCount *= 2; // account for PWM clock divider
 
     devicePrm[deviceId].stepsToTake = stepCount;
@@ -1081,6 +1098,7 @@ bool L6474_SetAnalogValue(uint8_t deviceId, uint32_t param, float value)
 {
   uint32_t registerValue;
   bool result = TRUE;
+
   if ((value < 0)&&(param != L6474_ABS_POS)&&(param != L6474_MARK)) 
   {
     result = FALSE;
@@ -1830,6 +1848,16 @@ void L6474_StepClockHandler(uint8_t deviceId)
   /* Incrementation of the relative position */
   devicePrm[deviceId].relativePos++;
 
+  //Stepper motor State Error Detection
+  /*dummy5 = devicePrm[deviceId].relativePos;
+  motorState_t current_state = devicePrm[deviceId].motionState;
+  motorState_t past_state;
+
+  if (dummy5 > 100 && current_state != INACTIVE){  
+    L6474_HardStop(0);
+    dummy5 = devicePrm[deviceId].relativePos;
+  }*/
+
   switch (devicePrm[deviceId].motionState) 
   {
     case ACCELERATING: 
@@ -1838,6 +1866,9 @@ void L6474_StepClockHandler(uint8_t deviceId)
         uint32_t endAccPos = devicePrm[deviceId].endAccPos;
         uint16_t speed = devicePrm[deviceId].speed;
         uint32_t acc = ((uint32_t)devicePrm[deviceId].acceleration << 16);
+
+        uint32_t dummy = 0;
+        uint32_t dummy2 = (uint32_t)devicePrm[deviceId].acceleration;
         
         if ((devicePrm[deviceId].commandExecuted == SOFT_STOP_CMD)||
             ((devicePrm[deviceId].commandExecuted != RUN_CMD)&&  
@@ -1863,6 +1894,16 @@ void L6474_StepClockHandler(uint8_t deviceId)
             devicePrm[deviceId].accu -= (0X10000L);
             speed +=1;
             speedUpdated = TRUE;
+
+            uint32_t dummy_steps = devicePrm[deviceId].stepsToTake;
+            uint32_t dummy_curr = devicePrm[deviceId].currentPosition;
+            dummy5 = devicePrm[deviceId].relativePos;
+            if (dummy5 > 50){  
+              printf("Accel:: steps_to_take: %d\tcurr: %d\n", dummy_steps, dummy_curr);
+              L6474_HardStop(0);
+              sleep_ms(1);
+              dummy5 = devicePrm[deviceId].relativePos;
+            }
           }
           
           if (speedUpdated)
@@ -1953,6 +1994,22 @@ void L6474_StepClockHandler(uint8_t deviceId)
   }  
   /* Set isr flag */
   isrFlag = FALSE;
+
+  //dummy
+    //Stepper motor State Error Detection
+  dummy5 = devicePrm[deviceId].relativePos;
+  motorState_t current_state = devicePrm[deviceId].motionState;
+  motorState_t past_state;
+  uint32_t dummy_steps = devicePrm[deviceId].stepsToTake;
+  uint32_t dummy_curr = devicePrm[deviceId].currentPosition;
+
+  if (dummy5 > 50 && current_state != INACTIVE){  
+    printf("State:: steps_to_take: %d\tcurr: %d\n", dummy_steps, dummy_curr);
+    if(devicePrm[deviceId].stepsToTake > 100)
+      L6474_HardStop(0);
+    //sleep_ms(1);
+    dummy5 = devicePrm[deviceId].relativePos;
+  }
 }
 
 /******************************************************//**

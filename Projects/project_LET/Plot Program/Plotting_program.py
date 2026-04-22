@@ -199,7 +199,7 @@ def load_log(logname):
         plt.ylim(-360,360)
         plt.show(block=True)
         plt.pause(1)
-        while True: pass
+        #while True: pass
 
 # Window pop up for choice selection
 def select_function():
@@ -227,13 +227,16 @@ def select_function():
 
 # Main function loop
 while True:
+    State_input = 0
     select_function()
-    if State_input == 1:
+    print("Test")
+    if State_input == 0:
+        break
+    elif State_input == 1:
         Record_Graph()
     elif State_input == 2:
         log_handler()
     else:
         print("Error: Incorrect Option! Expected 1 or 2. Got: " + str(State_input))
-        select_function()
 
 

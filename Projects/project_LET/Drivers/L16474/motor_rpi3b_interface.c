@@ -77,6 +77,8 @@ void L6474_Board_GpioInit() {
         exit(EXIT_FAILURE);
     }*/
     gpio_set_irq_enabled(FLAG_PIN, GPIO_IRQ_EDGE_FALL, true);
+    //irq_set_exclusive_handler(FLAG_PIN, &flag_pin_isr);
+    //irq_set_enabled(FLAG_PIN, true);
 
 
 	/* Configure L6474 - STBY/RESET pin -------------------------------------*/
@@ -207,6 +209,7 @@ void L6474_Board_SpiInit()
     gpio_init(SPI_MOSI);
     gpio_init(SPI_MISO);
 
+    //spi_init(SPI_PORT, 5 * 100 * 1000); // 5 * 100 * 1000 = 500kHz
     spi_init(SPI_PORT, 5 * 100 * 1000); // 5 * 100 * 1000 = 500kHz
     spi_set_format(SPI_PORT, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST);
 
@@ -233,8 +236,14 @@ uint8_t L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t* pReceivedBy
     spi_write_read_blocking(SPI_PORT, pByteToTransmit, pReceivedByte, 1);
 
     gpio_put(SPI_CS, true);
-    gpio_put(SPI_SCK, true);
-    gpio_put(SPI_SCK, false);
+    //gpio_put(SPI_SCK, true);
+    //gpio_put(SPI_SCK, false);
 
+    return *pReceivedByte;
+}
+
+uint8_t L6474_ReadByte(uint8_t* pByteToTransmit, uint8_t* pReceivedByte)
+{
+    spi_write_read_blocking(SPI_PORT, pByteToTransmit, pReceivedByte, 1);
     return *pReceivedByte;
 }

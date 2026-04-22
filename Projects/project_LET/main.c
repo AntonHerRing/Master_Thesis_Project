@@ -334,9 +334,30 @@ void vLetMotorTask_job(void) {
     //printf("Motor Angle: %f\tTarget Pos: %f\n", motor_deg, desired_pos);
     //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
 
+    
+    bool btn1 = BSP_GetInput(SW_5);
+    bool btn2 = BSP_GetInput(SW_6);
+    bool btn3 = BSP_GetInput(SW_7);
+    //bool btn4 = BSP_GetInput(SW_8);
+
+    //printf("B1 %d\tB2: %d\tB3 %d\n", btn1, btn2, btn3);
+    
+    
+    /*if(!btn1){ //Button 1. Move Pos Right ->
+       move_stepper_by(0.2);
+        //printf("Right\n");
+    }
+    else if(!btn2){ //Button 2. Move Pos Left ->
+        move_stepper_by(-0.2);
+        //printf("Left\n");
+    }
+    else if(!btn3){ //Button 3. Set new Home
+        L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
+        //printf("Set Home\n");
+    }*/
     if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
         move_stepper_to(desired_pos);
-        
+        //printf("Desired: %f\n", desired_pos);
     }
     else if(abs(motor_deg) >= 180 || abs(desired_pos) >= 180){
         //printf("Error: Control task overshoot\n");

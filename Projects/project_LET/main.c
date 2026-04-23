@@ -51,6 +51,7 @@ GPIO12::    MISO
 #define T_Motor 2
 #define T_Contr 2
 #define T_Print 50  //50
+#define T_Btns  100 
 
 /*
 This configuration was unstable,
@@ -86,11 +87,13 @@ extern void L6474_StepClockHandler(uint8_t deviceId);
 label_t label_Enc;        /* Data label used for LET tasks. */
 label_t label_Motor;        /* Data label used for LET tasks. */
 label_t label_Contr;        /* Data label used for LET tasks. */
+label_t label_Btns;        /* Data label used for LET tasks. */
 
 LetTask_t letEncTsk;    /*Handle for the LET rotary encoder task. */
 LetTask_t letMotorTsk;  /*Handle for the LET stepper motor task. */
 LetTask_t letContrTsk;  /*Handle for the LET Control task. */
 LetTask_t letPrintTsk;  /*Handle for the LET Print task. */
+LetTask_t letBtnsTsk;  /*Handle for the LET Buttons task. */
 
 float* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
 float  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
@@ -112,6 +115,11 @@ float* MotorTask_Contr;      /* Pointer to the local data of label Contr by Moto
 float  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET task. */
 float* PrintTask_Contr;      /* Pointer to the local data of label Motor by Print task. */
 float  PrintTask_Contr_data; /* Local copy of label Motor owned by Print LET task. */
+
+uint8_t* task_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
+uint8_t  task_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
+uint8_t* MotorTask_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
+uint8_t  MotorTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
 
 // Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
@@ -185,6 +193,17 @@ void vLetContrTask_init(void);
  */
 void vLetContrTask_job(void);
 
+/**
+ * @brief Initialization function of Buttons LET task.
+ */
+void vLetBtnsTask_init(void);
+
+/**
+ * @brief Job function of Buttons LET task.
+ */
+void vLetBtnsTask_job(void);
+
+
 
 /*************************************************************/
 
@@ -237,10 +256,19 @@ int main()
     xLetInitLabel("Enc", sizeof(float), &label_Enc, LET_COM_COPY);
     xLetInitLabel("Motor", sizeof(float), &label_Motor, LET_COM_COPY);
     xLetInitLabel("Contr", sizeof(float), &label_Contr, LET_COM_COPY);
+    xLetInitLabel("Btns", sizeof(uint8_t), &label_Btns, LET_COM_COPY);
+
+    
 
     //low num = low prio, High num = high prio
-    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 5, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
-    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 4, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
+    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
+    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
+    /*xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 4, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
+    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 3, T_Print, T_Print, 0, CORE0, &letPrintTsk);
+    xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 2, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);*/
+
+    xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
+
     xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
     xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
     
@@ -248,6 +276,63 @@ int main()
     
     while (true) { 
         sleep_ms(1000); /* Should not reach here... */
+    }
+}
+
+/*-----------------------------------------------------------*/
+
+void vLetBtnsTask_init(void) {
+    task_Btns = &task_Btns_data;    /* Initialize the pointer to the local buffer for label BTNS */
+
+    /******** Register LET variables ********/
+    xLetTaskRegisterWrite(&letBtnsTsk, &label_Btns, (void*) &task_Btns);    /* Register the write access for label A */    
+}
+/*-----------------------------------------------------------*/
+
+void vLetBtnsTask_job(void) {
+    //[0] == btn1 == 1, [1] == btn2 == 2, [2] == btn3 == 4, [3] == btn4 == 8
+    uint8_t btn1 = BSP_GetInput(SW_5);
+    uint8_t btn2 = BSP_GetInput(SW_6);
+    uint8_t btn3 = BSP_GetInput(SW_7);
+    uint8_t btn4 = BSP_GetInput(SW_8);
+
+    uint8_t buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
+    static bool Off = false;
+    //printf("Input Button: %d\n", buttons);
+    
+    switch(buttons){
+        case 1:
+            //printf("Right\n");
+            move_stepper_by(-1);
+            L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
+        break;
+        case 2:
+            //printf("Left\n");
+            move_stepper_by(1);
+            L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
+        break;
+        case 4:
+            //printf("Set Home\n");
+            L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
+        break;
+        case 8:
+            printf("Emergency Stop\n");
+            L6474_HardStop(0);
+            Off = true;
+        break;
+        default:
+        break;
+    }
+
+    //Override Motor
+    if(buttons != 0){       // if 1, stop motor
+        *task_Btns = 1;
+    }
+    else if (Off == true){  // Turn off motor
+        *task_Btns = 1;
+    }
+    else{                   // if 0, let motor run
+        *task_Btns = 0;
     }
 }
 
@@ -314,6 +399,7 @@ void vLetMotorTask_init(void) {
     /******** Register LET variables ********/
     xLetTaskRegisterWrite(&letMotorTsk, &label_Motor, (void*) &task_Motor);    /* Register the write access for label Motor */   
     xLetTaskRegisterRead(&letMotorTsk, &label_Contr, (void*) &MotorTask_Contr); /* Register the read access for label Contr */ 
+    xLetTaskRegisterRead(&letMotorTsk, &label_Btns, (void*) &MotorTask_Btns);    /* Register the write access for label Motor */ 
 }
 /*-----------------------------------------------------------*/
 
@@ -321,6 +407,8 @@ void vLetMotorTask_job(void) {
     /******** Init static var ********/
     static float motor_deg = 0.0;
     static float desired_pos = 0.0;
+
+    static uint8_t button = 0;
 
     //static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
@@ -334,28 +422,11 @@ void vLetMotorTask_job(void) {
     //printf("Motor Angle: %f\tTarget Pos: %f\n", motor_deg, desired_pos);
     //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
 
-    
-    bool btn1 = BSP_GetInput(SW_5);
-    bool btn2 = BSP_GetInput(SW_6);
-    bool btn3 = BSP_GetInput(SW_7);
-    //bool btn4 = BSP_GetInput(SW_8);
+    //printf("Buttons: %d\n", button);
 
-    //printf("B1 %d\tB2: %d\tB3 %d\n", btn1, btn2, btn3);
-    
-    
-    /*if(!btn1){ //Button 1. Move Pos Right ->
-       move_stepper_by(0.2);
-        //printf("Right\n");
-    }
-    else if(!btn2){ //Button 2. Move Pos Left ->
-        move_stepper_by(-0.2);
-        //printf("Left\n");
-    }
-    else if(!btn3){ //Button 3. Set new Home
-        L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
-        //printf("Set Home\n");
-    }*/
-    if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
+    button = *MotorTask_Btns;
+    if(button == 1){/*Do Nothing*/}
+    else if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
         move_stepper_to(desired_pos);
         //printf("Desired: %f\n", desired_pos);
     }

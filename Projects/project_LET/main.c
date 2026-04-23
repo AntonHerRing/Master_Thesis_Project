@@ -116,10 +116,10 @@ float  MotorTask_Contr_data; /* Local copy of label Contr owned by Motor LET tas
 float* PrintTask_Contr;      /* Pointer to the local data of label Motor by Print task. */
 float  PrintTask_Contr_data; /* Local copy of label Motor owned by Print LET task. */
 
-uint8_t* task_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
-uint8_t  task_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
-uint8_t* MotorTask_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
-uint8_t  MotorTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
+int16_t* task_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
+int16_t  task_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
+int16_t* MotorTask_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
+int16_t  MotorTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
 
 // Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
@@ -256,7 +256,7 @@ int main()
     xLetInitLabel("Enc", sizeof(float), &label_Enc, LET_COM_COPY);
     xLetInitLabel("Motor", sizeof(float), &label_Motor, LET_COM_COPY);
     xLetInitLabel("Contr", sizeof(float), &label_Contr, LET_COM_COPY);
-    xLetInitLabel("Btns", sizeof(uint8_t), &label_Btns, LET_COM_COPY);
+    xLetInitLabel("Btns", sizeof(int16_t), &label_Btns, LET_COM_COPY);
 
     
 
@@ -298,21 +298,27 @@ void vLetBtnsTask_job(void) {
 
     uint8_t buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
     static bool Off = false;
-    //printf("Input Button: %d\n", buttons);
+
+    //static int16_t collector = 0;
+    
+    //printf("collector: %d\n", collector);
     
     switch(buttons){
         case 1:
             //printf("Right\n");
             move_stepper_by(-1);
+            //collector++;
             L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
         break;
         case 2:
             //printf("Left\n");
             move_stepper_by(1);
+            //collector--;
             L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
         break;
         case 4:
             //printf("Set Home\n");
+            //collector = 0;
             L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
         break;
         case 8:
@@ -323,6 +329,7 @@ void vLetBtnsTask_job(void) {
         default:
         break;
     }
+    //*task_Btns = collector;
 
     //Override Motor
     if(buttons != 0){       // if 1, stop motor
@@ -408,23 +415,24 @@ void vLetMotorTask_job(void) {
     static float motor_deg = 0.0;
     static float desired_pos = 0.0;
 
-    static uint8_t button = 0;
+    static int16_t button = 0;
 
     //static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
     /******** Main function ********/
-    motor_deg = get_stepper_angle();
-    (*task_Motor) = motor_deg; //write any inputs
-
+    button = *MotorTask_Btns;
     //desired_pos = *MotorTask_Contr / MOTOR_STEPS_PER_DEGREE;
-    desired_pos = *MotorTask_Contr;
+    desired_pos = *MotorTask_Contr /*- button*/;
+
+    motor_deg = get_stepper_angle()  /*- button*/;
+    (*task_Motor) = motor_deg; //write any inputs
 
     //printf("Motor Angle: %f\tTarget Pos: %f\n", motor_deg, desired_pos);
     //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
 
     //printf("Buttons: %d\n", button);
 
-    button = *MotorTask_Btns;
+    
     if(button == 1){/*Do Nothing*/}
     else if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
         move_stepper_to(desired_pos);

@@ -232,7 +232,6 @@ uint8_t L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t* pReceivedBy
     //fd = wiringPiSPIDataRW(SPI_CHANNEL, pByteToTransmit, 1);
     gpio_put(SPI_CS, false);
     //spi_write_blocking (SPI_PORT, pByteToTransmit, len);
-
     spi_write_read_blocking(SPI_PORT, pByteToTransmit, pReceivedByte, 1);
 
     gpio_put(SPI_CS, true);

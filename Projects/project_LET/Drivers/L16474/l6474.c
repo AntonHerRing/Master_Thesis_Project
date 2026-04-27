@@ -830,13 +830,13 @@ void L6474_GoTo(uint8_t deviceId, int32_t targetPosition)
     direction = BACKWARD;
   }
   
-  if(devicePrm[deviceId].stepsToTake > 50){
+  /*if(devicePrm[deviceId].stepsToTake > 50){
     printf("Move:: steps: %d\tsteps_to_take: %d\tTarget: %d\tcurr: %d\n", steps, devicePrm[deviceId].stepsToTake, targetPosition, devicePrm[deviceId].currentPosition);
     if(devicePrm[deviceId].stepsToTake > 100)
       //L6474_HardStop(0);
     //sleep_ms(1);
     dummy5 = 0;
-  }
+  }*/
 
   if (steps != 0) 
   {
@@ -1874,8 +1874,8 @@ void L6474_StepClockHandler(uint8_t deviceId)
         uint16_t speed = devicePrm[deviceId].speed;
         uint32_t acc = ((uint32_t)devicePrm[deviceId].acceleration << 16);
 
-        uint32_t dummy = 0;
-        uint32_t dummy2 = (uint32_t)devicePrm[deviceId].acceleration;
+        //uint32_t dummy = 0;
+        //uint32_t dummy2 = (uint32_t)devicePrm[deviceId].acceleration;
         
         if ((devicePrm[deviceId].commandExecuted == SOFT_STOP_CMD)||
             ((devicePrm[deviceId].commandExecuted != RUN_CMD)&&  
@@ -1902,7 +1902,7 @@ void L6474_StepClockHandler(uint8_t deviceId)
             speed +=1;
             speedUpdated = TRUE;
 
-            uint32_t dummy_steps = devicePrm[deviceId].stepsToTake;
+            /*uint32_t dummy_steps = devicePrm[deviceId].stepsToTake;
             uint32_t dummy_curr = devicePrm[deviceId].currentPosition;
             dummy5 = devicePrm[deviceId].relativePos;
             if (dummy5 > 50){  
@@ -1910,7 +1910,7 @@ void L6474_StepClockHandler(uint8_t deviceId)
               L6474_HardStop(0);
               //sleep_ms(1);
               dummy5 = devicePrm[deviceId].relativePos;
-            }
+            }*/
           }
           
           if (speedUpdated)
@@ -2010,13 +2010,13 @@ void L6474_StepClockHandler(uint8_t deviceId)
   uint32_t dummy_steps = devicePrm[deviceId].stepsToTake;
   uint32_t dummy_curr = devicePrm[deviceId].currentPosition;
 
-  if (dummy5 > 50 && current_state != INACTIVE){  
+  /*if (dummy5 > 50 && current_state != INACTIVE){  
     printf("State:: steps_to_take: %d\tcurr: %d\n", dummy_steps, dummy_curr);
     if(devicePrm[deviceId].stepsToTake > 100)
       L6474_HardStop(0);
     //sleep_ms(1);
     dummy5 = devicePrm[deviceId].relativePos;
-  }
+  }*/
 }
 
 /******************************************************//**

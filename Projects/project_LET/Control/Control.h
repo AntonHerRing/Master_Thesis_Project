@@ -36,8 +36,8 @@
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
 #define PRIMARY_PROPORTIONAL_MODE_1 0.3   // 3 too much
-#define PRIMARY_INTEGRAL_MODE_1     10    //10 works now
-#define PRIMARY_DERIVATIVE_MODE_1   0  //0.1 too much
+#define PRIMARY_INTEGRAL_MODE_1     0    //10 works now
+#define PRIMARY_DERIVATIVE_MODE_1   0.7  //0.1 too much
 
 #define SECONDARY_PROPORTIONAL_MODE_1 	0.15    //0.15
 #define SECONDARY_INTEGRAL_MODE_1     	0.75    //0.75
@@ -68,7 +68,7 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.04
 #define SECONDARY_DERIVATIVE_MODE_1   	0*/
 
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 1  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 0.1  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
 #define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR 50 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
 
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 10  		// 10 - Corner frequency of low pass filter of Primary PID derivative

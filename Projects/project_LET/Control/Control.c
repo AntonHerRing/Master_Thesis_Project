@@ -99,11 +99,7 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	contr_sig =  diff_filt + PID->Ki*int_term + PID->Kp*(*current_error);
 	PID->control_output = limit_value(contr_sig, -180, 180);
 
-	//printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", ((*current_error) - PID->state_a[0]), diff, diff_filt, PID->control_output);
-
-	if (abs(PID->control_output) == 180){
-		dummy = 0;
-	}
+	printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", ((*current_error) - PID->state_a[0]), diff, diff_filt, PID->control_output);
 
 	/* Update state variables */
 	PID->state_a[1] = PID->state_a[0];

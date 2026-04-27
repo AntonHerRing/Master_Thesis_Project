@@ -112,7 +112,7 @@ int main()
 
     /* Create the tasks. */
     //xTaskCreate(enc_task, "Enc task", 512, (void*) 2, 2, &encTsk);
-    xTaskCreate(motor_task, "Motor task", 512, (void*) 1, 2, &motorTsk);
+    xTaskCreate(motor_task, "Motor task", 2056, (void*) 1, 2, &motorTsk);
 
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -199,9 +199,11 @@ void motor_task(void *args) {
         btn2 = BSP_GetInput(SW_6);
         btn3 = BSP_GetInput(SW_7);
         btn4 = BSP_GetInput(SW_8);
-        encoder = get_encoder_angle_continous(count);
-        //printf("collector: %d\n", collector); 
+        //encoder = get_encoder_angle_continous(count);
+        //printf("collector: %d\n", collector);
+        //portENTER_CRITICAL(); 
         curr_pos = (float)L6474_ConvertPosition(L6474_CmdGetParam(0,L6474_ABS_POS))/MOTOR_STEPS_PER_DEGREE;
+        //portEXIT_CRITICAL();
         printf("Current pos: %f\tPend Ang:%f\n", curr_pos, encoder);
         if (abs(pre_pos - curr_pos) > 100){
             printf("Anomaly Detected!");
@@ -218,11 +220,13 @@ void motor_task(void *args) {
             default:
             break;
         }
+        //portENTER_CRITICAL();
         move_stepper_to(collector);
+        //portEXIT_CRITICAL();
 
         pre_pos = curr_pos;
      
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
+        //vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   
 }
 

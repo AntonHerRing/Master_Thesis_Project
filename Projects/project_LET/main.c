@@ -303,7 +303,7 @@ int main()
         } 
         move_stepper_to(collector);
         
-        sleep_ms(1);
+        //sleep_ms(1);
     }
     /*************Test End************** */
 
@@ -327,7 +327,7 @@ int main()
     xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
     xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
     xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
-    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
+    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 4128, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
     xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
     
     vTaskStartScheduler();  /* Start the scheduler. */
@@ -461,7 +461,7 @@ void vLetMotorTask_init(void) {
         printf("Success! Stepper is positioned at 0\n");
     sleep_ms(10);*/
 
-    printf("Calibrating Motor Position...\n");
+    //printf("Calibrating Motor Position...\n");
     sleep_ms(10);
     move_stepper_by(1.0);
     sleep_ms(10);
@@ -499,7 +499,7 @@ void vLetMotorTask_job(void) {
     //printf("Motor Angle: %f\tTarget Pos: %f\n", motor_deg, desired_pos);
     //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
 
-    printf("Desired pos: %f\n", desired_pos);
+    //printf("Desired pos: %f\n", desired_pos);
     //printf("Current pos: %d\n", L6474_ConvertPosition(L6474_CmdGetParam(0,L6474_ABS_POS)));
     float curr_pos = (float)L6474_ConvertPosition(L6474_CmdGetParam(0,L6474_ABS_POS))/MOTOR_STEPS_PER_DEGREE;
     
@@ -512,12 +512,15 @@ void vLetMotorTask_job(void) {
         move_stepper_to(desired_pos);
         //printf("Desired: %f\n", desired_pos);
     }
-    else if(abs(motor_deg) >= 180 || abs(desired_pos) >= 180){
+    if(abs(motor_deg) >= 180 || abs(desired_pos) >= 180){
         //printf("Error: Control task overshoot\n");
         L6474_HardStop(0);
 
         //Do Nothing
     }
+    move_stepper_to(desired_pos);
+
+
     pre_pos = curr_pos;
 }
 /*-----------------------------------------------------------*/

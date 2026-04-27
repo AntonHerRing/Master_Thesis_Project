@@ -353,7 +353,8 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
     //  L6474_Board_DisableIrq();
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
-    
+  
+  portENTER_CRITICAL();
   for (i = L6474_CMD_ARG_MAX_NB_BYTES-1-maxArgumentNbBytes;
        i < L6474_CMD_ARG_MAX_NB_BYTES;
        i++)
@@ -361,6 +362,7 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
      L6474_WriteBytes(&spiTxBursts[i][0],
                           &spiRxBursts[i][0]);
   }
+  portEXIT_CRITICAL();
   
 /*spiRxData = ((uint32_t)spiTxBursts[1][spiIndex] << 16)|
               (spiTxBursts[2][spiIndex] << 8) |
@@ -373,8 +375,8 @@ spiRxData = ((uint32_t)spiRxBursts[1][spiIndex] << 16)|
  //  L6474_Board_EnableIrq();
 
  //printf("dvPrm-curr_pos: %d\n", devicePrm[deviceId].currentPosition);
-
- //printf("SPiRXData: %d\n", spiRxData);
+ sleep_us(200);
+ //printf("SPiRXData: %f\n", (float)spiRxData/MOTOR_STEPS_PER_DEGREE);
     
   return (spiRxData);
 }
@@ -420,10 +422,12 @@ uint16_t L6474_CmdGetStatus(uint8_t deviceId)
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
 
+  portENTER_CRITICAL();
   for (i = 0; i < L6474_CMD_ARG_NB_BYTES_GET_STATUS + L6474_RSP_NB_BYTES_GET_STATUS; i++)
   {
      L6474_WriteBytes(&spiTxBursts[i][0], &spiRxBursts[i][0]);
   }
+  portEXIT_CRITICAL();
   //status = (spiTxBursts[1][spiIndex] << 8) | (spiTxBursts[2][spiIndex]);
   status = (spiRxBursts[1][spiIndex] << 8) | (spiRxBursts[2][spiIndex]);
   
@@ -502,12 +506,14 @@ void L6474_CmdSetParam(uint8_t deviceId,
   } while (spiPreemtionByIsr); // check pre-emption by ISR
  
   /* SPI transfer */
+  portENTER_CRITICAL();
   for (i = L6474_CMD_ARG_MAX_NB_BYTES-1-maxArgumentNbBytes;
        i < L6474_CMD_ARG_MAX_NB_BYTES;
        i++)
   {
      L6474_WriteBytes(&spiTxBursts[i][0],&spiRxBursts[i][0]);
   }
+  portEXIT_CRITICAL();
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
  //  L6474_Board_EnableIrq();
 }
@@ -1536,7 +1542,9 @@ void L6474_SendCommand(uint8_t deviceId, uint8_t param)
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
   // printf("Command: 0x%x\n", spiTxBursts[3][0]);
+  portENTER_CRITICAL();
   L6474_WriteBytes(&spiTxBursts[3][0], &spiRxBursts[3][0]); 
+  portEXIT_CRITICAL();
   
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
  //  L6474_Board_EnableIrq();

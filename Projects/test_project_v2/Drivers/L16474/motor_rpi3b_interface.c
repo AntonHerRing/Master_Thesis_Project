@@ -208,8 +208,8 @@ uint8_t L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t* pReceivedBy
     spi_write_read_blocking(SPI_PORT, pByteToTransmit, pReceivedByte, 1);
 
     gpio_put(SPI_CS, true);
-    gpio_put(SPI_SCK, true);
-    gpio_put(SPI_SCK, false);
+    //gpio_put(SPI_SCK, true);
+    //gpio_put(SPI_SCK, false);
 
     return *pReceivedByte;
 }

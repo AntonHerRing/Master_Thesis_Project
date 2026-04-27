@@ -1,3 +1,6 @@
+#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -51,7 +54,7 @@ GPIO12::    MISO
 #define T_Motor 2
 #define T_Contr 2
 #define T_Print 50  //50
-#define T_Btns  100 
+#define T_Btns  5
 
 /*
 This configuration was unstable,
@@ -225,6 +228,15 @@ void gpio_callback(uint gpio, uint32_t events) {
     }
 }
 
+// Hook for detective stack overflow
+void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName ){
+    char taskname = *pcTaskName;
+
+    TaskHandle_t task = xTask;
+
+    printf("Warning: The task %s has a stack Overflow!\n");
+}
+
 
 /*************************************************************/
 
@@ -237,10 +249,63 @@ int main()
 {
     BSP_Init();             /* Initialize all components on the lab-kit. */
     sleep_ms(1000);
+    //vTaskDelay(1000);
     init_rotary_encoder();  /* Initialize the Rotary Encoder. */
     init_motor();           /* Initialize the Stepper Motor*/
     trace_init();           /* Initialize the Tracing function*/
+
+    /*************Test Start************** *
+        // Initialize the Interrupts on the two A and B ports
+    gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
+    gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
     
+    printf("Calibrating Motor Position...\n");
+    sleep_ms(10);
+    move_stepper_by(1.0);
+    sleep_ms(10);
+    move_stepper_by(-1.0);
+    int32_t test1 = get_stepper_angle();
+    L6474_SetHome(0, (int32_t)(get_stepper_angle()*MOTOR_STEPS_PER_DEGREE));
+    sleep_ms(20);
+    int32_t test2 = get_stepper_angle();
+
+    //****Calibration Stop **** *
+
+    uint8_t btn1 = 0;
+    uint8_t btn2 = 0;
+    uint8_t btn3 = 0;
+    uint8_t btn4 = 0;
+
+    uint8_t buttons = 0;
+    static bool Off = false;
+    float encoder = 0;
+
+    static float collector = 0; 
+    while(true){
+        btn1 = BSP_GetInput(SW_5);
+        btn2 = BSP_GetInput(SW_6);
+        btn3 = BSP_GetInput(SW_7);
+        btn4 = BSP_GetInput(SW_8);
+        encoder = get_encoder_angle_continous(count);
+        //printf("collector: %d\n", collector); 
+        printf("Current pos: %f\tPend Ang:%f\n", 
+                (float)L6474_ConvertPosition(L6474_CmdGetParam(0,L6474_ABS_POS))/MOTOR_STEPS_PER_DEGREE, encoder);
+        buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
+        switch(buttons){
+            case 1:
+                collector += 0.2;
+            break;
+            case 2:
+                collector -= 0.2;
+            break;
+            default:
+            break;
+        } 
+        move_stepper_to(collector);
+        
+        sleep_ms(1);
+    }
+    /*************Test End************** */
 
     //init_pid(PID_Pend, PID_Rotor);         /* Initialize PID variables with initial values*/
     
@@ -258,17 +323,10 @@ int main()
     xLetInitLabel("Contr", sizeof(float), &label_Contr, LET_COM_COPY);
     xLetInitLabel("Btns", sizeof(int16_t), &label_Btns, LET_COM_COPY);
 
-    
-
     //low num = low prio, High num = high prio
     xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
     xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 512, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
-    /*xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 4, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
-    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 3, T_Print, T_Print, 0, CORE0, &letPrintTsk);
-    xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 2, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);*/
-
     xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
-
     xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 512, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
     xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
     
@@ -299,26 +357,25 @@ void vLetBtnsTask_job(void) {
     uint8_t buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
     static bool Off = false;
 
-    //static int16_t collector = 0;
-    
-    //printf("collector: %d\n", collector);
+    static float collector = 0;
+
     
     switch(buttons){
         case 1:
             //printf("Right\n");
-            move_stepper_by(-1);
-            //collector++;
-            L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
+            //move_stepper_by(-1);
+            collector += 0.2;
+            //L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
         break;
         case 2:
             //printf("Left\n");
-            move_stepper_by(1);
-            //collector--;
-            L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
+            //move_stepper_by(1);
+            collector -= 0.2;
+            //L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
         break;
         case 4:
             //printf("Set Home\n");
-            //collector = 0;
+            collector = 0;
             L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
         break;
         case 8:
@@ -329,10 +386,11 @@ void vLetBtnsTask_job(void) {
         default:
         break;
     }
-    //*task_Btns = collector;
+    //printf("collector: %f\n", collector);
+    *task_Btns = (int16_t)(collector*10);
 
     //Override Motor
-    if(buttons != 0){       // if 1, stop motor
+    /*if(buttons != 0){       // if 1, stop motor
         *task_Btns = 1;
     }
     else if (Off == true){  // Turn off motor
@@ -340,7 +398,7 @@ void vLetBtnsTask_job(void) {
     }
     else{                   // if 0, let motor run
         *task_Btns = 0;
-    }
+    }*/
 }
 
 /*-----------------------------------------------------------*/
@@ -388,7 +446,7 @@ void vLetMotorTask_init(void) {
     MotorTask_Contr = &MotorTask_Contr_data;
 
     /******** Calibrate Motor ********/
-    printf("Calibrating Motor Position...\n");
+    /*printf("Calibrating Motor Position...\n");
     sleep_ms(20);
     L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
     move_stepper_by(1.0);
@@ -401,7 +459,15 @@ void vLetMotorTask_init(void) {
     }
     else
         printf("Success! Stepper is positioned at 0\n");
+    sleep_ms(10);*/
+
+    printf("Calibrating Motor Position...\n");
     sleep_ms(10);
+    move_stepper_by(1.0);
+    sleep_ms(10);
+    move_stepper_by(-1.0);
+    L6474_SetHome(0, (int32_t)(get_stepper_angle()*MOTOR_STEPS_PER_DEGREE));
+    sleep_ms(20);
 
     /******** Register LET variables ********/
     xLetTaskRegisterWrite(&letMotorTsk, &label_Motor, (void*) &task_Motor);    /* Register the write access for label Motor */   
@@ -415,26 +481,34 @@ void vLetMotorTask_job(void) {
     static float motor_deg = 0.0;
     static float desired_pos = 0.0;
 
-    static int16_t button = 0;
+    static float button = 0;
+    static float pre_pos = 0;
 
     //static int32_t Contr_sig = 1;   // 1 == Go, -1 == Stop
 
     /******** Main function ********/
-    button = *MotorTask_Btns;
+    button = (float)(*MotorTask_Btns)/10.0;
     //desired_pos = *MotorTask_Contr / MOTOR_STEPS_PER_DEGREE;
-    desired_pos = *MotorTask_Contr /*- button*/;
+    //desired_pos = *MotorTask_Contr;
+    desired_pos = *MotorTask_Contr - button;
 
-    motor_deg = get_stepper_angle()  /*- button*/;
+    //motor_deg = get_stepper_angle();
+    motor_deg = get_stepper_angle();
     (*task_Motor) = motor_deg; //write any inputs
 
     //printf("Motor Angle: %f\tTarget Pos: %f\n", motor_deg, desired_pos);
     //printf("Motor: %f\tDesired: %f\n",motor_deg, desired_pos);
 
-    //printf("Buttons: %d\n", button);
-
+    printf("Desired pos: %f\n", desired_pos);
+    //printf("Current pos: %d\n", L6474_ConvertPosition(L6474_CmdGetParam(0,L6474_ABS_POS)));
+    float curr_pos = (float)L6474_ConvertPosition(L6474_CmdGetParam(0,L6474_ABS_POS))/MOTOR_STEPS_PER_DEGREE;
     
-    if(button == 1){/*Do Nothing*/}
-    else if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
+    if (abs(pre_pos - curr_pos) > 100){
+        printf("Anomaly Detected!");
+    }
+
+    //if(button == 1){/*Do Nothing*/}
+    if(abs(motor_deg) < 180 && abs(desired_pos) < 180){
         move_stepper_to(desired_pos);
         //printf("Desired: %f\n", desired_pos);
     }
@@ -444,6 +518,7 @@ void vLetMotorTask_job(void) {
 
         //Do Nothing
     }
+    pre_pos = curr_pos;
 }
 /*-----------------------------------------------------------*/
 
@@ -590,7 +665,7 @@ void vLetContrTask_job(void) {
     /******** Main function ********/
     if (abs(*ContrTask_Enc) >= 175 && abs(*ContrTask_Enc) <= 185 && balance_on == false){
         balance_on = true;
-        L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
+        //L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
 
     if (balance_on){

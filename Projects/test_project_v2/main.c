@@ -107,12 +107,12 @@ int main()
 
     init_motor();
 
-    gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
-    gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
+    //gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
+    //gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 
     /* Create the tasks. */
-    xTaskCreate(enc_task, "Enc task", 512, (void*) 100, 2, &encTsk);
-    xTaskCreate(motor_task, "Motor task", 512, (void*) 50, 2, &motorTsk);
+    //xTaskCreate(enc_task, "Enc task", 512, (void*) 2, 2, &encTsk);
+    xTaskCreate(motor_task, "Motor task", 512, (void*) 1, 2, &motorTsk);
 
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -133,7 +133,7 @@ void enc_task(void *args) {
 
         deg = get_encoder_angle(count);
         
-        printf("Deg: %f\n", deg);
+        //printf("Deg: %f\n", deg);
         
         //last step in loop
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
@@ -154,8 +154,35 @@ void motor_task(void *args) {
 
     bool first_time = true;
 
+    printf("Calibrating Motor Position...\n");
+    sleep_ms(10);
+    move_stepper_by(1.0);
+    sleep_ms(10);
+    move_stepper_by(-1.0);
+    int32_t test1 = get_stepper_angle();
+    L6474_SetHome(0, (int32_t)(get_stepper_angle()*MOTOR_STEPS_PER_DEGREE));
+    sleep_ms(20);
+    int32_t test2 = get_stepper_angle();
+
+    //****Calibration Stop **** *
+
+    uint8_t btn1 = 0;
+    uint8_t btn2 = 0;
+    uint8_t btn3 = 0;
+    uint8_t btn4 = 0;
+
+    uint8_t buttons = 0;
+    int dummy = 0;
+    static bool Off = false;
+    float encoder = 0;
+
+    static float collector = 0; 
+
+    float curr_pos = 0;
+    float pre_pos = 0;
+
     for (;;) {
-        motor_deg = get_stepper_angle();
+        /*motor_deg = get_stepper_angle();
         printf("Motor deg: %d\n", abs((int)(motor_deg)));
 
         if(abs((int)(motor_deg)) >= max_pos)
@@ -166,7 +193,34 @@ void motor_task(void *args) {
         if (dir == 1)
             move_stepper_by(0.2);
         else if (dir == -1)
-            move_stepper_by(-0.2);
+            move_stepper_by(-0.2);*/
+
+        btn1 = BSP_GetInput(SW_5);
+        btn2 = BSP_GetInput(SW_6);
+        btn3 = BSP_GetInput(SW_7);
+        btn4 = BSP_GetInput(SW_8);
+        encoder = get_encoder_angle_continous(count);
+        //printf("collector: %d\n", collector); 
+        curr_pos = (float)L6474_ConvertPosition(L6474_CmdGetParam(0,L6474_ABS_POS))/MOTOR_STEPS_PER_DEGREE;
+        printf("Current pos: %f\tPend Ang:%f\n", curr_pos, encoder);
+        if (abs(pre_pos - curr_pos) > 100){
+            printf("Anomaly Detected!");
+        }
+
+        buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
+        switch(buttons){
+            case 1:
+                collector += 0.5;
+            break;
+            case 2:
+                collector -= 0.5;
+            break;
+            default:
+            break;
+        }
+        move_stepper_to(collector);
+
+        pre_pos = curr_pos;
      
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   // Wait for the next release. 
     }   

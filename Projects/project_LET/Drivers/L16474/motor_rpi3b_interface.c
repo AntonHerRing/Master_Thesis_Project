@@ -1,4 +1,4 @@
-#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+//#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,6 +58,7 @@ void pwm_pin_isr(void){
 void L6474_Board_Delay(uint32_t milliseconds)
 {
     sleep_ms(milliseconds);
+    //vTaskDelay(milliseconds);
 }
 
 /******************************************************//**

@@ -357,7 +357,8 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
     //  L6474_Board_DisableIrq();
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
-    
+  
+  portENTER_CRITICAL();
   for (i = L6474_CMD_ARG_MAX_NB_BYTES-1-maxArgumentNbBytes;
        i < L6474_CMD_ARG_MAX_NB_BYTES;
        i++)
@@ -365,6 +366,7 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
      L6474_WriteBytes(&spiTxBursts[i][0],
                           &spiRxBursts[i][0]);
   }
+  portEXIT_CRITICAL();
   
 /*spiRxData = ((uint32_t)spiTxBursts[1][spiIndex] << 16)|
               (spiTxBursts[2][spiIndex] << 8) |
@@ -424,10 +426,12 @@ uint16_t L6474_CmdGetStatus(uint8_t deviceId)
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
 
+  portENTER_CRITICAL();
   for (i = 0; i < L6474_CMD_ARG_NB_BYTES_GET_STATUS + L6474_RSP_NB_BYTES_GET_STATUS; i++)
   {
      L6474_WriteBytes(&spiTxBursts[i][0], &spiRxBursts[i][0]);
   }
+  portEXIT_CRITICAL();
   //status = (spiTxBursts[1][spiIndex] << 8) | (spiTxBursts[2][spiIndex]);
   status = (spiRxBursts[1][spiIndex] << 8) | (spiRxBursts[2][spiIndex]);
   
@@ -802,6 +806,7 @@ void L6474_GoTo(uint8_t deviceId, int32_t targetPosition)
   }
 
   /* Get current position */
+  int32_t dummy7 = L6474_ConvertPosition(L6474_CmdGetParam(deviceId,L6474_ABS_POS));
   devicePrm[deviceId].currentPosition = L6474_ConvertPosition(L6474_CmdGetParam(deviceId,L6474_ABS_POS));
   
   /* Compute the number of steps to perform */
@@ -828,7 +833,7 @@ void L6474_GoTo(uint8_t deviceId, int32_t targetPosition)
   if(devicePrm[deviceId].stepsToTake > 50){
     printf("Move:: steps: %d\tsteps_to_take: %d\tTarget: %d\tcurr: %d\n", steps, devicePrm[deviceId].stepsToTake, targetPosition, devicePrm[deviceId].currentPosition);
     if(devicePrm[deviceId].stepsToTake > 100)
-      L6474_HardStop(0);
+      //L6474_HardStop(0);
     //sleep_ms(1);
     dummy5 = 0;
   }
@@ -1555,7 +1560,9 @@ void L6474_SendCommand(uint8_t deviceId, uint8_t param)
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
   // printf("Command: 0x%x\n", spiTxBursts[3][0]);
+  portENTER_CRITICAL();
   L6474_WriteBytes(&spiTxBursts[3][0], &spiRxBursts[3][0]); 
+  portEXIT_CRITICAL();
   
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
  //  L6474_Board_EnableIrq();
@@ -1901,7 +1908,7 @@ void L6474_StepClockHandler(uint8_t deviceId)
             if (dummy5 > 50){  
               printf("Accel:: steps_to_take: %d\tcurr: %d\n", dummy_steps, dummy_curr);
               L6474_HardStop(0);
-              sleep_ms(1);
+              //sleep_ms(1);
               dummy5 = devicePrm[deviceId].relativePos;
             }
           }

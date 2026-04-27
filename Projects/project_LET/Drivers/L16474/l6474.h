@@ -54,6 +54,7 @@
 #include "motor_rpi3b_interface.h"
 
 #include "bsp.h"
+#include "FreeRTOS.h"
 
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
@@ -664,6 +665,8 @@ bool L6474_SetNbDevices(uint8_t nbDevices);                    //Set the number 
 void L6474_SetStopMode(uint8_t deviceId, motorStopMode_t stopMode); // Set the stop mode
 bool L6474_SoftStop(uint8_t deviceId);                         //Progressively stops the motor 
 void L6474_WaitWhileActive(uint8_t deviceId);                  //Wait for the device state becomes Inactive
+
+int32_t L6474_ConvertPosition(uint32_t abs_position_reg);
 /**
   * @}
   */

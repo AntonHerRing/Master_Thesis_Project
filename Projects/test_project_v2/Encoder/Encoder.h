@@ -25,8 +25,15 @@
 //Encoder Steps Per revolution
 #define ENCODER_SPR 2400
 
+//Encoder defines
+#define ENCODER_SPR         2400        // steps / revolution
+#define ENCODER_ANGLE_SCALE 1/6.666667    // step counts / degree. -> degree/step count
+
+#define PI 3.141592654
+
 /****************** Func Inits ******************/
 
 
 void init_rotary_encoder(void);
 float get_encoder_angle(int local_count);
+float get_encoder_angle_continous(int local_count);

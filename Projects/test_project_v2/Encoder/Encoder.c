@@ -18,3 +18,9 @@ float get_encoder_angle(int local_count){
     
     return (float)local_count * (360.0 / ENCODER_SPR);
 }
+
+float get_encoder_angle_continous(int local_count){
+    float deg = (float)local_count * ENCODER_ANGLE_SCALE;
+    
+    return deg;
+}

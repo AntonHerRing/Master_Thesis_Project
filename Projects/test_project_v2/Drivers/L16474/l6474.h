@@ -60,6 +60,7 @@
 #include "hardware/gpio.h"
 #include "hardware/regs/io_bank0.h"
 #include "hardware/structs/io_bank0.h"
+#include "FreeRTOS.h"
    
 /** @addtogroup BSP
   * @{
@@ -664,6 +665,7 @@ bool L6474_SetNbDevices(uint8_t nbDevices);                    //Set the number 
 void L6474_SetStopMode(uint8_t deviceId, motorStopMode_t stopMode); // Set the stop mode
 bool L6474_SoftStop(uint8_t deviceId);                         //Progressively stops the motor 
 void L6474_WaitWhileActive(uint8_t deviceId);                  //Wait for the device state becomes Inactive
+int32_t L6474_ConvertPosition(uint32_t abs_position_reg); 
 /**
   * @}
   */

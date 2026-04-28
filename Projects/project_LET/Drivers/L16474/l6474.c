@@ -1901,16 +1901,6 @@ void L6474_StepClockHandler(uint8_t deviceId)
             devicePrm[deviceId].accu -= (0X10000L);
             speed +=1;
             speedUpdated = TRUE;
-
-            /*uint32_t dummy_steps = devicePrm[deviceId].stepsToTake;
-            uint32_t dummy_curr = devicePrm[deviceId].currentPosition;
-            dummy5 = devicePrm[deviceId].relativePos;
-            if (dummy5 > 50){  
-              printf("Accel:: steps_to_take: %d\tcurr: %d\n", dummy_steps, dummy_curr);
-              L6474_HardStop(0);
-              //sleep_ms(1);
-              dummy5 = devicePrm[deviceId].relativePos;
-            }*/
           }
           
           if (speedUpdated)
@@ -2001,22 +1991,6 @@ void L6474_StepClockHandler(uint8_t deviceId)
   }  
   /* Set isr flag */
   isrFlag = FALSE;
-
-  //dummy
-    //Stepper motor State Error Detection
-  dummy5 = devicePrm[deviceId].relativePos;
-  motorState_t current_state = devicePrm[deviceId].motionState;
-  motorState_t past_state;
-  uint32_t dummy_steps = devicePrm[deviceId].stepsToTake;
-  uint32_t dummy_curr = devicePrm[deviceId].currentPosition;
-
-  /*if (dummy5 > 50 && current_state != INACTIVE){  
-    printf("State:: steps_to_take: %d\tcurr: %d\n", dummy_steps, dummy_curr);
-    if(devicePrm[deviceId].stepsToTake > 100)
-      L6474_HardStop(0);
-    //sleep_ms(1);
-    dummy5 = devicePrm[deviceId].relativePos;
-  }*/
 }
 
 /******************************************************//**

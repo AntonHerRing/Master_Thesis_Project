@@ -6,10 +6,11 @@
 //struct PID Pid1;
 //struct PID *PID1 = &Pid1;
 
-#define T_Enc   100
-#define T_Motor 50
-#define T_Contr 100
-#define T_Print 100
+#define T_Enc   2
+#define T_Motor 2
+#define T_Contr 2   //2
+#define T_Print 50  //50
+#define T_Btns  2
 
 /*float *current_error_steps, *current_error_rotor_steps;
 float encoder_angle_slope_corr_steps;
@@ -58,47 +59,60 @@ float limit_value(float signal, float min, float max){
 		return signal;
 }
 
-
 void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_error,
 								float sample_period, float *Deriv_Filt) {
 
 	float int_term, diff, diff_filt, contr_sig;
-	int dummy = 0;
+	static bool first_time = true;
+
+	// Prevent derivative kick. Set curr and prev value as same.
+	if (first_time && *current_error != 0){
+		PID->state_a[0] = *current_error;
+		first_time = false;
+	}
+	//float RC = 1/(PI * sample_period * DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
 
 	/* Compute time integral of error by trapezoidal rule */
-	int_term = PID->Ki*(sample_period)*((*current_error) + PID->state_a[0])/2;
+	//int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
+	int_term = int_term + (sample_period)*(*current_error);
 	//int_term = PID->int_term + (sample_period)*((*current_error));
 
-	if(PID->Ki != 0){	//not sure what this does? some upper limit nonthenless.
-		int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
+	if(PID->Ki != 0){										//clamp the value
+		int_term = limit_value(PID->Ki*int_term, -60.0, 60.0)/PID->Ki;
 	}
 
 	/* Compute time derivative of error */
-	//diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
-	diff = PID->Kd*((*current_error) - PID->state_a[0])/(sample_period);
-	
-	/* Compute first order low pass filter of time derivative. Maybe used to lower sudden shifts 
-	* in (*current_error) - PID->state_a[0]). Not working so well tho. Still a problem.
-	*/
-	if (PID->Kd != 0){
-		diff_filt = Deriv_Filt[0] * diff
-					+ Deriv_Filt[0] * PID->state_a[2]
-					- Deriv_Filt[1] * PID->state_a[3];
+	//diff = ((*current_error) - PID->state_a[0])/(sample_period);
+
+	diff = ((*current_error) - PID->state_a[0])/(sample_period);
+	if(PID->Kd != 0){											//clamp the value
+		diff = limit_value(PID->Kd*diff, -60.0, 60.0)/PID->Kd;
 	}
+	
+	/* 
+	* Compute first order low pass filter of time derivative. IIR filter 
+	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
+	* feedback_term is the pole location
+	*/
+	/*if (PID->Kd != 0)
+		diff_filt = Deriv_Filt[0]*(diff + PID->state_a[2]) + Deriv_Filt[1]*PID->state_a[3];
+	else 
+		diff_filt = 0;*/
+	if(PID->Kd != 0)
+		diff_filt = lowpass(diff, PID->state_a[2], sample_period, 0);
 	else 
 		diff_filt = 0;
-
 	//printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
 
 	/* Accumulate PID output with Integral, Derivative and Proportional contributions*/
 
-	//printf("int_term: %f\tdiff: %f\tdiff_filt: %f\n ", int_term, diff, diff_filt);
 
 	//PID->control_output = diff_filt + int_term + PID->Kp*(*current_error);
 	//contr_sig =  PID->Kd*diff + PID->Ki*int_term + PID->Kp*(*current_error);
-	contr_sig =  diff_filt + PID->Ki*int_term + PID->Kp*(*current_error);
+	contr_sig =  PID->Kd*diff_filt + PID->Ki*int_term + PID->Kp*(*current_error);
 	PID->control_output = limit_value(contr_sig, -180, 180);
 
+	//printf("int_term: %f\tdiff: %f\tdiff_filt: %f\n ", int_term, diff, diff_filt);
 	printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", ((*current_error) - PID->state_a[0]), diff, diff_filt, PID->control_output);
 
 	/* Update state variables */
@@ -109,82 +123,79 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	PID->int_term = int_term;
 }
 
-/*void test_task(int local_count){
+void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_error,
+									float sample_period, int cutoff_freq) {
 
-    // CMSIS Variables 
-    arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
-    float Deriv_Filt_Pend[2];
-    float Deriv_Filt_Rotor[2];
-    float Wo_t, fo_t, IWon_t;
+	float int_term, diff, diff_filt, contr_sig;
+	static bool first_time = true;
+	float error = *current_error;
 
-    fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
-	Wo_t = 2 * 3.141592654 * fo_t;
-	IWon_t = 2 / (Wo_t * (T_Enc));
-	Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
-	Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
+	// Prevent derivative kick. Set curr and prev value as same.
+	if (first_time && error != 0){
+		PID->state_a[0] = error;
+		first_time = false;
+	}
+	float RC = 1.0/(2.0*PI * sample_period * (float)cutoff_freq);
 
-	fo_t = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
-	Wo_t = 2 * 3.141592654 * fo_t;
-	IWon_t = 2 / (Wo_t * (T_Motor));
-	Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
-	Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
+	/* Compute time integral of error by trapezoidal rule */
+	//int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
+	int_term = int_term + (sample_period)*error;
+	if(PID->Ki != 0){										//clamp the value
+		int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
+	}
 
-	*current_error_steps        = 0;
-	*current_error_rotor_steps  = 0;
-	PID_Pend.state_a[0] = 0;
-	PID_Pend.state_a[1] = 0;
-	PID_Pend.state_a[2] = 0;
-	PID_Pend.state_a[3] = 0;
-	PID_Pend.int_term   = 0;
-	PID_Pend.control_output = 0;
+	diff = (error - PID->state_a[0])/sample_period;
+	if(PID->Kd != 0){											//clamp the value
+		diff = limit_value(PID->Kd*diff, -60, 60)/PID->Kd;
+	}
+	
+	/* 
+	* Compute first order low pass filter of time derivative. IIR filter 
+	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
+	* feedback_term is the pole location
+	*/
+	diff_filt = lowpass(diff, PID->state_a[2], sample_period, RC);
 
-	PID_Rotor.state_a[0]    = 0;
-	PID_Rotor.state_a[1]    = 0;
-	PID_Rotor.state_a[2]    = 0;
-	PID_Rotor.state_a[3]    = 0;
-	PID_Rotor.int_term      = 0;
-	PID_Rotor.control_output = 0;
+	contr_sig =  PID->Kd*diff_filt + PID->Ki*int_term + PID->Kp*error;
+	PID->control_output = limit_value(contr_sig, -180, 180);
 
-    encoder_angle_slope_corr_steps  = 0;
-    pendulum_position_command_steps = 0;
-    rotor_control_target_steps      = 0;
-    rotor_position_steps            = 0;
-    rotor_position_command_steps    = 0;
-    feedforward_gain                = 1;
-    encoder_position                = 0;
+	//printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", (error - PID->state_a[0]), diff, diff_filt, PID->control_output);
 
-    while(1){
-        // Initialize Pendulum PID control state 
-        //ret = encoder_position_read(&encoder_position_steps, encoder_position_init, &htim3);
-        encoder_position = local_count;
+	/* Update state variables */
+	PID->state_a[1] = PID->state_a[0];
+	PID->state_a[0] = error;	//prev error value
+	PID->state_a[2] = diff;
+	PID->state_a[3] = diff_filt;
+	PID->int_term = int_term;
+}
 
-        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc,
-                Deriv_Filt_Pend);
+/*function lowpass(real[1..n] x, real dt, real RC)
+    var real[1..n] y
+    var real α := dt / (RC + dt)
+    y[1] := α * x[1]
+    for i from 2 to n
+        y[i] := α * x[i] + (1-α) * y[i-1]
+    return y*/
 
-		*current_error_rotor_steps = 0;
-		pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps,
-				T_Motor, Deriv_Filt_Rotor);
-
-        *current_error_steps = encoder_angle_slope_corr_steps
-                + ENCODER_ANGLE_POLARITY * (encoder_position / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
-
-        //*current_error_steps = *current_error_steps + pendulum_position_command_steps;
-
-        pid_filter_control_execute(&PID_Pend, current_error_steps, T_Enc, Deriv_Filt_Pend);
-
-        //rotor_control_target_steps = PID_Pend.control_output;
-
-    	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, T_Motor,  Deriv_Filt_Rotor);
-
-		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
-
-        /// Acquire rotor position and compute low pass filtered rotor position 
-
-        //ret = rotor_position_read(&rotor_position_steps);
-
-        //rotor_control_target_steps = rotor_control_target_steps - rotor_position_command_steps*feedforward_gain;
-
-        BSP_MotorControl_GoTo(0, rotor_control_target_steps/2);
-
-    }
-}*/
+	// x input, array to lowpass
+	
+/******************************************************//**
+ * @brief  Low Pass Filter for Derivative Mode
+ * @param[in] deriv current derivative value
+ * @param[in] prev_deriv past derivative value
+ * @param[in] dt sample time
+ * @param[in] RC RC = Tau (time constant)
+ * @retval Lowpassed time deriv of Input.
+ **********************************************************/
+	float lowpass(float deriv, float prev_deriv, float dt, float RC){
+		//float y;
+		float alpha = dt / (RC + dt);
+		//y[0] = alpha * x[0];
+		//for (int i = 2; i < len; i++){
+			//y[i] = alpha * x[i] + (1 - alpha) * y[i - 1];
+			//y[1] = alpha * x[1] + (1 - alpha) * y[0];
+			//y[1] = alpha * x[1] + (1 - alpha) * alpha * x[0];
+			//y[1] = alpha * (x[1] + (1 - alpha)*x[0]);
+		//}
+		return alpha * (deriv + (1 - alpha)*prev_deriv);
+	}

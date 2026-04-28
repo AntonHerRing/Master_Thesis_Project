@@ -268,11 +268,11 @@ int main()
     xLetInitLabel("Btns", sizeof(int16_t), &label_Btns, LET_COM_COPY);
 
     //low num = low prio, High num = high prio
-    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
-    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 2048, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
-    xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
-    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 6144, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);
-    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 512, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
+    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 5120, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
+    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 5120, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
+    xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 5120, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
+    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 7000, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);    //10240, is too much
+    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 5120, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
     
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -409,7 +409,7 @@ void vLetContrTask_init(void) {
     ContrTask_Enc = &ContrTask_Enc_data;
     ContrTask_Motor = &ContrTask_Motor_data;
 
-    printf("Initiating Control Variables...\n");
+    //printf("Initiating Control Variables...\n");
 
     fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
     Wo_t    = 2 * PI * fo_t;
@@ -494,8 +494,10 @@ void vLetContrTask_init(void) {
 
     //encoder_position_down           = *ContrTask_Enc;
 
-    pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
+    //pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
+	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
+    pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
+    pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
 
     xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);     /* Register the read access for label Enc */    
     xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);     /* Register the write access for label Contr */   
@@ -512,7 +514,7 @@ void vLetContrTask_job(void) {
     /******** Main function ********/
     if (abs(*ContrTask_Enc) >= 175 && abs(*ContrTask_Enc) <= 185 && balance_on == false){
         balance_on = true;
-        //L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
+        L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
 
     if (balance_on){
@@ -527,9 +529,10 @@ void vLetContrTask_job(void) {
         //        + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
         *current_error_steps = (Pend_target  - encoder_position)*Polarity; 
 
-        printf("Pendulum::\n");
-        pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-        //printf("Pend Outpur: %f\n", PID_Pend.control_output);
+        //printf("Pendulum::\n");
+        //pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
+        pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
+
 
 		/*rotor_position_command_steps = rotor_position_command_steps_pf * iir_0_s
 				+ rotor_position_command_steps_pf_prev * iir_1_s
@@ -542,9 +545,10 @@ void vLetContrTask_job(void) {
         //*current_error_rotor_steps = rotor_position_filter_steps - rotor_position_command_steps;
         *current_error_rotor_steps = Motor_target - *ContrTask_Motor;
         
-        printf("Motor::\n");
-    	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
-        //printf("Motor Output: %f\n", PID_Rotor.control_output);
+        //printf("Motor::\n");
+    	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
+        pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
+
 
 		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
         //rotor_control_target_steps = PID_Pend.control_output;

@@ -268,8 +268,8 @@ int main()
     xLetInitLabel("Btns", sizeof(int16_t), &label_Btns, LET_COM_COPY);
 
     //low num = low prio, High num = high prio
-    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 5120, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
-    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 5120, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
+    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
+    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 7000, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
     xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 5120, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
     xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 7000, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);    //10240, is too much
     xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 5120, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
@@ -509,7 +509,7 @@ void vLetContrTask_init(void) {
 void vLetContrTask_job(void) {
     static float Pend_target = 180;
     static float Motor_target = 0;
-    static float Polarity = -1;
+    static float Polarity = -1; //-1
 
     /******** Main function ********/
     if (abs(*ContrTask_Enc) >= 175 && abs(*ContrTask_Enc) <= 185 && balance_on == false){

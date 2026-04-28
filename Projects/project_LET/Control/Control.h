@@ -35,13 +35,13 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 0.5   // 3 too much, 0.3
-#define PRIMARY_INTEGRAL_MODE_1     10    //10 works now
-#define PRIMARY_DERIVATIVE_MODE_1   30  //0.1 too much
+#define PRIMARY_PROPORTIONAL_MODE_1 0.3   // 3 too much, 0.3  - 0.6
+#define PRIMARY_INTEGRAL_MODE_1     0    //10 works now       - 0
+#define PRIMARY_DERIVATIVE_MODE_1   5  //0.1 too much        - 15
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.15    //0.15
-#define SECONDARY_INTEGRAL_MODE_1     	0    //0.75
-#define SECONDARY_DERIVATIVE_MODE_1   	0.75       
+#define SECONDARY_PROPORTIONAL_MODE_1 	1    //0.15           - 0.3
+#define SECONDARY_INTEGRAL_MODE_1     	0    //0.75           - 0
+#define SECONDARY_DERIVATIVE_MODE_1   	10   //               - 4
 
 /**
  * Problem Encountered with Derivative values. 

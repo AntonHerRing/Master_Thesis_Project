@@ -73,8 +73,8 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	//float RC = 1/(PI * sample_period * DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
 
 	/* Compute time integral of error by trapezoidal rule */
-	//int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
-	int_term = int_term + (sample_period)*(*current_error);
+	int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
+	//int_term = int_term + (sample_period)*(*current_error);
 	//int_term = PID->int_term + (sample_period)*((*current_error));
 
 	if(PID->Ki != 0){										//clamp the value
@@ -94,14 +94,14 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
 	* feedback_term is the pole location
 	*/
-	/*if (PID->Kd != 0)
+	if (PID->Kd != 0)
 		diff_filt = Deriv_Filt[0]*(diff + PID->state_a[2]) + Deriv_Filt[1]*PID->state_a[3];
 	else 
-		diff_filt = 0;*/
-	if(PID->Kd != 0)
+		diff_filt = 0;
+	/*if(PID->Kd != 0)
 		diff_filt = lowpass(diff, PID->state_a[2], sample_period, 0);
 	else 
-		diff_filt = 0;
+		diff_filt = 0;*/
 	//printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
 
 	/* Accumulate PID output with Integral, Derivative and Proportional contributions*/
@@ -123,6 +123,7 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	PID->int_term = int_term;
 }
 
+// RC term might falsly appear to make the filter work.
 void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_error,
 									float sample_period, int cutoff_freq) {
 
@@ -136,10 +137,11 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 		first_time = false;
 	}
 	float RC = 1.0/(2.0*PI * sample_period * (float)cutoff_freq);
+	//float RC = 1.0/(2.0*PI * (float)cutoff_freq); // <- Supposed correct equation
 
 	/* Compute time integral of error by trapezoidal rule */
-	//int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
-	int_term = int_term + (sample_period)*error;
+	int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
+	//int_term = int_term + (sample_period)*error;
 	if(PID->Ki != 0){										//clamp the value
 		int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
 	}
@@ -159,7 +161,7 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	contr_sig =  PID->Kd*diff_filt + PID->Ki*int_term + PID->Kp*error;
 	PID->control_output = limit_value(contr_sig, -180, 180);
 
-	//printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", (error - PID->state_a[0]), diff, diff_filt, PID->control_output);
+	//printf("Cutoff: %d\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", cutoff_freq, (error - PID->state_a[0]), diff, diff_filt, PID->control_output);
 
 	/* Update state variables */
 	PID->state_a[1] = PID->state_a[0];
@@ -167,6 +169,26 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	PID->state_a[2] = diff;
 	PID->state_a[3] = diff_filt;
 	PID->int_term = int_term;
+}
+	
+/******************************************************//**
+ * @brief  Low Pass Filter for Derivative Mode
+ * @param[in] deriv current derivative value
+ * @param[in] prev_deriv past derivative value
+ * @param[in] dt sample time
+ * @param[in] RC RC = Tau (time constant)
+ * @retval Lowpassed time deriv of Input.
+ **********************************************************/
+float lowpass(float deriv, float prev_deriv, float dt, float RC){
+	float alpha = dt / (RC + dt);
+	//y[0] = alpha * x[0];
+	//for (int i = 2; i < len; i++){
+		//y[i] = alpha * x[i] + (1 - alpha) * y[i - 1];
+		//y[1] = alpha * x[1] + (1 - alpha) * y[0];
+		//y[1] = alpha * x[1] + (1 - alpha) * alpha * x[0];
+		//y[1] = alpha * (x[1] + (1 - alpha)*x[0]);
+	//}
+	return alpha * (deriv + (1 - alpha)*prev_deriv);
 }
 
 /*function lowpass(real[1..n] x, real dt, real RC)
@@ -178,24 +200,3 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
     return y*/
 
 	// x input, array to lowpass
-	
-/******************************************************//**
- * @brief  Low Pass Filter for Derivative Mode
- * @param[in] deriv current derivative value
- * @param[in] prev_deriv past derivative value
- * @param[in] dt sample time
- * @param[in] RC RC = Tau (time constant)
- * @retval Lowpassed time deriv of Input.
- **********************************************************/
-	float lowpass(float deriv, float prev_deriv, float dt, float RC){
-		//float y;
-		float alpha = dt / (RC + dt);
-		//y[0] = alpha * x[0];
-		//for (int i = 2; i < len; i++){
-			//y[i] = alpha * x[i] + (1 - alpha) * y[i - 1];
-			//y[1] = alpha * x[1] + (1 - alpha) * y[0];
-			//y[1] = alpha * x[1] + (1 - alpha) * alpha * x[0];
-			//y[1] = alpha * (x[1] + (1 - alpha)*x[0]);
-		//}
-		return alpha * (deriv + (1 - alpha)*prev_deriv);
-	}

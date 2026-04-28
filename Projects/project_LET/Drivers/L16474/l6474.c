@@ -130,8 +130,8 @@ float L6474_Tval_Par_to_Current(uint8_t Par);
 /**
   * @}
   */ 
-uint32_t dummy5 = 0;
-bool dummy_cond = false;
+int32_t dummy5 = 0;
+//bool dummy_cond = false;
 
 /** @defgroup L6474_Exported_Variables L6474 Exported Variables
   * @{
@@ -806,7 +806,7 @@ void L6474_GoTo(uint8_t deviceId, int32_t targetPosition)
   }
 
   /* Get current position */
-  int32_t dummy7 = L6474_ConvertPosition(L6474_CmdGetParam(deviceId,L6474_ABS_POS));
+  //int32_t dummy7 = L6474_ConvertPosition(L6474_CmdGetParam(deviceId,L6474_ABS_POS));
   devicePrm[deviceId].currentPosition = L6474_ConvertPosition(L6474_CmdGetParam(deviceId,L6474_ABS_POS));
   
   /* Compute the number of steps to perform */
@@ -1503,6 +1503,7 @@ int32_t L6474_ConvertPosition(uint32_t abs_position_reg)
   {
     operation_result = (int32_t) abs_position_reg;
   }
+  dummy5 = operation_result;
   return operation_result;
 }
 

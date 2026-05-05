@@ -1,4 +1,4 @@
-#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+//#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
 #include "Control.h"
 
 //L6474_GetAcceleration(0) // get acceleration from stepper motor
@@ -144,7 +144,7 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	PID->int_term += (sample_period)*((*current_error) + PID->state_a[0])/2;
 	//int_term = int_term + (sample_period)*error;
 	if(PID->Ki != 0){										//clamp the value
-		int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
+		//int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
 	}
 
 	diff = (error - PID->state_a[0])/sample_period;
@@ -162,9 +162,10 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 
 	//contr_sig =  PID->Kd*diff_filt + PID->Ki*int_term + PID->Kp*error;
 	contr_sig =  PID->Kd*diff_filt + PID->Ki*PID->int_term + PID->Kp*error;
-	PID->control_output = limit_value(contr_sig, -180, 180);
+	//PID->control_output = limit_value(contr_sig, -270, 270);
+	PID->control_output = contr_sig;
 
-	printf("int_term: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", PID->Ki*PID->int_term, (error - PID->state_a[0]), diff, PID->Kd*diff_filt, PID->control_output);
+	//printf("int_term: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", PID->Ki*PID->int_term, (error - PID->state_a[0]), diff, PID->Kd*diff_filt, PID->control_output);
 
 	//printf("Cutoff: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", cutoff_freq, (error - PID->state_a[0]), diff, diff_filt, PID->control_output);
 

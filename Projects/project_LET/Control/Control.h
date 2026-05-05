@@ -44,12 +44,12 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 0   // 3 too much, 0.3  - 0.6   // 1.5    //2   //3.5
-#define PRIMARY_INTEGRAL_MODE_1     0    //10 works now       - 0     // 0    //1     //1
+#define PRIMARY_PROPORTIONAL_MODE_1 0.20   // 3 too much, 0.3  - 0.6   // 1.5    //2   //3.5
+#define PRIMARY_INTEGRAL_MODE_1     160    //40 is a start      //10 works now       - 0     // 0    //1     //1
 #define PRIMARY_DERIVATIVE_MODE_1   0 //0.1 too much       - 15    // 0.3    //1     //2
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.5    //0.5         - 0.3   // 0.2 <- has to be at least one. Does not return other wise
-#define SECONDARY_INTEGRAL_MODE_1     	5      // 0.8    //0.75           - 0     // 0
+#define SECONDARY_PROPORTIONAL_MODE_1 	0.02    //0.44    //0.5         - 0.3   // 0.2 <- has to be at least one. Does not return other wise
+#define SECONDARY_INTEGRAL_MODE_1     	10     //10          // 5   //0.75           - 0     // 0
 #define SECONDARY_DERIVATIVE_MODE_1   	0   //              - 4     // 0.1
 
 /**
@@ -80,7 +80,7 @@
 //#define scale_factor 100
 #define scale_factor 1
 
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        1  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        0.09  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
 #define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR  0.09 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
 
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 10  		// 10 - Corner frequency of low pass filter of Primary PID derivative

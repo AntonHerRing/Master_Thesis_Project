@@ -271,8 +271,8 @@ int main()
     xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE0, &letEncTsk);
     xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 5120, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
     xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
-    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 10240, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);    //10240, is too much
-    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 5120, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
+    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 18216, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);    //18216          //10240, is too much
+    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 1024, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);
     
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -315,12 +315,11 @@ void vLetEncTask_init(void) {
 
 void vLetEncTask_job(void) {
     /******** Init static var ********/
-    //(*task_Enc) = get_encoder_angle_continous(count);
+
     uint32_t current_time = xTaskGetTickCount();
+    
+    (*task_Enc) = get_encoder_angle_continous(count);
 
-    //printf("Current time: %d\n", current_time);
-
-    (*task_Enc) = step_response_enc(current_time, 8000);
     
 }
 /*-----------------------------------------------------------*/
@@ -356,8 +355,8 @@ void vLetMotorTask_job(void) {
     //Handle button inputs
     buttons = *MotorTask_Btns;
     switch(buttons){
-        case 1: collector += 0.2; break;
-        case 2: collector -= 0.2; break;
+        case 1: collector += 1; break;    //0.2
+        case 2: collector -= 1; break;
         case 4:
             collector = 0;
             L6474_SetHome(0, get_stepper_angle()* MOTOR_STEPS_PER_DEGREE);
@@ -371,13 +370,13 @@ void vLetMotorTask_job(void) {
     motor_deg = get_stepper_angle();
     (*task_Motor) = motor_deg; //write any inputs
 
-    printf("Desired pos: %f\n", desired_pos);
+    //printf("Desired pos: %f\n", desired_pos);
 
     // Catch Control signal overflow
-    if(!pos_overflow && abs(motor_deg) >= 180 || abs(desired_pos) >= 180){
+    /*if(!pos_overflow && abs(motor_deg) >= 270 || abs(desired_pos) >= 270){
         L6474_HardStop(0);
         pos_overflow = true;
-    }
+    }*/
 
     // Move if signal is stable
     if(!pos_overflow){
@@ -514,12 +513,12 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
-    static float Pend_target = 180;
-    static float Motor_target = 70;
+    static float Pend_target = 180;     //180
+    static float Motor_target = 0;     //0     //70
     static float Polarity = -1; //-1
 
     /******** Main function ********/
-    if (abs(*ContrTask_Enc) >= 175 && abs(*ContrTask_Enc) <= 185 && balance_on == false){
+    if (abs(*ContrTask_Enc) >= 179.5 && abs(*ContrTask_Enc) <= 180.5 && balance_on == false){
         balance_on = true;
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
@@ -553,7 +552,7 @@ void vLetContrTask_job(void) {
         //*current_error_rotor_steps = rotor_position_filter_steps - rotor_position_command_steps;
         *current_error_rotor_steps = Motor_target - *ContrTask_Motor;
         //*current_error_rotor_steps *= STEPPER_READ_POSITION_STEPS_PER_DEGREE;
-        printf("Currenr error rotor steps: %f\n", *current_error_rotor_steps);
+        //printf("Currenr error rotor steps: %f\n", *current_error_rotor_steps);
         
         //printf("Motor::\n");
     	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);

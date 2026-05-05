@@ -5,10 +5,13 @@ import numpy as np
 import time
 from datetime import datetime
 
+import sys
+
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 
 import tkinter as tk
+from tkinter import ttk
 
 #pip install [module]
 
@@ -25,9 +28,7 @@ Run_time_plot   = [0]
 #button choice when starting
 State_input = 0
 
-# Function handling live recording of variables
-def Record_Graph():
-    # Ping COM9 to see if available
+def Ping_Comm():
     while True:
         try:
             ser = serial.Serial(port='/COM9', baudrate=115200) #/COM9
@@ -37,6 +38,23 @@ def Record_Graph():
         time.sleep(1)
 
     print("Connected to COM9")
+    return ser
+
+# Function handling live recording of variables
+def Record_Graph(ser):
+    # Ping COM9 to see if available
+    '''
+    while True:
+        try:
+            ser = serial.Serial(port='/COM9', baudrate=115200) #/COM9
+            break
+        except serial.serialutil.SerialException:
+            print("No Connection found") 
+        time.sleep(1)
+
+    print("Connected to COM9")
+    '''
+    #ser = Ping_Comm()
 
     # Generate file for logging with date and time
     CurrDateTime = str(datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
@@ -81,10 +99,14 @@ def Record_Graph():
                 #print(StringValue)
 
                 #parse values from print
-                Run_Time = StringValue.split("Run Time(s): ")[1].split("Deg:")[0].replace(" ", "")
-                Encoder = StringValue.split("Deg: ")[1].split("Motor")[0].replace(" ", "")
-                Motor = StringValue.split("Motor Deg: ")[1].split("Target")[0].replace(" ", "")
-                Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
+                if StringValue.find("Run Time(s): ") != -1 and StringValue.find("Deg:") != -1:
+                    Run_Time = StringValue.split("Run Time(s): ")[1].split("Deg:")[0].replace(" ", "")
+                if StringValue.find("Deg: ") != -1 and StringValue.find("Motor") != -1:
+                    Encoder = StringValue.split("Deg: ")[1].split("Motor")[0].replace(" ", "")
+                if StringValue.find("Motor Deg: ") != -1 and StringValue.find("Target") != -1:
+                    Motor = StringValue.split("Motor Deg: ")[1].split("Target")[0].replace(" ", "")
+                if StringValue.find("Target Deg:") != -1 and StringValue.find("End") != -1:
+                    Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
 
                 # Keep rotation within 360 degrees
                 if (float(Encoder)) <= -360:
@@ -222,6 +244,33 @@ def select_function():
 
     window.mainloop()
 
+def loading_screen():
+    def process_to_load():
+        progress.start()
+
+        progress['value'] = 0
+        window.update_idletasks()
+
+        ser = Ping_Comm()
+
+        progress['value'] = 100
+        window.update_idletasks()  
+
+        progress.stop()
+        window.destroy()
+        Record_Graph(ser)
+
+    window = tk.Tk()
+    window.title("Pinging Comms..")
+
+    # Create a progressbar widget
+    progress = ttk.Progressbar(window, orient="horizontal", length=300, mode="determinate")
+    progress.pack(pady=20)
+
+    # Button to start progress
+    window.after(50, process_to_load)
+    window.mainloop()
+
 #Input to change state
 #State_input = int(input("(1): Record Graph\t(2): Load Graph\n"))
 
@@ -233,10 +282,13 @@ while True:
     if State_input == 0:
         break
     elif State_input == 1:
-        Record_Graph()
+        loading_screen()
+        #Record_Graph()
     elif State_input == 2:
         log_handler()
     else:
         print("Error: Incorrect Option! Expected 1 or 2. Got: " + str(State_input))
+
+    sys.exit()
 
 

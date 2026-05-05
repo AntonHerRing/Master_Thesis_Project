@@ -35,7 +35,7 @@
   *
   ******************************************************************************
   */
-#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+//#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
 
 /* Includes ------------------------------------------------------------------*/
 #include "l6474.h"

@@ -39,3 +39,5 @@ float get_encoder_steps(int local_count);
 float get_encoder_radian(int local_count);
 float get_encoder_angle_continous(int local_count);
 float get_encoder_radian_continous(int local_count);
+
+float step_response_enc(uint32_t time, uint32_t step_time);

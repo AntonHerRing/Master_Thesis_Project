@@ -27,7 +27,7 @@
 
 
 // From STM example
-/*#define PRIMARY_PROPORTIONAL_MODE_1 300
+/*#define PRIMARY_PROPORTIONAL_MODE_1 300 
 #define PRIMARY_INTEGRAL_MODE_1     0.0
 #define PRIMARY_DERIVATIVE_MODE_1   30
 
@@ -35,13 +35,22 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 0.3   // 3 too much, 0.3  - 0.6
-#define PRIMARY_INTEGRAL_MODE_1     0    //10 works now       - 0
-#define PRIMARY_DERIVATIVE_MODE_1   5  //0.1 too much        - 15
+// Scaled down to Degrees maybe?
+/*#define PRIMARY_PROPORTIONAL_MODE_1 33.75 
+#define PRIMARY_INTEGRAL_MODE_1     0.0
+#define PRIMARY_DERIVATIVE_MODE_1   3.350
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	1    //0.15           - 0.3
-#define SECONDARY_INTEGRAL_MODE_1     	0    //0.75           - 0
-#define SECONDARY_DERIVATIVE_MODE_1   	10   //               - 4
+#define SECONDARY_PROPORTIONAL_MODE_1 	15.0
+#define SECONDARY_INTEGRAL_MODE_1     	0.0
+#define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
+
+#define PRIMARY_PROPORTIONAL_MODE_1 0   // 3 too much, 0.3  - 0.6   // 1.5    //2   //3.5
+#define PRIMARY_INTEGRAL_MODE_1     0    //10 works now       - 0     // 0    //1     //1
+#define PRIMARY_DERIVATIVE_MODE_1   0 //0.1 too much       - 15    // 0.3    //1     //2
+
+#define SECONDARY_PROPORTIONAL_MODE_1 	0.5    //0.5         - 0.3   // 0.2 <- has to be at least one. Does not return other wise
+#define SECONDARY_INTEGRAL_MODE_1     	5      // 0.8    //0.75           - 0     // 0
+#define SECONDARY_DERIVATIVE_MODE_1   	0   //              - 4     // 0.1
 
 /**
  * Problem Encountered with Derivative values. 
@@ -68,8 +77,11 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.04
 #define SECONDARY_DERIVATIVE_MODE_1   	0*/
 
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 10  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR 50 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
+//#define scale_factor 100
+#define scale_factor 1
+
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        1  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR  0.09 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
 
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 10  		// 10 - Corner frequency of low pass filter of Primary PID derivative
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR 50 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
@@ -120,10 +132,11 @@ bool oppositeSigns(int x, int y);
 void init_pid(struct PID *PID1, struct PID *PID2);
 void PID_controller(struct PID *Pid_in, float encoder_angle);
 
-void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float * current_error,
+void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float current_error,
 		                            float sample_period, float * Deriv_Filt);
 
 void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_error,
-								float sample_period, int cutoff_freq);
+								float sample_period, float cutoff_freq);
 
 float lowpass(float error, float prev_error, float dt, float RC);
+float lowpass_alt(float deriv, float prev_out, float dt, float RC);

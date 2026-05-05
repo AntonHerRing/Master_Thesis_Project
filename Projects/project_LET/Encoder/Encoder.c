@@ -69,3 +69,11 @@ float get_encoder_angle_continous(int local_count){
 float get_encoder_steps(int local_count){
     return  local_count % ENCODER_SPR;
 }
+
+/**** Testing functions *****/
+float step_response_enc(uint32_t time, uint32_t step_time){
+    if(time >= step_time)
+        return 180;
+    else 
+        return 0;
+}

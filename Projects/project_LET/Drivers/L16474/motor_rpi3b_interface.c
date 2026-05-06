@@ -20,6 +20,9 @@
 #include "hardware/regs/io_bank0.h"
 #include "hardware/structs/io_bank0.h"
 
+#define Phase_A 40
+#define Phase_B 39
+
 extern void L6474_StepClockHandler(uint8_t deviceId);
 
 struct repeating_timer timer;
@@ -246,4 +249,13 @@ uint8_t L6474_ReadByte(uint8_t* pByteToTransmit, uint8_t* pReceivedByte)
 {
     spi_write_read_blocking(SPI_PORT, pByteToTransmit, pReceivedByte, 1);
     return *pReceivedByte;
+}
+
+void L6474_Board_EnableIrq(){
+    irq_set_enabled(PWM_IRQ_WRAP, true);
+}
+
+
+void L6474_Board_DisableIrq(){
+    irq_set_enabled(PWM_IRQ_WRAP, false);
 }

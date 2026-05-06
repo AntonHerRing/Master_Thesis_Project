@@ -320,7 +320,7 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
     if (itDisable)
     {
       /* re-enable L6474_Board_EnableIrq if disable in previous iteration */
-     //  L6474_Board_EnableIrq();
+     L6474_Board_EnableIrq();
       itDisable = FALSE;
     }
   
@@ -330,6 +330,9 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
       spiTxBursts[1][i] = L6474_NOP;
       spiTxBursts[2][i] = L6474_NOP;
       spiTxBursts[3][i] = L6474_NOP;
+      spiRxBursts[1][i] = 0;
+      spiRxBursts[2][i] = 0;
+      spiRxBursts[3][i] = 0;    
     }
     switch (param)
     {
@@ -354,7 +357,7 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
     
     /* Disable interruption before checking */
     /* pre-emption by ISR and SPI transfers*/
-    //  L6474_Board_DisableIrq();
+      L6474_Board_DisableIrq();
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
   
@@ -367,16 +370,12 @@ uint32_t L6474_CmdGetParam(uint8_t deviceId, uint32_t param)
                           &spiRxBursts[i][0]);
   }
 
-  
-/*spiRxData = ((uint32_t)spiTxBursts[1][spiIndex] << 16)|
-              (spiTxBursts[2][spiIndex] << 8) |
-              (spiTxBursts[3][spiIndex]);*/
 spiRxData = ((uint32_t)spiRxBursts[1][spiIndex] << 16)|
               (spiRxBursts[2][spiIndex] << 8) |
               (spiRxBursts[3][spiIndex]);
   
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
- //  L6474_Board_EnableIrq();
+   L6474_Board_EnableIrq();
 
  //printf("dvPrm-curr_pos: %d\n", devicePrm[deviceId].currentPosition);
 
@@ -406,7 +405,7 @@ uint16_t L6474_CmdGetStatus(uint8_t deviceId)
     if (itDisable)
     {
       /* re-enable L6474_Board_EnableIrq if disable in previous iteration */
-     //  L6474_Board_EnableIrq();
+     L6474_Board_EnableIrq();
       itDisable = FALSE;
     }
 
@@ -415,14 +414,14 @@ uint16_t L6474_CmdGetStatus(uint8_t deviceId)
        spiTxBursts[0][i] = L6474_NOP;
        spiTxBursts[1][i] = L6474_NOP;
        spiTxBursts[2][i] = L6474_NOP;
-       // spiRxBursts[1][i] = 0;
-       // spiRxBursts[2][i] = 0;
+       spiRxBursts[1][i] = 0;
+       spiRxBursts[2][i] = 0;
     }
     spiTxBursts[0][spiIndex] = L6474_GET_STATUS;
 
     /* Disable interruption before checking */
     /* pre-emption by ISR and SPI transfers*/
-    //  L6474_Board_DisableIrq();
+    L6474_Board_DisableIrq();
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
 
@@ -432,11 +431,10 @@ uint16_t L6474_CmdGetStatus(uint8_t deviceId)
      L6474_WriteBytes(&spiTxBursts[i][0], &spiRxBursts[i][0]);
   }
 
-  //status = (spiTxBursts[1][spiIndex] << 8) | (spiTxBursts[2][spiIndex]);
   status = (spiRxBursts[1][spiIndex] << 8) | (spiRxBursts[2][spiIndex]);
   
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
- // //  L6474_Board_EnableIrq();
+  L6474_Board_EnableIrq();
   
   return (status);
 }
@@ -472,7 +470,7 @@ void L6474_CmdSetParam(uint8_t deviceId,
     if (itDisable)
     {
       /* re-enable L6474_Board_EnableIrq if disable in previous iteration */
-     //  L6474_Board_EnableIrq();
+     L6474_Board_EnableIrq();
       itDisable = FALSE;
     }
     for (i = 0; i < numberOfDevices; i++)
@@ -505,7 +503,7 @@ void L6474_CmdSetParam(uint8_t deviceId,
     
     /* Disable interruption before checking */
     /* pre-emption by ISR and SPI transfers*/
-    //  L6474_Board_DisableIrq();
+    L6474_Board_DisableIrq();
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
  
@@ -517,7 +515,7 @@ void L6474_CmdSetParam(uint8_t deviceId,
      L6474_WriteBytes(&spiTxBursts[i][0],&spiRxBursts[i][0]);
   }
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
- //  L6474_Board_EnableIrq();
+  L6474_Board_EnableIrq();
 }
 
 /******************************************************//**
@@ -1545,7 +1543,7 @@ void L6474_SendCommand(uint8_t deviceId, uint8_t param)
     if (itDisable)
     {
       /* re-enable L6474_Board_EnableIrq if disable in previous iteration */
-     //  L6474_Board_EnableIrq();
+      L6474_Board_EnableIrq();
       itDisable = FALSE;
     }
   
@@ -1557,7 +1555,7 @@ void L6474_SendCommand(uint8_t deviceId, uint8_t param)
     
     /* Disable interruption before checking */
     /* pre-emption by ISR and SPI transfers*/
-    //  L6474_Board_DisableIrq();
+    L6474_Board_DisableIrq();
     itDisable = TRUE;
   } while (spiPreemtionByIsr); // check pre-emption by ISR
   // printf("Command: 0x%x\n", spiTxBursts[3][0]);
@@ -1566,7 +1564,7 @@ void L6474_SendCommand(uint8_t deviceId, uint8_t param)
 
   
   /* re-enable L6474_Board_EnableIrq after SPI transfers*/
- //  L6474_Board_EnableIrq();
+  L6474_Board_EnableIrq();
 }
 
 /******************************************************//**

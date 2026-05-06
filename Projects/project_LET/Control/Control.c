@@ -141,13 +141,13 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 
 	/* Compute time integral of error by trapezoidal rule */
 	//int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
-	PID->int_term += (sample_period)*((*current_error) + PID->state_a[0])/2;
-	//int_term = int_term + (sample_period)*error;
+	PID->int_term += (sample_period)*(error + PID->state_a[0])/2;
 	if(PID->Ki != 0){										//clamp the value
 		//int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
 	}
 
-	diff = (error - PID->state_a[0])/sample_period;
+	//diff = (error - PID->state_a[0])/sample_period;
+	diff = error/sample_period;
 	if(PID->Kd != 0){											//clamp the value
 		//diff = limit_value(PID->Kd*diff, -60, 60)/PID->Kd;
 	}
@@ -157,7 +157,8 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
 	* feedback_term is the pole location
 	*/
-	diff_filt = lowpass(diff, PID->state_a[2], sample_period, RC);
+	//diff_filt = lowpass(diff, PID->state_a[2], sample_period, RC);
+	diff_filt = diff;
 	//diff_filt = lowpass_alt(diff, PID->state_a[3], sample_period, RC);
 
 	//contr_sig =  PID->Kd*diff_filt + PID->Ki*int_term + PID->Kp*error;
@@ -170,8 +171,8 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	//printf("Cutoff: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", cutoff_freq, (error - PID->state_a[0]), diff, diff_filt, PID->control_output);
 
 	/* Update state variables */
-	PID->state_a[1] = PID->state_a[0];
-	PID->state_a[0] = error;	//prev error value
+	PID->state_a[0] = error;			//e(t - 1)
+	PID->state_a[1] = PID->state_a[0];	//e(t - 2)
 	PID->state_a[2] = diff;
 	PID->state_a[3] = diff_filt;
 	//PID->int_term = int_term;

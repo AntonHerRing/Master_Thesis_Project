@@ -32,3 +32,5 @@ void L6474_Board_SpiInit();   //Initialise the SPI used for L6474s
 uint8_t L6474_Board_SpiWriteBytes(uint8_t* pByteToTransmit, uint8_t* pReceivedByte, uint8_t nbDevices); //Write bytes to the L6474s via SPI
 
 uint8_t L6474_ReadByte(uint8_t* pByteToTransmit, uint8_t* pReceivedByte);
+void L6474_Board_EnableIrq();
+void L6474_Board_DisableIrq();

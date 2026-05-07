@@ -44,13 +44,13 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 0.248    //0.20   // 3 too much, 0.3  - 0.6   // 1.5    //2   //3.5
-#define PRIMARY_INTEGRAL_MODE_1     100    //160 //40 is a start      //10 works now       - 0     // 0    //1     //1
-#define PRIMARY_DERIVATIVE_MODE_1   0 //0.1 too much       - 15    // 0.3    //1     //2
+#define PRIMARY_PROPORTIONAL_MODE_1 0.247  //0.248    //0.20   
+#define PRIMARY_INTEGRAL_MODE_1     100    //160      //40 is a start      
+#define PRIMARY_DERIVATIVE_MODE_1   0    
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.01    //0.44    //0.02         - 0.3   // 0.2 <- has to be at least one. Does not return other wise
-#define SECONDARY_INTEGRAL_MODE_1     	1     //10          // 5   //0.75           - 0     // 0
-#define SECONDARY_DERIVATIVE_MODE_1   	0   //              - 4     // 0.1
+#define SECONDARY_PROPORTIONAL_MODE_1 	0.09//0.05  //0.44    //0.02        
+#define SECONDARY_INTEGRAL_MODE_1     	15     //10      // 5   
+#define SECONDARY_DERIVATIVE_MODE_1   	0//0.03  //0.02   
 
 /**
  * Problem Encountered with Derivative values. 
@@ -80,8 +80,8 @@
 //#define scale_factor 100
 #define scale_factor 1
 
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        0.09  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR  0.09 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        1  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR  5 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
 
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 10  		// 10 - Corner frequency of low pass filter of Primary PID derivative
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR 50 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
@@ -132,7 +132,7 @@ bool oppositeSigns(int x, int y);
 void init_pid(struct PID *PID1, struct PID *PID2);
 void PID_controller(struct PID *Pid_in, float encoder_angle);
 
-void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float current_error,
+void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_error,
 		                            float sample_period, float * Deriv_Filt);
 
 void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_error,

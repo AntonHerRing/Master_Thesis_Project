@@ -1,4 +1,4 @@
-#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+//#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
 
 
 #include <stdio.h>
@@ -123,6 +123,8 @@ int16_t* task_Btns;      /* Pointer to the local data of label Btns by Buttons t
 int16_t  task_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
 int16_t* MotorTask_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
 int16_t  MotorTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
+int16_t* EncTask_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
+int16_t  EncTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
 
 // Rotary Encoder Interrupt Variables
 volatile int32_t count = 0;
@@ -303,13 +305,15 @@ void vLetBtnsTask_job(void) {
 
 void vLetEncTask_init(void) {
     task_Enc = &task_Enc_data;    /* Initialize the pointer to the local buffer for label ENC */
+    EncTask_Btns = &EncTask_Btns_data;
 
     // Initialize the Interrupts on the two A and B ports
     gpio_set_irq_enabled_with_callback(Phase_A, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
     gpio_set_irq_enabled(Phase_B, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true);
 
     /******** Register LET variables ********/
-    xLetTaskRegisterWrite(&letEncTsk, &label_Enc, (void*) &task_Enc);    /* Register the write access for label A */    
+    xLetTaskRegisterWrite(&letEncTsk, &label_Enc, (void*) &task_Enc);           /* Register the write access for label Enc */   
+    xLetTaskRegisterWrite(&letBtnsTsk, &label_Btns, (void*) &EncTask_Btns);     /* Register the read access for label Btns */   
 }
 /*-----------------------------------------------------------*/
 
@@ -317,6 +321,12 @@ void vLetEncTask_job(void) {
     /******** Init static var ********/
 
     uint32_t current_time = xTaskGetTickCount();
+
+    //Handle button inputs
+    switch(*MotorTask_Btns){
+        case 4: count = 0; break; //reset pendulum angle
+        default: break;
+    }
     
     (*task_Enc) = get_encoder_angle_continous(count);
     //(*task_Enc) = step_response_enc(current_time, 8000);
@@ -374,7 +384,7 @@ void vLetMotorTask_job(void) {
     //printf("Desired pos: %f\n", desired_pos);
 
     // Catch Control signal overflow
-    if(!pos_overflow && abs(motor_deg) >= 360 || abs(desired_pos) >= 500){
+    if(!pos_overflow && abs(motor_deg) >= 360 || abs(desired_pos) >= 360){
         L6474_HardStop(0);
         pos_overflow = true;
     }
@@ -477,9 +487,9 @@ void vLetContrTask_init(void) {
 							* STEPPER_READ_POSITION_STEPS_PER_DEGREE);
 
     //pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
+	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
     pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
-    pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
+    //pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
 
     xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);     /* Register the read access for label Enc */    
     xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);     /* Register the write access for label Contr */   
@@ -498,12 +508,12 @@ void vLetContrTask_job(void) {
         balance_on = true;
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
-    else if (abs(*ContrTask_Enc) >= -0.5 && abs(*ContrTask_Enc) <= 0.5 && balance_on == true){
+    /*else if (abs(*ContrTask_Enc) >= 220 && abs(*ContrTask_Enc) <= 40 && balance_on == true){
         balance_on = false;
-    }
-
-
-    if (balance_on){
+        start_pos = *ContrTask_Motor;
+    }*/
+   
+    if (balance_on && abs(rotor_control_target_steps) < 350){
         encoder_position = *ContrTask_Enc;
 
         //*current_error_steps = encoder_angle_slope_corr_steps
@@ -517,8 +527,8 @@ void vLetContrTask_job(void) {
 
         *current_error_rotor_steps = Motor_target - *ContrTask_Motor;
         //printf("Motor::\n");
-    	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
-        pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
+    	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
+        //pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
 
 
 		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
@@ -527,7 +537,7 @@ void vLetContrTask_job(void) {
         (*task_Contr) = rotor_control_target_steps;
         //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);
     }
-    else
+    else if (!balance_on) 
         (*task_Contr) = 0;
 }
 /*-----------------------------------------------------------*/

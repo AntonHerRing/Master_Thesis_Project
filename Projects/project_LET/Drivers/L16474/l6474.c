@@ -1826,6 +1826,7 @@ void L6474_StartMovement(uint8_t deviceId)
 {
   /* Enable L6474 powerstage */
   L6474_CmdEnable(deviceId);
+  L6474_Board_DisableIrq();
   if (devicePrm[deviceId].endAccPos != 0)
   {
     devicePrm[deviceId].motionState = ACCELERATING;
@@ -1837,6 +1838,7 @@ void L6474_StartMovement(uint8_t deviceId)
   devicePrm[deviceId].accu = 0;
   devicePrm[deviceId].relativePos = 0;
   L6474_ApplySpeed(deviceId, devicePrm[deviceId].minSpeed);
+  L6474_Board_EnableIrq();
 }
 
 /******************************************************//**

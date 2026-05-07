@@ -59,34 +59,29 @@ float limit_value(float signal, float min, float max){
 		return signal;
 }
 
-void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float current_error,
+void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_error,
 								float sample_period, float *Deriv_Filt) {
 
 	float int_term, diff, diff_filt, contr_sig;
 	static bool first_time = true;
+	float error = *current_error;
 
 	// Prevent derivative kick. Set curr and prev value as same.
-	if (first_time && current_error != 0){
-		PID->state_a[0] = current_error;
+	if (first_time && error != 0){
+		PID->state_a[0] = error;
 		first_time = false;
 	}
 
 	/* Compute time integral of error by trapezoidal rule */
-	int_term = (sample_period)*((current_error) + PID->state_a[0])/2;
+	//int_term = (sample_period)*(error + PID->state_a[0])/2;
+	//PID->int_term += (sample_period)*(error + PID->state_a[0])/2;
+	PID->int_term += sample_period*error;
 	//int_term = PID->int_term + (sample_period)*((*current_error));
-	if(PID->Ki != 0){										//clamp the value
-		//int_term = limit_value(PID->Ki*int_term, -60.0, 60.0)/PID->Ki;
-		//int_term = limit_value(PID->Ki*int_term, -533.0, 533.0)/PID->Ki;
-	}
 
 	/* Compute time derivative of error */
 	//diff = ((*current_error) - PID->state_a[0])/(sample_period);
+	diff = (error - PID->state_a[0])/(sample_period);
 
-	diff = ((current_error) - PID->state_a[0])/(sample_period);
-	if(PID->Kd != 0){											//clamp the value
-		//diff = limit_value(PID->Kd*diff, -60.0, 60.0)/PID->Kd;
-		//diff = limit_value(PID->Kd*diff, -533.0, 533.0)/PID->Kd;
-	}
 	
 	/* 
 	* Compute first order low pass filter of time derivative. IIR filter 
@@ -104,20 +99,19 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float current_error
 
 	//PID->control_output = diff_filt + int_term + PID->Kp*(*current_error);
 	//contr_sig =  PID->Kd*diff + PID->Ki*int_term + PID->Kp*(*current_error);
-	contr_sig =  PID->Kd*diff_filt + PID->Ki*int_term + PID->Kp*(current_error);
+	contr_sig =  PID->Kd*diff_filt + PID->Ki*PID->int_term + PID->Kp*error;
 	//PID->control_output = limit_value(contr_sig, -180, 180);
-	PID->control_output = limit_value(contr_sig, -1605, 1605);
+	PID->control_output = contr_sig;
 
-	//printf("int_term: %f\tdiff: %f\tdiff_filt: %f\n ", int_term, diff, diff_filt);
+	//printf("Rotor:: int_term: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", PID->Ki*PID->int_term, (error - PID->state_a[0]), diff, PID->Kd*diff_filt, PID->control_output);
 	//printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", ((current_error) - PID->state_a[0]), diff, diff_filt, PID->control_output);
 
 	/* Update state variables */
-	PID->state_a[1] = PID->state_a[0];
-	PID->state_a[0] = current_error;	//previosu error value
+	PID->state_a[0] = error;			//e(t - 1)
+	PID->state_a[1] = PID->state_a[0];	//e(t - 2)
 	PID->state_a[2] = diff;
 	PID->state_a[3] = diff_filt;
-	PID->int_term = int_term;
-
+	//PID->int_term = int_term;
 }
 
 // RC term might falsly appear to make the filter work.
@@ -128,16 +122,12 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	static bool first_time = true;
 	float error = *current_error;
 
-	//printf("Cutoff: %f\terror: %f\n", cutoff_freq, error);
-
-
 	// Prevent derivative kick. Set curr and prev value as same.
 	if (first_time && error != 0){
 		PID->state_a[0] = error;
 		first_time = false;
 	}
 	float RC = 1.0/(2.0*PI * cutoff_freq);
-	//float RC = 1.0/(2.0*PI * (float)cutoff_freq); // <- Supposed correct equation
 
 	/* Compute time integral of error by trapezoidal rule */
 	//int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
@@ -166,7 +156,7 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	//PID->control_output = limit_value(contr_sig, -270, 270);
 	PID->control_output = contr_sig;
 
-	//printf("int_term: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", PID->Ki*PID->int_term, (error - PID->state_a[0]), diff, PID->Kd*diff_filt, PID->control_output);
+	//printf("Pend:: int_term: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", PID->Ki*PID->int_term, (error - PID->state_a[0]), diff, PID->Kd*diff_filt, PID->control_output);
 
 	//printf("Cutoff: %f\tError: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", cutoff_freq, (error - PID->state_a[0]), diff, diff_filt, PID->control_output);
 

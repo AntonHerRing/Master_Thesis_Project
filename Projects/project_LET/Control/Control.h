@@ -44,13 +44,13 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 0.247  //0.248    //0.20   
-#define PRIMARY_INTEGRAL_MODE_1     100    //160      //40 is a start      
-#define PRIMARY_DERIVATIVE_MODE_1   0    
+#define PRIMARY_PROPORTIONAL_MODE_1 0.01  //0.247    //0.20   
+#define PRIMARY_INTEGRAL_MODE_1     160//90//95    //160      //40 is a start      
+#define PRIMARY_DERIVATIVE_MODE_1   0//0.00001    
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.09//0.05  //0.44    //0.02        
-#define SECONDARY_INTEGRAL_MODE_1     	15     //10      // 5   
-#define SECONDARY_DERIVATIVE_MODE_1   	0//0.03  //0.02   
+#define SECONDARY_PROPORTIONAL_MODE_1 	0.3//0.07//0.07//0.05  //0.44    //0.02        
+#define SECONDARY_INTEGRAL_MODE_1     	20//0.5     //10      // 5   
+#define SECONDARY_DERIVATIVE_MODE_1   	0//0.0003//0.03  //0.02   
 
 /**
  * Problem Encountered with Derivative values. 
@@ -76,9 +76,6 @@
 #define SECONDARY_PROPORTIONAL_MODE_1 	0.01
 #define SECONDARY_INTEGRAL_MODE_1     	0.04
 #define SECONDARY_DERIVATIVE_MODE_1   	0*/
-
-//#define scale_factor 100
-#define scale_factor 1
 
 #define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        1  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
 #define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR  5 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
@@ -140,3 +137,6 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 
 float lowpass(float error, float prev_error, float dt, float RC);
 float lowpass_alt(float deriv, float prev_out, float dt, float RC);
+
+void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *current_error,
+									float sample_period, float cutoff_freq);

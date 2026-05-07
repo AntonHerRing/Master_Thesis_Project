@@ -76,11 +76,15 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	//int_term = (sample_period)*(error + PID->state_a[0])/2;
 	//PID->int_term += (sample_period)*(error + PID->state_a[0])/2;
 	PID->int_term += sample_period*error;
+	/*if(PID->Ki != 0){										//clamp the value
+		PID->int_term = limit_value(PID->Ki*PID->int_term, -60, 60)/PID->Ki;
+	}*/
 	//int_term = PID->int_term + (sample_period)*((*current_error));
 
 	/* Compute time derivative of error */
 	//diff = ((*current_error) - PID->state_a[0])/(sample_period);
 	diff = (error - PID->state_a[0])/(sample_period);
+	//diff = error/sample_period;
 
 	
 	/* 
@@ -88,10 +92,11 @@ void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_erro
 	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
 	* feedback_term is the pole location
 	*/
-	if (PID->Kd != 0)
+	/*if (PID->Kd != 0)
 		diff_filt = Deriv_Filt[0]*(diff + PID->state_a[2]) + Deriv_Filt[1]*PID->state_a[3];
 	else 
-		diff_filt = 0;
+		diff_filt = 0;*/
+	diff_filt = diff;
 	//printf("Deriv[0]: %f\t[1]: %f\tPID->state_a[2]: %f\tPID->state_a[3]: %f\n ", Deriv_Filt[0], Deriv_Filt[1], PID->state_a[2], PID->state_a[3]);
 
 	/* Accumulate PID output with Integral, Derivative and Proportional contributions*/
@@ -133,11 +138,11 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	//int_term = (sample_period)*((*current_error) + PID->state_a[0])/2;
 	PID->int_term += (sample_period)*(error + PID->state_a[0])/2;
 	if(PID->Ki != 0){										//clamp the value
-		//int_term = limit_value(PID->Ki*int_term, -60, 60)/PID->Ki;
+		PID->int_term = limit_value(PID->Ki*PID->int_term, -60, 60)/PID->Ki;
 	}
 
-	//diff = (error - PID->state_a[0])/sample_period;
-	diff = error/sample_period;
+	diff = (error - PID->state_a[0])/sample_period;
+	//diff = error/sample_period;
 	if(PID->Kd != 0){											//clamp the value
 		//diff = limit_value(PID->Kd*diff, -60, 60)/PID->Kd;
 	}
@@ -166,6 +171,43 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	PID->state_a[2] = diff;
 	PID->state_a[3] = diff_filt;
 	//PID->int_term = int_term;
+}
+
+void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *current_error,
+									float sample_period, float cutoff_freq) {
+
+	float Delt_int, deriv_term, Delt_deriv, contr_sig;
+	static bool first_time = true;
+	float err = *current_error;
+
+	// Prevent derivative kick. Set curr and prev value as same.
+	if (first_time && err != 0){
+		PID->state_a[0] = err;
+		PID->state_a[1] = err;
+		first_time = false;
+	}
+	float Delt_err = err - PID->state_a[0]; 	// Δe(t) = e(t) - Δe(t - Δt)
+
+	/* Compute time integral of error by trapezoidal rule */
+	Delt_int = sample_period*(err + PID->state_a[0])/2;
+
+	deriv_term = (err - PID->state_a[0])/sample_period;
+	Delt_deriv = deriv_term - PID->state_a[2];
+	
+	contr_sig =  PID->state_a[3] + PID->Kp*Delt_err + PID->Ki*Delt_int + PID->Kd*Delt_deriv;
+	
+	/* Update state variables */
+	PID->state_a[0] = err;			//e(t - 1)
+	PID->state_a[1] = PID->state_a[0];	//e(t - 2)
+	PID->state_a[2] = deriv_term;
+	PID->state_a[3] = contr_sig; // u(t - 1), past output
+	//PID->state_a[3] = 0;
+	//PID->int_term = int_term;
+
+	//PID->control_output = limit_value(contr_sig, -180, 180);	   // u(t)	Write output
+	PID->control_output = contr_sig;
+
+	//printf("int_term: %f\tError: %f\tderiv_term: %f\toutput: %f\n", PID->Ki*Delt_int, Delt_err, PID->Kd*Delt_deriv, PID->control_output);
 }
 	
 /******************************************************//**

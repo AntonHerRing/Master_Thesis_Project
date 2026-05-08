@@ -44,13 +44,13 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 0.01//0.012  //0.247    //0.20   
-#define PRIMARY_INTEGRAL_MODE_1     145 //140 //90//95    //160      //40 is a start      
-#define PRIMARY_DERIVATIVE_MODE_1   0//0.00001    
+#define PRIMARY_PROPORTIONAL_MODE_1 0.05    //0.01  //0.012  //0.247    //0.20   
+#define PRIMARY_INTEGRAL_MODE_1     145     //140   //90//95    //160      //40 is a start      
+#define PRIMARY_DERIVATIVE_MODE_1   0       //0.00001    
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.02//0.5//0.07//0.07//0.05  //0.44    //0.02        
-#define SECONDARY_INTEGRAL_MODE_1     	0.01//4.75//5 <- Is VERY close   
-#define SECONDARY_DERIVATIVE_MODE_1   	0//0.0003//0.03  //0.02   
+#define SECONDARY_PROPORTIONAL_MODE_1 	0.08//0.02        //0.5//0.07//0.07//0.05  //0.44    //0.02        
+#define SECONDARY_INTEGRAL_MODE_1     	0.05//0.01        //4.75//5 <- Is VERY close   
+#define SECONDARY_DERIVATIVE_MODE_1   	0           //0.0003//0.03  //0.02   
 
 /**
  * Problem Encountered with Derivative values. 

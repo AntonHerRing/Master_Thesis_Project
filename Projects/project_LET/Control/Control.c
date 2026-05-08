@@ -196,8 +196,9 @@ void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *
 	deriv_term = (err - PID->state_a[0])/sample_period;
 	Delt_deriv = deriv_term - PID->state_a[2];
 
-	if(PID->Kp != 0){
-	   bias = -0.045;		
+	if(PID->Kp == PRIMARY_PROPORTIONAL_MODE_1){
+	   //bias = -0.04875;		//-0.0475		//-0.045	
+	   //bias = 1 - (0.999985);
 	}
 	
 	contr_sig =  PID->state_a[3] + PID->Kp*Delt_err + PID->Ki*Delt_int + PID->Kd*Delt_deriv + bias;
@@ -211,7 +212,7 @@ void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *
 	//PID->int_term = int_term;
 
 	//PID->control_output = limit_value(contr_sig, -180, 180);	   // u(t)	Write output
-	PID->control_output = contr_sig + bias;
+	PID->control_output = contr_sig;
 
 	//printf("int_term: %f\tError: %f\tderiv_term: %f\toutput: %f\n", PID->Ki*Delt_int, Delt_err, PID->Kd*Delt_deriv, PID->control_output);
 }

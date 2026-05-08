@@ -506,6 +506,8 @@ void vLetContrTask_job(void) {
     static float Motor_target = 0;     //0     //70
     static float Polarity = -1; //-1
 
+    static float bias = 0;
+
     /******** Main function ********/
     if (abs(*ContrTask_Enc) >= 179.5 && abs(*ContrTask_Enc) <= 180.5 && balance_on == false){
         balance_on = true;

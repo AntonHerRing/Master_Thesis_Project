@@ -59,6 +59,35 @@ float limit_value(float signal, float min, float max){
 		return signal;
 }
 
+float max(float signal1, float signal2){
+	if(signal1 > signal2){
+		//printf("Min:: Sig1: %f > Sig2: %f\n", signal1, signal2);
+		return signal1;
+	}
+	else{
+		return signal2;
+		//printf("Min:: Sig1: %f < Sig2: %f\n", signal1, signal2);
+	}
+}
+
+float min(float signal1, float signal2){
+	if(signal1 < signal2){
+		//printf("Min:: Sig1: %f < Sig2: %f\n", signal1, signal2);
+		return signal1;
+	}
+	else{
+		return signal2;
+		//printf("Min:: Sig1: %f > Sig2: %f\n", signal1, signal2);
+	}
+}
+
+float sign(float signal){
+	if(signal >= 0)
+		return 1;
+	else 
+		return -1;
+}
+
 void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_error,
 								float sample_period, float *Deriv_Filt) {
 
@@ -174,13 +203,15 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 }
 
 void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *current_error,
-									float sample_period, float cutoff_freq) {
+									float sample_period, float *Deriv_Filt) {
 
 	float Delt_int, deriv_term, Delt_deriv, contr_sig;
 	static bool first_time = true;
 	float err = *current_error;
 
-	float bias = 0;
+	/* Rate Limitors*/
+	float contr_min = max(-180, PID->state_a[3] + sample_period*(-25.0));
+	float contr_max = min(180, 	PID->state_a[3] + sample_period*(25.0));
 
 	// Prevent derivative kick. Set curr and prev value as same.
 	if (first_time && err != 0){
@@ -188,6 +219,7 @@ void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *
 		PID->state_a[1] = err;
 		first_time = false;
 	}
+	// Filter process variable				
 	float Delt_err = err - PID->state_a[0]; 	// Δe(t) = e(t) - Δe(t - Δt)
 
 	/* Compute time integral of error by trapezoidal rule */
@@ -195,26 +227,34 @@ void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *
 
 	deriv_term = (err - PID->state_a[0])/sample_period;
 	Delt_deriv = deriv_term - PID->state_a[2];
+	lowpass_V2(Delt_deriv, &Deriv_Filt[2], &Deriv_Filt[1], sample_period, Deriv_Filt[0]);	
+	
+	//contr_sig =  PID->state_a[4] + PID->Kp*Delt_err + PID->Ki*Delt_int + PID->Kd*Delt_deriv + bias;
+	contr_sig =  PID->state_a[4] + PID->Kp*Delt_err + PID->Ki*Delt_int + PID->Kd*Deriv_Filt[1];
 
-	if(PID->Kp == PRIMARY_PROPORTIONAL_MODE_1){
-	   //bias = -0.04875;		//-0.0475		//-0.045	
-	   //bias = 1 - (0.999985);
+	/* Integration anti-windup */
+	float contr_sat = max(min(contr_sig, contr_max), contr_min);
+	//contr_sig -= (sample_period/Deriv_Filt[0])*(contr_sig - contr_sat);
+	if(Delt_int*(contr_sig - contr_sat) > 0){
+		contr_sig -= sign(contr_sig - contr_sat)*min(abs(Delt_int), abs(contr_sig - contr_sat));
 	}
-	
-	contr_sig =  PID->state_a[3] + PID->Kp*Delt_err + PID->Ki*Delt_int + PID->Kd*Delt_deriv + bias;
-	
+	contr_sig -= min((sample_period/Deriv_Filt[0]), 1)*(contr_sig - contr_sat);
+
+	PID->state_a[4] = contr_sig; 		// u(t - 1), save past output // xu
+
+	/* Saturate Output*/
+	//contr_sig = max(min(contr_sig, contr_max), contr_min);
+
+	PID->control_output = contr_sig;	// u(t)	Write output
+	//PID->control_output = max(min(contr_sig, contr_max), contr_min);	// u(t)	Write output
+
 	/* Update state variables */
-	PID->state_a[0] = err;			//e(t - 1)
+	PID->state_a[0] = err;				//e(t - 1)
 	PID->state_a[1] = PID->state_a[0];	//e(t - 2)
-	PID->state_a[2] = deriv_term;
-	PID->state_a[3] = contr_sig; // u(t - 1), past output
-	//PID->state_a[3] = 0;
-	//PID->int_term = int_term;
+	PID->state_a[2] = deriv_term;			
+	PID->state_a[3] = contr_sig; 	// xus
 
-	//PID->control_output = limit_value(contr_sig, -180, 180);	   // u(t)	Write output
-	PID->control_output = contr_sig;
-
-	//printf("int_term: %f\tError: %f\tderiv_term: %f\toutput: %f\n", PID->Ki*Delt_int, Delt_err, PID->Kd*Delt_deriv, PID->control_output);
+	printf("int_term: %f\tError: %f\tderiv_term: %f\tFilt_deriv: %f\tContr_sat: %f\toutput: %f\n", PID->Ki*Delt_int, Delt_err, PID->Kd*Delt_deriv, PID->Kd*Deriv_Filt[1], contr_sat ,PID->control_output);
 }
 	
 /******************************************************//**
@@ -239,22 +279,12 @@ float lowpass(float deriv, float prev_deriv, float dt, float RC){
 
 float lowpass_alt(float deriv, float prev_out, float dt, float RC){
 	float alpha = dt / (RC + dt);
-	//y[0] = alpha * x[0];
-	//for (int i = 2; i < len; i++){
-		//y[i] = alpha * x[i] + (1 - alpha) * y[i - 1];
-		//y[1] = alpha * x[1] + (1 - alpha) * y[0];
-		//y[1] = alpha * x[1] + (1 - alpha) * alpha * x[0];
-		//y[1] = alpha * (x[1] + (1 - alpha)*x[0]);
-	//}
 	return alpha*deriv + (1 - alpha)*prev_out;
 }
 
-/*function lowpass(real[1..n] x, real dt, real RC)
-    var real[1..n] y
-    var real α := dt / (RC + dt)
-    y[1] := α * x[1]
-    for i from 2 to n
-        y[i] := α * x[i] + (1-α) * y[i-1]
-    return y*/
-
-	// x input, array to lowpass
+void lowpass_V2(float input, float *prev_out, float *out,float dt, float TC){
+	float alpha = dt / (TC + 0.5*dt);
+	
+	*prev_out 	+= alpha*(input - *prev_out);
+	*out 		+= alpha*(*prev_out - *out);
+}

@@ -45,12 +45,12 @@
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
 #define PRIMARY_PROPORTIONAL_MODE_1 0.05    //0.01  //0.012  //0.247    //0.20   
-#define PRIMARY_INTEGRAL_MODE_1     145     //140   //90//95    //160      //40 is a start      
-#define PRIMARY_DERIVATIVE_MODE_1   0       //0.00001    
+#define PRIMARY_INTEGRAL_MODE_1     145//145     //140   //90//95    //160      //40 is a start      
+#define PRIMARY_DERIVATIVE_MODE_1   0//0.05//0.01//0.01       //0.00001    
 
 #define SECONDARY_PROPORTIONAL_MODE_1 	0.08//0.02        //0.5//0.07//0.07//0.05  //0.44    //0.02        
-#define SECONDARY_INTEGRAL_MODE_1     	0.05//0.01        //4.75//5 <- Is VERY close   
-#define SECONDARY_DERIVATIVE_MODE_1   	0           //0.0003//0.03  //0.02   
+#define SECONDARY_INTEGRAL_MODE_1     	0.05//0.5//0.05         //0.01        //4.75//5 <- Is VERY close   
+#define SECONDARY_DERIVATIVE_MODE_1   	0//0.5//0.1              //0.0003//0.03  //0.02   
 
 /**
  * Problem Encountered with Derivative values. 
@@ -77,8 +77,10 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.04
 #define SECONDARY_DERIVATIVE_MODE_1   	0*/
 
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        1  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
-#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR  5 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
+#define scale 0.05
+
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY        (1.0 * scale)  		//0.1 can work 10 - Corner frequency of low pass filter of Primary PID derivative
+#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR  (5.0 * scale)	// 50 - Corner frequency of low pass filter of Secondary PID derivative
 
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY 10  		// 10 - Corner frequency of low pass filter of Primary PID derivative
 //#define DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR 50 	// 50 - Corner frequency of low pass filter of Secondary PID derivative
@@ -115,7 +117,7 @@ struct PID {
 
 typedef struct
 {
-  float state_a[4];  /** The filter state array of length 4. */
+  float state_a[5];  /** The filter state array of length 5. */
   float Kp;          /** The proportional gain. */
   float Ki;          /** The integral gain. */
   float Kd;          /** The derivative gain. */
@@ -137,6 +139,11 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 
 float lowpass(float error, float prev_error, float dt, float RC);
 float lowpass_alt(float deriv, float prev_out, float dt, float RC);
+void lowpass_V2(float input, float *prev_out, float *out,float dt, float TC);
 
 void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *current_error,
-									float sample_period, float cutoff_freq);
+									float sample_period, float *Deriv_Filt);
+
+float max(float signal1, float signal2);
+float min(float signal1, float signal2);
+float limit_value(float signal, float min, float max);

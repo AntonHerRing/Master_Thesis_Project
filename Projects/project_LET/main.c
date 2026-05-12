@@ -50,7 +50,7 @@ GPIO12::    MISO
 #define T_Print 100*/
 
 //2
-#define T_Enc   2
+#define T_Enc   2//3//2
 #define T_Motor 2
 #define T_Contr 5//2   //2
 #define T_Print 25  //50
@@ -142,8 +142,8 @@ bool first_time = true;
 bool balance_on = false;
 /* CMSIS Variables */
 arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
-float Deriv_Filt_Pend[2];
-float Deriv_Filt_Rotor[2];
+float Deriv_Filt_Pend[3];
+float Deriv_Filt_Rotor[3];
 float Wo_t, fo_t, IWon_t;
 
 float pend_period    = T_Enc / 1000.0;
@@ -426,17 +426,23 @@ void vLetContrTask_init(void) {
     ContrTask_Enc = &ContrTask_Enc_data;
     ContrTask_Motor = &ContrTask_Motor_data;
 
-    fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
+    /*fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
     Wo_t    = 2 * PI * fo_t;
     IWon_t  = 2 / (Wo_t * (pend_period));
     Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
-    Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
+    Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);*/
+    Deriv_Filt_Pend[0] = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
+    Deriv_Filt_Pend[1] = 0;
+    Deriv_Filt_Pend[2] = 0;
 
-    fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
+    /*fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
     Wo_t    = 2 * PI * fo_t;
     IWon_t  = 2 / (Wo_t * (motor_period));
     Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
-    Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
+    Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);*/
+    Deriv_Filt_Rotor[0] = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
+    Deriv_Filt_Rotor[1] = 0;
+    Deriv_Filt_Rotor[2] = 0;
 
     current_error_steps         = malloc(sizeof(float));
     current_error_rotor_steps   = malloc(sizeof(float));
@@ -447,6 +453,7 @@ void vLetContrTask_init(void) {
     PID_Pend.state_a[1] = 0;
     PID_Pend.state_a[2] = 0;
     PID_Pend.state_a[3] = 0;
+    PID_Pend.state_a[4] = 0;
     PID_Pend.int_term   = 0;
     PID_Pend.control_output = 0;
 
@@ -454,6 +461,7 @@ void vLetContrTask_init(void) {
     PID_Rotor.state_a[1]    = 0;
     PID_Rotor.state_a[2]    = 0;
     PID_Rotor.state_a[3]    = 0;
+    PID_Rotor.state_a[4]    = 0;
     PID_Rotor.int_term      = 0;
     PID_Rotor.control_output = 0;
 
@@ -491,8 +499,8 @@ void vLetContrTask_init(void) {
     //pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
     //pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
 
-    pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
-    pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
+    pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
+    pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
 
     xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);     /* Register the read access for label Enc */    
     xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);     /* Register the write access for label Contr */   
@@ -513,10 +521,6 @@ void vLetContrTask_job(void) {
         balance_on = true;
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
-    /*else if (abs(*ContrTask_Enc) >= 220 && abs(*ContrTask_Enc) <= 40 && balance_on == true){
-        balance_on = false;
-        start_pos = *ContrTask_Motor;
-    }*/
    
     if (balance_on && abs(rotor_control_target_steps) < 350){
         encoder_position = *ContrTask_Enc;
@@ -528,14 +532,14 @@ void vLetContrTask_job(void) {
         //printf("Pendulum::\n");
         //pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
         //pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
-        pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
+        pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
 
 
         *current_error_rotor_steps = Motor_target - *ContrTask_Motor;
         //printf("Motor::\n");
     	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
         //pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
-        pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
+        pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
 
 
 		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;

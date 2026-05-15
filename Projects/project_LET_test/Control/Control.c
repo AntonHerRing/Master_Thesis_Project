@@ -119,7 +119,8 @@ void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
 	* feedback_term is the pole location
 	*/
 	if (PID->Kd != 0)
-		STM_Lowpass(diff, PID->prev_diff, PID->ff_gain, PID->fb_gain, PID->prev_filt, &diff_filt);
+		//STM_Lowpass(diff, PID->prev_diff, PID->ff_gain, PID->fb_gain, PID->prev_filt, &diff_filt);
+		STM_Lowpass_simp(diff, PID, &diff_filt);
 	else
 		diff_filt = 0;
 	
@@ -271,4 +272,8 @@ void lowpass_V2(float input, float *prev_out, float *out, float dt, float TC){
 
 void STM_Lowpass(float input, float prev_in, float ff_gain, float fb_gain, float prev_out, float *out){
 	*out = ff_gain*(input + prev_in) + fb_gain*prev_out;
+}
+
+void STM_Lowpass_simp(float diff, inverted_pid_contr *PID, float *out){
+	*out = PID->ff_gain*(diff + PID->prev_diff) + PID->fb_gain*PID->prev_filt;
 }

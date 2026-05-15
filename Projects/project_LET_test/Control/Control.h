@@ -150,6 +150,7 @@ typedef struct
   
   /* The controller output */
   float control_output; 
+  float prev_control_output; 
 
   /* Previous I/Os*/
   float prev_measurment;
@@ -176,6 +177,7 @@ float lowpass(float error, float prev_error, float dt, float RC);
 float lowpass_alt(float deriv, float prev_out, float dt, float RC);
 void lowpass_V2(float input, float *prev_out, float *out,float dt, float TC);
 void STM_Lowpass(float input, float prev_in, float ff_gain, float fb_gain, float prev_out, float *out);
+void STM_Lowpass_simp(float diff, inverted_pid_contr *PID, float *out);
 
 void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *current_error,
 									float sample_period, float *Deriv_Filt);

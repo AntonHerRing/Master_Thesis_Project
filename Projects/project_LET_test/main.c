@@ -500,6 +500,9 @@ void vLetContrTask_init(void) {
     PID_Rotor.Ki = SECONDARY_INTEGRAL_MODE_1;
     PID_Rotor.Kd = SECONDARY_DERIVATIVE_MODE_1;
 
+    PID_Pend.Set_point  = 180 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;     //180
+    PID_Rotor.Set_point = 0;     //0     //70
+
     encoder_angle_slope_corr_steps  = 0;
     pendulum_position_command_steps = 0;
     rotor_control_target_steps      = 0;
@@ -519,7 +522,7 @@ void vLetContrTask_init(void) {
 
     //other extra variable inits(maybe remove later)
 	/* Compute Low Pass Filter Coefficients for Rotor Position filter and Encoder Angle Slope Correction */
-	fo = LP_CORNER_FREQ_ROTOR;
+	/*fo = LP_CORNER_FREQ_ROTOR;
 	Wo = 2 * 3.141592654 * fo;
 	IWon = 2 / (Wo * contr_period);
 	iir_0 = 1 / (1 + IWon);
@@ -536,7 +539,7 @@ void vLetContrTask_init(void) {
 	IWon_LT = 2 / (Wo_LT * contr_period);
 	iir_LT_0 = 1 / (1 + IWon_LT);
 	iir_LT_1 = iir_LT_0;
-	iir_LT_2 = iir_LT_0 * (1 - IWon_LT);
+	iir_LT_2 = iir_LT_0 * (1 - IWon_LT);*/
 
     rotor_position_step_polarity = 1;
     rotor_position_command_steps_prev = 0;
@@ -561,10 +564,7 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
-    PID_Pend.Set_point  = 180 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;     //180
-    PID_Rotor.Set_point = 0;     //0     //70
     static float Polarity = -1; //-1
-
     static float bias = 0;
 
     /******** Main function ********/

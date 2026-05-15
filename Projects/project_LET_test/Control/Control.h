@@ -35,47 +35,15 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-// Scaled down to Degrees maybe?
-/*#define PRIMARY_PROPORTIONAL_MODE_1 33.75 
-#define PRIMARY_INTEGRAL_MODE_1     0.0
-#define PRIMARY_DERIVATIVE_MODE_1   3.350
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	15.0
-#define SECONDARY_INTEGRAL_MODE_1     	0.0
-#define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
-
-#define PRIMARY_PROPORTIONAL_MODE_1 5//0.05    //0.01  //0.012  //0.247    //0.20   
-#define PRIMARY_INTEGRAL_MODE_1     0//145//145     //140   //90//95    //160      //40 is a start      
-#define PRIMARY_DERIVATIVE_MODE_1   0//0.05//0.01//0.01       //0.00001    
+#define PRIMARY_PROPORTIONAL_MODE_1 7//100//100//5//0.05    //0.01  //0.012  //0.247    //0.20   
+#define PRIMARY_INTEGRAL_MODE_1     1.5//0.1//10//145//145     //140   //90//95    //160      //40 is a start      
+#define PRIMARY_DERIVATIVE_MODE_1   1//0.5//10//30//1//0.05//0.01//0.01       //0.00001    
 
 #define SECONDARY_PROPORTIONAL_MODE_1 	0//0.08//0.02        //0.5//0.07//0.07//0.05  //0.44    //0.02        
 #define SECONDARY_INTEGRAL_MODE_1     	0//0.05//0.5//0.05         //0.01        //4.75//5 <- Is VERY close   
-#define SECONDARY_DERIVATIVE_MODE_1   	0//0.5//0.1              //0.0003//0.03  //0.02   
+#define SECONDARY_DERIVATIVE_MODE_1   	0//10//0.5//0.1              //0.0003//0.03  //0.02   
 
-/**
- * Problem Encountered with Derivative values. 
- * When the difference between the current_error and current angle
- * becomes to large, the sample_time blows up the value in the 
- * order of thousands, or tens of thousands.
- * Problem occurs when stepper motor moves quickly from one position,
- * to the next position. EX ::
- * 
- * Curr_error = 0.1125, Current_angle = -46. Sample time 2ms
- * (-46-(0.1125))/0.002 = -23 056.25
- * Which overflows the output value, and Gives the stepper
- * motor a false movment
- * 
- * Dont use Derivative_Mode right now, and look for solution.
- **/
-
-//Test Other group values
-/*#define PRIMARY_PROPORTIONAL_MODE_1 0.3
-#define PRIMARY_INTEGRAL_MODE_1     10
-#define PRIMARY_DERIVATIVE_MODE_1   0
-
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.01
-#define SECONDARY_INTEGRAL_MODE_1     	0.04
-#define SECONDARY_DERIVATIVE_MODE_1   	0*/
 
 #define scale 10//0.05
 
@@ -89,7 +57,7 @@
 #define LP_CORNER_FREQ_STEP 50	
 
 #define ENCODER_ANGLE_POLARITY -1.0				// Note that physical system applies negative polarity to pendulum angle
-												// by definition of coordinate system.
+												                  // by definition of coordinate system.
 
 #define CONTROLLER_GAIN_SCALE 						1
 #define STEPPER_READ_POSITION_STEPS_PER_DEGREE 		8.888889	//	Stepper position read value in steps per degree
@@ -99,6 +67,41 @@
 
 #define ROTOR_POSITION_STEP_RESPONSE_CYCLE_AMPLITUDE 20		// Default 8. Amplitude of step cycle. Note: Peak-to-Peak amplitude is double this value
 #define LP_CORNER_FREQ_LONG_TERM 				0.01	// Corner frequency of low pass filter - default to 0.001
+
+
+/*
+ * Setting ENABLE_ROTOR_POSITION_STEP_RESPONSE_CYCLE = 1 applies a Rotor Position tracking
+ * command input step signal
+ */
+
+#define ENABLE_ROTOR_POSITION_STEP_RESPONSE_CYCLE 1			// If selected, disable all other modulation inputs
+#define ROTOR_POSITION_STEP_RESPONSE_CYCLE_AMPLITUDE 20		// Default 8. Amplitude of step cycle. Note: Peak-to-Peak amplitude is double this value
+#define ROTOR_POSITION_STEP_RESPONSE_CYCLE_INTERVAL 16384 	// Default 10240
+#define STEP_RESPONSE_AMP_LIMIT_ENABLE 0					// Enables limit of Step Response if rotor amplitude exceeds limit
+															// Useful for protecting operation if summing step and sine drive
+#define STEP_RESPONSE_AMP_LIMIT 350							// Angle limit for Step Response action
+/*
+ * Setting ENABLE_ROTOR_POSITION_IMPULSE_RESPONSE_CYCLE = 1 applies a Rotor Position tracking
+ * command input impulse signal
+ */
+#define ENABLE_ROTOR_POSITION_IMPULSE_RESPONSE_CYCLE 0			// If selected, disable all other modulation inputs
+#define ROTOR_POSITION_IMPULSE_RESPONSE_CYCLE_AMPLITUDE 8		// Amplitude of impulse in degrees
+#define ROTOR_POSITION_IMPULSE_RESPONSE_CYCLE_PERIOD 500 		// Duration of impulse in cycles
+#define ROTOR_POSITION_IMPULSE_RESPONSE_CYCLE_INTERVAL 5000	    // Interval between impulse events in cycles
+/* Define for High Speed System */
+#define ROTOR_IMPULSE_SAMPLE_RATE (1/T_SAMPLE_DEFAULT)  		// Equals system sample rate							// Default sample rate
+/*
+ * Setting ENABLE_PENDULUM_POSITION_IMPULSE_RESPONSE_CYCLE = 1 applies a Pendulum Position tracking
+ * command input impulse signal
+ */
+#define ENABLE_PENDULUM_POSITION_IMPULSE_RESPONSE_CYCLE 0		// If selected, disable all other modulation inputs
+#define PENDULUM_POSITION_IMPULSE_RESPONSE_CYCLE_AMPLITUDE 500	// Amplitude of step cycle in steps equaling 75 degrees. Note: Peak-to-Peak amplitude is double this value
+#define PENDULUM_POSITION_IMPULSE_AMPLITUDE_SCALE 4				// Amplitude scaling of impulse for Suspended and Inverted Mode
+#define PENDULUM_POSITION_IMPULSE_RESPONSE_CYCLE_PERIOD 2		// Duration of impulse in cycles
+#define PENDULUM_POSITION_IMPULSE_RESPONSE_CYCLE_INTERVAL 18000	// Interval between impulse events in cycles
+/* Define for High Speed System */
+#define PENDULUM_IMPULSE_SAMPLE_RATE (1/T_SAMPLE_DEFAULT)       // Equals system sample rate 						// Default sample rate
+
 
 
 /************ Structs and Variables ************/
@@ -125,14 +128,46 @@ typedef struct
   float control_output; /** The controller output */
 } arm_pid_instance_a_f32;
 
+typedef struct
+{
+  /*Set Point and measurment*/
+  float Set_point;
+  float measurment;
+
+  float tau;
+
+  /* Control Variables*/
+  float Kp;          /** The proportional gain. */
+  float Ki;          /** The integral gain. */
+  float Kd;          /** The derivative gain. */
+
+  /* Derivative Filter*/
+  float ff_gain;
+  float fb_gain;
+
+  /* The integral collector*/
+  float int_term;
+  
+  /* The controller output */
+  float control_output; 
+
+  /* Previous I/Os*/
+  float prev_measurment;
+  float prev_error_1;
+  float prev_error_2;
+  float prev_diff;
+  float prev_filt;
+
+} inverted_pid_contr;
+
 /****************** Func Inits ******************/
 
 bool oppositeSigns(int x, int y);
 void init_pid(struct PID *PID1, struct PID *PID2);
 void PID_controller(struct PID *Pid_in, float encoder_angle);
 
-void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_error,
-		                            float sample_period, float * Deriv_Filt);
+void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
+		                            float sample_period);
 
 void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_error,
 								float sample_period, float cutoff_freq);

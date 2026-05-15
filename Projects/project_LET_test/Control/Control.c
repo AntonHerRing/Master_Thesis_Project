@@ -55,7 +55,7 @@ float limit_value(float signal, float min, float max){
 		return min;
 	else if(signal > max)
 		return max;
-	else
+	else	
 		return signal;
 }
 
@@ -84,50 +84,62 @@ float min(float signal1, float signal2){
 float sign(float signal){
 	if(signal >= 0)
 		return 1;
-	else
+	else 
 		return -1;
 }
 
-void pid_filter_control_execute(arm_pid_instance_a_f32 *PID, float *current_error,
-								float sample_period, float *Deriv_Filt) {
+void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
+								float sample_period) {
 
-	float int_term, diff, diff_filt, contr_sig;
+	float proportional, diff, diff_filt, contr_sig;
 	static bool first_time = true;
 	float error = *current_error;
 
 	// Prevent derivative kick. Set curr and prev value as same.
-	if (first_time && error != 0){
-		PID->state_a[0] = error;
+	/*if (first_time && error != 0){
+		PID->prev_error_1 = error;
 		first_time = false;
-	}
+	}*/
+	/* Compute porportional part */								
+	proportional = PID->Kp*error;							
 
 	/* Compute time integral of error by trapezoidal rule */
-	PID->int_term += (sample_period)*(error + PID->state_a[0])/2;
+	PID->int_term = PID->int_term + 0.5f * PID->Ki*(sample_period)*(error + PID->prev_error_1);
 
-	/* Compute time derivative of error */
-	diff = PID->Kd*(error - PID->state_a[0])/(sample_period);
-
-	/*
-	* Compute first order low pass filter of time derivative. IIR filter
+	/* Compute time derivative of measurment to avoid derivative kick*/
+	//diff = PID->Kd*(error - PID->prev_error_1)/(sample_period);
+	diff = PID->Kd*(PID->measurment - PID->prev_measurment)/(sample_period);
+	/*diff = (2.0f * PID->Kd*(PID->measurment - PID->prev_measurment)
+		 + (2.0f * PID->tau - sample_period) * PID->prev_diff)								
+		 / (2.0f * PID->tau + sample_period);*/
+	
+	/* 
+	* Compute first order low pass filter of time derivative. IIR filter 
 	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
 	* feedback_term is the pole location
 	*/
 	if (PID->Kd != 0)
-		STM_Lowpass(diff, PID->state_a[2], Deriv_Filt[0], Deriv_Filt[1], PID->state_a[3], &diff_filt);
+		STM_Lowpass(diff, PID->prev_diff, PID->ff_gain, PID->fb_gain, PID->prev_filt, &diff_filt);
 	else
 		diff_filt = 0;
-
+	
 	/* Accumulate PID output with Integral, Derivative and Proportional contributions*/
-	contr_sig = PID->Kp*error + PID->Ki*PID->int_term + diff_filt;
+	contr_sig = proportional + PID->int_term + diff_filt;
 	PID->control_output = contr_sig;
 
-	//printf("Error: %f\tdiff: %f\tdiff_filt: %f\toutput: %f\n", ((current_error) - PID->state_a[0]), diff, diff_filt, PID->control_output);
+	//printf("Error: %f\tint: %f\t\tdiff: %f\tdiff_filt: %f\toutput: %f\n", *current_error, PID->Ki*PID->int_term , diff, diff_filt, PID->control_output);
 
 	/* Update state variables */
-	PID->state_a[0] = error;			//e(t - 1)
-	PID->state_a[1] = PID->state_a[0];	//e(t - 2)
-	PID->state_a[2] = diff;
-	PID->state_a[3] = diff_filt;
+	//PID->state_a[0] = error;			//e(t - 1)
+	//PID->state_a[1] = PID->state_a[0];	//e(t - 2)
+	//PID->state_a[2] = diff;
+	//PID->state_a[3] = diff_filt;
+
+    PID->prev_measurment = PID->measurment;
+    PID->prev_error_2    = PID->prev_error_1; 	//e(t - 2)
+   	PID->prev_error_1    = error;				//e(t - 1)
+    PID->prev_diff       = diff;
+    PID->prev_filt       = diff_filt;
 }
 
 // RC term might falsly appear to make the filter work.
@@ -151,15 +163,15 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	}
 
 	diff = (error - PID->state_a[0])/sample_period;
-
-	/*
-	* Compute first order low pass filter of time derivative. IIR filter
+	
+	/* 
+	* Compute first order low pass filter of time derivative. IIR filter 
 	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
 	* feedback_term is the pole location
 	*/
 
 	diff_filt = diff;
-
+	
 
 	//contr_sig =  PID->Kd*diff_filt + PID->Ki*int_term + PID->Kp*error;
 	contr_sig =  PID->Kd*diff_filt + PID->Ki*PID->int_term + PID->Kp*error;
@@ -186,7 +198,7 @@ void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *
 	//float contr_min = max(-180, PID->state_a[3] + sample_period*(-25.0));
 	//float contr_max = min(180, 	PID->state_a[3] + sample_period*(25.0));
 
-	// Filter process variable
+	// Filter process variable				
 	float Delt_err = err - PID->state_a[0]; 	// Δe(t) = e(t) - Δe(t - Δt)
 
 	/* Compute time integral of error by trapezoidal rule */
@@ -194,9 +206,9 @@ void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *
 
 	deriv_term = (err - PID->state_a[0])/sample_period;
 	Delt_deriv = deriv_term - PID->state_a[2];
-
-	lowpass_V2(Delt_deriv, &Deriv_Filt[2], &Deriv_Filt[1], sample_period, Deriv_Filt[0]);
-
+	
+	lowpass_V2(Delt_deriv, &Deriv_Filt[2], &Deriv_Filt[1], sample_period, Deriv_Filt[0]);	
+	
 	//contr_sig =  PID->state_a[4] + PID->Kp*Delt_err + PID->Ki*Delt_int + PID->Kd*Delt_deriv + bias;
 	contr_sig =  PID->state_a[4] + PID->Kp*Delt_err + PID->Ki*Delt_int + PID->Kd*Deriv_Filt[1];
 
@@ -219,12 +231,12 @@ void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *
 	/* Update state variables */
 	PID->state_a[1] = PID->state_a[0];	//e(t - 2)
 	PID->state_a[0] = err;				//e(t - 1)
-	PID->state_a[2] = deriv_term;
+	PID->state_a[2] = deriv_term;			
 	PID->state_a[3] = contr_sig; 	// xus
 
 	//printf("int_term: %f\tError: %f\tderiv_term: %f\tFilt_deriv: %f\tContr_sat: %f\toutput: %f\n", PID->Ki*Delt_int, Delt_err, PID->Kd*Delt_deriv, PID->Kd*Deriv_Filt[1], contr_sat ,PID->control_output);
 }
-
+	
 /******************************************************//**
  * @brief  Low Pass Filter for Derivative Mode
  * @param[in] deriv current derivative value
@@ -252,7 +264,7 @@ float lowpass_alt(float deriv, float prev_out, float dt, float RC){
 
 void lowpass_V2(float input, float *prev_out, float *out, float dt, float TC){
 	float alpha = dt / (TC + 0.5*dt);
-
+	
 	*prev_out 	+= alpha*(input - *prev_out);
 	*out 		+= alpha*(*prev_out - *out);
 }

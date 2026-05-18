@@ -2,15 +2,15 @@
  * Configuration of Motor Speed Profile at initialization
  */
 
-/*#define MAX_SPEED 10000 
+#define MAX_SPEED 10000 
 #define MIN_SPEED 3000 
 #define MAX_ACCEL 65535
-#define MAX_DECEL 65535*/
+#define MAX_DECEL 65535
 
-#define MAX_SPEED 2000 
+/*#define MAX_SPEED 2000 
 #define MIN_SPEED 800 
 #define MAX_ACCEL 6000
-#define MAX_DECEL 6000
+#define MAX_DECEL 6000*/
 
 /*#define MAX_SPEED 2000 
 #define MIN_SPEED 800 

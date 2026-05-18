@@ -52,7 +52,7 @@ GPIO12::    MISO
 //2
 #define T_Enc   2//3//2
 #define T_Motor 2
-#define T_Contr 2//5//2   //2
+#define T_Contr 5//5//2   //2
 #define T_Print 25  //50
 #define T_Btns  2
 
@@ -141,13 +141,14 @@ float fo_s, Wo_s, IWon_s, iir_0_s, iir_1_s, iir_2_s;
 bool first_time = true;
 bool balance_on = false;
 /* CMSIS Variables */
-arm_pid_instance_a_f32 PID_Pend, PID_Rotor;
+inverted_pid_contr PID_Pend, PID_Rotor;
 float Deriv_Filt_Pend[3];
 float Deriv_Filt_Rotor[3];
 float Wo_t, fo_t, IWon_t;
 
 float pend_period    = T_Enc / 1000.0;
 float motor_period   = T_Motor / 1000.0;
+float contr_period   = T_Contr / 1000.0;
 
 float encoder_position_down;
 
@@ -429,42 +430,58 @@ void vLetContrTask_init(void) {
 
     fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
     Wo_t    = 2 * PI * fo_t;
-    IWon_t  = 2 / (Wo_t * (pend_period));
-    Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
-    Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
-    /*Deriv_Filt_Pend[0] = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
-    Deriv_Filt_Pend[1] = 0;
-    Deriv_Filt_Pend[2] = 0;*/
+    IWon_t  = 2 / (Wo_t * (contr_period));
+    PID_Pend.ff_gain = 1 / (1 + IWon_t);
+    PID_Pend.fb_gain = PID_Pend.ff_gain * (1 - IWon_t);
+    PID_Pend.tau = 1.0f / Wo_t;
 
     fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
     Wo_t    = 2 * PI * fo_t;
-    IWon_t  = 2 / (Wo_t * (motor_period));
-    Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
-    Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
-    /*Deriv_Filt_Rotor[0] = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
-    Deriv_Filt_Rotor[1] = 0;
-    Deriv_Filt_Rotor[2] = 0;*/
+    IWon_t  = 2 / (Wo_t * (contr_period));
+    PID_Rotor.ff_gain = 1 / (1 + IWon_t);
+    PID_Rotor.fb_gain = PID_Rotor.ff_gain * (1 - IWon_t);
+    PID_Rotor.tau = 1.0f / Wo_t;
 
     current_error_steps         = malloc(sizeof(float));
     current_error_rotor_steps   = malloc(sizeof(float));
     *current_error_steps         = 0;
     *current_error_rotor_steps   = 0;
 
-    PID_Pend.state_a[0] = 0;
-    PID_Pend.state_a[1] = 0;
-    PID_Pend.state_a[2] = 0;
-    PID_Pend.state_a[3] = 0;
-    PID_Pend.state_a[4] = 0;
-    PID_Pend.int_term   = 0;
-    PID_Pend.control_output = 0;
 
-    PID_Rotor.state_a[0]    = 0;
-    PID_Rotor.state_a[1]    = 0;
-    PID_Rotor.state_a[2]    = 0;
-    PID_Rotor.state_a[3]    = 0;
-    PID_Rotor.state_a[4]    = 0;
-    PID_Rotor.int_term      = 0;
-    PID_Rotor.control_output = 0;
+    PID_Pend.Set_point  = 0;
+    PID_Pend.measurment = 0;
+
+    PID_Pend.prev_measurment = 0;
+    PID_Pend.prev_error_1    = 0;
+    PID_Pend.prev_error_2    = 0;
+    PID_Pend.prev_diff       = 0;
+    PID_Pend.prev_filt       = 0;
+    PID_Pend.prev_set_point  = 0;
+
+    PID_Pend.b               = 0.8;
+    PID_Pend.b_1             = 1;
+    PID_Pend.c               = SETPOINT_WEIGHT_PEND;
+
+    PID_Pend.int_term        = 0;
+    PID_Pend.control_output  = 0;
+
+
+    PID_Rotor.Set_point  = 0;
+    PID_Rotor.measurment = 0;
+
+    PID_Rotor.prev_measurment = 0;
+    PID_Rotor.prev_error_1    = 0;
+    PID_Rotor.prev_error_2    = 0;
+    PID_Rotor.prev_diff       = 0;
+    PID_Rotor.prev_filt       = 0;
+	PID_Rotor.prev_set_point  = 0;
+
+    PID_Rotor.b               = 0.8;
+    PID_Rotor.b_1             = 1;
+    PID_Rotor.c               = SETPOINT_WEIGHT_ROTOR;
+    
+    PID_Rotor.int_term        = 0;
+    PID_Rotor.control_output  = 0;
 
     PID_Pend.Kp = PRIMARY_PROPORTIONAL_MODE_1;
     PID_Pend.Ki = PRIMARY_INTEGRAL_MODE_1;
@@ -474,6 +491,9 @@ void vLetContrTask_init(void) {
     PID_Rotor.Ki = SECONDARY_INTEGRAL_MODE_1;
     PID_Rotor.Kd = SECONDARY_DERIVATIVE_MODE_1;
 
+    PID_Pend.Set_point  = 180 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;     //180
+    PID_Rotor.Set_point = 0  * STEPPER_READ_POSITION_STEPS_PER_DEGREE;     //0     //70
+
     encoder_angle_slope_corr_steps  = 0;
     pendulum_position_command_steps = 0;
     rotor_control_target_steps      = 0;
@@ -481,27 +501,6 @@ void vLetContrTask_init(void) {
     rotor_position_command_steps    = 0;
     feedforward_gain                = 1;
     encoder_position                = 0; 
-
-    rotor_position_steps_prev        = 0;
-	rotor_position_filter_steps      = 0;
-	rotor_position_filter_steps_prev = 0;
-
-    //other extra variable inits(maybe remove later)
-
-    rotor_position_step_polarity = 1;
-    rotor_position_command_steps_prev = 0;
-    rotor_position_command_steps_pf_prev = 0;
-    rotor_position_command_steps_pf = (float) ((rotor_position_step_polarity)
-							* ROTOR_POSITION_STEP_RESPONSE_CYCLE_AMPLITUDE
-							* STEPPER_READ_POSITION_STEPS_PER_DEGREE);
-
-    pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-	pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
-    //pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
-    //pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
-
-    //pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-    //pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
 
     xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);     /* Register the read access for label Enc */    
     xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);     /* Register the write access for label Contr */   
@@ -511,11 +510,10 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
-    static float Pend_target = 180;     //180
-    static float Motor_target = 0;     //0     //70
     static float Polarity = -1; //-1
 
     static float bias = 0;
+    static bool toggle = false;
 
     /******** Main function ********/
     if (abs(*ContrTask_Enc) >= 179.5 && abs(*ContrTask_Enc) <= 180.5 && balance_on == false){
@@ -523,29 +521,28 @@ void vLetContrTask_job(void) {
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
    
-    if (balance_on && abs(rotor_control_target_steps) < 350){
+    if (balance_on && (*ContrTask_Enc > 150 &&  *ContrTask_Enc < 210)){
         encoder_position = *ContrTask_Enc;
 
-        //*current_error_steps = encoder_angle_slope_corr_steps
-        //        + ENCODER_ANGLE_POLARITY * ((encoder_position/4.0) / ((float)(ENCODER_READ_ANGLE_SCALE/STEPPER_READ_POSITION_STEPS_PER_DEGREE)));
-        *current_error_steps = (Pend_target  - encoder_position)*Polarity; 
+        PID_Pend.measurment = *ContrTask_Enc * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
 
-        //printf("Pendulum::\n");
-        //pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-        //pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
-        pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-
-
-        *current_error_rotor_steps = Motor_target - *ContrTask_Motor;
-        float test = *current_error_rotor_steps;
-        //printf("Motor::\n");
-    	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period,  Deriv_Filt_Rotor);
-        //pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
-        pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
+        *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment);
+        
+        if(toggle){
+		    pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, contr_period);
+            toggle = false;
+        }
+        else 
+            toggle = true;
 
 
-		rotor_control_target_steps = PID_Pend.control_output + PID_Rotor.control_output;
-    
+
+        PID_Rotor.measurment = *ContrTask_Motor * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+        *current_error_rotor_steps = PID_Rotor.Set_point - PID_Rotor.measurment;
+
+        pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, contr_period);
+
+		rotor_control_target_steps = (PID_Pend.control_output + PID_Rotor.control_output)/STEPPER_READ_POSITION_STEPS_PER_DEGREE;
 
         (*task_Contr) = rotor_control_target_steps;
         //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);

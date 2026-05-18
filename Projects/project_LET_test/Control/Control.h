@@ -35,10 +35,12 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
+#define SETPOINT_WEIGHT_PEND        0  
+#define SETPOINT_WEIGHT_ROTOR       0.0432 //    0.0434 > x > 0.0433 <- close
 
-#define PRIMARY_PROPORTIONAL_MODE_1 7//100//100//5//0.05    //0.01  //0.012  //0.247    //0.20   
-#define PRIMARY_INTEGRAL_MODE_1     1.5//0.1//10//145//145     //140   //90//95    //160      //40 is a start      
-#define PRIMARY_DERIVATIVE_MODE_1   1//0.5//10//30//1//0.05//0.01//0.01       //0.00001    
+#define PRIMARY_PROPORTIONAL_MODE_1 1//7//100//100//5//0.05    //0.01  //0.012  //0.247    //0.20   
+#define PRIMARY_INTEGRAL_MODE_1     0//0.1//10//145//145     //140   //90//95    //160      //40 is a start      
+#define PRIMARY_DERIVATIVE_MODE_1   0.8//0.5//10//30//1//0.05//0.01//0.01       //0.00001    
 
 #define SECONDARY_PROPORTIONAL_MODE_1 	0//0.08//0.02        //0.5//0.07//0.07//0.05  //0.44    //0.02        
 #define SECONDARY_INTEGRAL_MODE_1     	0//0.05//0.5//0.05         //0.01        //4.75//5 <- Is VERY close   
@@ -141,6 +143,11 @@ typedef struct
   float Ki;          /** The integral gain. */
   float Kd;          /** The derivative gain. */
 
+  /* Set point handling*/
+  float b;
+  float b_1;  // set to one only when no integral.
+  float c;
+
   /* Derivative Filter*/
   float ff_gain;
   float fb_gain;
@@ -154,6 +161,7 @@ typedef struct
 
   /* Previous I/Os*/
   float prev_measurment;
+  float prev_set_point;
   float prev_error_1;
   float prev_error_2;
   float prev_diff;

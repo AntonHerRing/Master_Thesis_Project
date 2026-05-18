@@ -91,7 +91,7 @@ float sign(float signal){
 void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
 								float sample_period) {
 
-	float proportional, diff, diff_filt, contr_sig;
+	float proportional, diff, diff_sp, diff_deriv, diff_filt, contr_sig;
 	static bool first_time = true;
 	float error = *current_error;
 
@@ -107,8 +107,17 @@ void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
 	PID->int_term = PID->int_term + 0.5f * PID->Ki*(sample_period)*(error + PID->prev_error_1);
 
 	/* Compute time derivative of measurment to avoid derivative kick*/
-	//diff = PID->Kd*(error - PID->prev_error_1)/(sample_period);
-	diff = PID->Kd*(PID->measurment - PID->prev_measurment)/(sample_period);
+	diff = PID->Kd*(error - PID->prev_error_1)/(sample_period);
+	
+	//diff_meash = (PID->measurment - PID->prev_measurment)/(sample_period);
+	//diff_sp = (PID->Set_point - PID->prev_set_point)/(sample_period);
+	//diff_deriv = (error - PID->prev_error_1)/(sample_period);
+	//diff_deriv = (PID->measurment - PID->prev_measurment)/(sample_period);
+
+	//diff = PID->Kd*(PID->c*diff_sp - diff_deriv);
+
+	
+
 	/*diff = (2.0f * PID->Kd*(PID->measurment - PID->prev_measurment)
 		 + (2.0f * PID->tau - sample_period) * PID->prev_diff)								
 		 / (2.0f * PID->tau + sample_period);*/
@@ -119,7 +128,6 @@ void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
 	* feedback_term is the pole location
 	*/
 	if (PID->Kd != 0)
-		//STM_Lowpass(diff, PID->prev_diff, PID->ff_gain, PID->fb_gain, PID->prev_filt, &diff_filt);
 		STM_Lowpass_simp(diff, PID, &diff_filt);
 	else
 		diff_filt = 0;
@@ -129,6 +137,10 @@ void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
 	PID->control_output = contr_sig;
 
 	//printf("Error: %f\tint: %f\t\tdiff: %f\tdiff_filt: %f\toutput: %f\n", *current_error, PID->Ki*PID->int_term , diff, diff_filt, PID->control_output);
+	//printf("error: %f\tDiff SP: %f\tdiff deriv: %f\t diff: %f\tdiff_filt: %f\toutput: %f\n", error, diff_sp, diff_deriv, diff, diff_filt,PID->control_output);
+
+	//printf("error: %f\tDiff SP: %f\toutput: %f\n", error, PID->c*diff_sp, contr_sig/STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE);
+
 
 	/* Update state variables */
 	//PID->state_a[0] = error;			//e(t - 1)
@@ -141,6 +153,7 @@ void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error,
    	PID->prev_error_1    = error;				//e(t - 1)
     PID->prev_diff       = diff;
     PID->prev_filt       = diff_filt;
+	PID->prev_set_point  = PID->Set_point;
 }
 
 // RC term might falsly appear to make the filter work.

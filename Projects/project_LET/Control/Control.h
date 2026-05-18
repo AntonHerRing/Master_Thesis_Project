@@ -44,38 +44,16 @@
 #define SECONDARY_INTEGRAL_MODE_1     	0.0
 #define SECONDARY_DERIVATIVE_MODE_1   	7.5*/
 
-#define PRIMARY_PROPORTIONAL_MODE_1 5//0.05    //0.01  //0.012  //0.247    //0.20   
-#define PRIMARY_INTEGRAL_MODE_1     0//145//145     //140   //90//95    //160      //40 is a start      
-#define PRIMARY_DERIVATIVE_MODE_1   0//0.05//0.01//0.01       //0.00001    
+#define SETPOINT_WEIGHT_PEND        0  
+#define SETPOINT_WEIGHT_ROTOR       0.0432 //    0.0434 > x > 0.0433 <- close
 
-#define SECONDARY_PROPORTIONAL_MODE_1 	0//0.08//0.02        //0.5//0.07//0.07//0.05  //0.44    //0.02        
-#define SECONDARY_INTEGRAL_MODE_1     	0//0.05//0.5//0.05         //0.01        //4.75//5 <- Is VERY close   
+#define PRIMARY_PROPORTIONAL_MODE_1 0.05    //0.01  //0.012  //0.247    //0.20   
+#define PRIMARY_INTEGRAL_MODE_1     130//70//145//145     //140   //90//95    //160      //40 is a start      
+#define PRIMARY_DERIVATIVE_MODE_1   0//0.01//0.05//0.01//0.01       //0.00001    
+
+#define SECONDARY_PROPORTIONAL_MODE_1 	0.08//0.02        //0.5//0.07//0.07//0.05  //0.44    //0.02        
+#define SECONDARY_INTEGRAL_MODE_1     	0.05//0.5//0.05         //0.01        //4.75//5 <- Is VERY close   
 #define SECONDARY_DERIVATIVE_MODE_1   	0//0.5//0.1              //0.0003//0.03  //0.02   
-
-/**
- * Problem Encountered with Derivative values. 
- * When the difference between the current_error and current angle
- * becomes to large, the sample_time blows up the value in the 
- * order of thousands, or tens of thousands.
- * Problem occurs when stepper motor moves quickly from one position,
- * to the next position. EX ::
- * 
- * Curr_error = 0.1125, Current_angle = -46. Sample time 2ms
- * (-46-(0.1125))/0.002 = -23 056.25
- * Which overflows the output value, and Gives the stepper
- * motor a false movment
- * 
- * Dont use Derivative_Mode right now, and look for solution.
- **/
-
-//Test Other group values
-/*#define PRIMARY_PROPORTIONAL_MODE_1 0.3
-#define PRIMARY_INTEGRAL_MODE_1     10
-#define PRIMARY_DERIVATIVE_MODE_1   0
-
-#define SECONDARY_PROPORTIONAL_MODE_1 	0.01
-#define SECONDARY_INTEGRAL_MODE_1     	0.04
-#define SECONDARY_DERIVATIVE_MODE_1   	0*/
 
 #define scale 10//0.05
 
@@ -117,6 +95,46 @@ struct PID {
 
 typedef struct
 {
+  /*Set Point and measurment*/
+  float Set_point;
+  float measurment;
+
+  float tau;
+
+  /* Control Variables*/
+  float Kp;          /** The proportional gain. */
+  float Ki;          /** The integral gain. */
+  float Kd;          /** The derivative gain. */
+
+  /* Set point handling*/
+  float b;
+  float b_1;  // set to one only when no integral.
+  float c;
+
+  /* Derivative Filter*/
+  float ff_gain;
+  float fb_gain;
+
+  /* The integral collector*/
+  float int_term;
+  
+  /* The controller output */
+  float control_output; 
+  float prev_control_output; 
+  float prev_control_output_sat; 
+
+  /* Previous I/Os*/
+  float prev_measurment;
+  float prev_set_point;
+  float prev_error_1;
+  float prev_error_2;
+  float prev_diff;
+  float prev_filt;
+
+} inverted_pid_contr;
+
+typedef struct
+{
   float state_a[5];  /** The filter state array of length 5. */
   float Kp;          /** The proportional gain. */
   float Ki;          /** The integral gain. */
@@ -141,9 +159,10 @@ float lowpass(float error, float prev_error, float dt, float RC);
 float lowpass_alt(float deriv, float prev_out, float dt, float RC);
 void lowpass_V2(float input, float *prev_out, float *out,float dt, float TC);
 void STM_Lowpass(float input, float prev_in, float ff_gain, float fb_gain, float prev_out, float *out);
+void STM_Lowpass_simp(float diff, inverted_pid_contr *PID, float *out);
 
-void pid_filter_control_execute_Incremental(arm_pid_instance_a_f32 *PID, float *current_error,
-									float sample_period, float *Deriv_Filt);
+void pid_filter_control_execute_Incremental(inverted_pid_contr *PID, float *current_error,
+									float sample_period);
 
 float max(float signal1, float signal2);
 float min(float signal1, float signal2);

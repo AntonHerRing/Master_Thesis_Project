@@ -448,8 +448,6 @@ void vLetContrTask_init(void) {
     PID_Pend.ff_gain = 1 / (1 + IWon_t);
     PID_Pend.fb_gain = PID_Pend.ff_gain * (1 - IWon_t);
     PID_Pend.tau = 1.0f / Wo_t;
-    //Deriv_Filt_Pend[0] = 1 / (1 + IWon_t);
-    //Deriv_Filt_Pend[1] = Deriv_Filt_Pend[0] * (1 - IWon_t);
 
     fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
     Wo_t    = 2 * PI * fo_t;
@@ -457,19 +455,12 @@ void vLetContrTask_init(void) {
     PID_Rotor.ff_gain = 1 / (1 + IWon_t);
     PID_Rotor.fb_gain = PID_Rotor.ff_gain * (1 - IWon_t);
     PID_Rotor.tau = 1.0f / Wo_t;
-    //Deriv_Filt_Rotor[0] = 1 / (1 + IWon_t);
-    //Deriv_Filt_Rotor[1] = Deriv_Filt_Rotor[0] * (1 - IWon_t);
 
     current_error_steps         = malloc(sizeof(float));
     current_error_rotor_steps   = malloc(sizeof(float));
     *current_error_steps         = 0;
     *current_error_rotor_steps   = 0;
 
-    /*PID_Pend.state_a[0] = 0;
-    PID_Pend.state_a[1] = 0;
-    PID_Pend.state_a[2] = 0;
-    PID_Pend.state_a[3] = 0;
-    PID_Pend.state_a[4] = 0;*/
 
     PID_Pend.Set_point  = 0;
     PID_Pend.measurment = 0;
@@ -488,11 +479,6 @@ void vLetContrTask_init(void) {
     PID_Pend.int_term        = 0;
     PID_Pend.control_output  = 0;
 
-    /*PID_Rotor.state_a[0]    = 0;
-    PID_Rotor.state_a[1]    = 0;
-    PID_Rotor.state_a[2]    = 0;
-    PID_Rotor.state_a[3]    = 0;
-    PID_Rotor.state_a[4]    = 0;*/
     PID_Rotor.Set_point  = 0;
     PID_Rotor.measurment = 0;
 
@@ -533,25 +519,6 @@ void vLetContrTask_init(void) {
 	rotor_position_filter_steps      = 0;
 	rotor_position_filter_steps_prev = 0;
 
-    i = 0;
-    impulse_start_index = 0;
-    angle_cal_complete = 0;
-    chirp_cycle = 0;
-
-    rotor_position_step_polarity = 1;
-    rotor_position_command_steps_prev = 0;
-    rotor_position_command_steps_pf_prev = 0;
-    rotor_position_command_steps_pf = (float) ((rotor_position_step_polarity)
-							* ROTOR_POSITION_STEP_RESPONSE_CYCLE_AMPLITUDE
-							* STEPPER_READ_POSITION_STEPS_PER_DEGREE);
-
-    //pid_filter_control_execute(&PID_Pend, current_error_steps, pend_period);
-	//pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, motor_period);
-    //pid_filter_control_executeV2(&PID_Pend, current_error_steps, pend_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY);
-    //pid_filter_control_executeV2(&PID_Rotor, current_error_rotor_steps, motor_period, DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR);
-
-    //pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, pend_period, Deriv_Filt_Pend);
-    //pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, motor_period, Deriv_Filt_Rotor);
 
     xLetTaskRegisterRead(&letContrTsk, &label_Enc, (void*) &ContrTask_Enc);     /* Register the read access for label Enc */    
     xLetTaskRegisterWrite(&letContrTsk, &label_Contr, (void*) &task_Contr);     /* Register the write access for label Contr */   

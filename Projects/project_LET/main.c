@@ -465,6 +465,8 @@ void vLetContrTask_init(void) {
     PID_Pend.int_term        = 0;
     PID_Pend.control_output  = 0;
 
+    PID_Pend.clamp_on        = false;
+
 
     PID_Rotor.Set_point  = 0;
     PID_Rotor.measurment = 0;
@@ -482,6 +484,10 @@ void vLetContrTask_init(void) {
     
     PID_Rotor.int_term        = 0;
     PID_Rotor.control_output  = 0;
+
+    PID_Rotor.clamp_on        = true;
+    PID_Rotor.max             = 10; 
+    PID_Rotor.min             = -10; 
 
     PID_Pend.Kp = PRIMARY_PROPORTIONAL_MODE_1;
     PID_Pend.Ki = PRIMARY_INTEGRAL_MODE_1;
@@ -510,10 +516,7 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
-    static float Polarity = -1; //-1
-
     static float bias = 0;
-    static bool toggle = false;
 
     /******** Main function ********/
     if (abs(*ContrTask_Enc) >= 179.5 && abs(*ContrTask_Enc) <= 180.5 && balance_on == false){
@@ -522,27 +525,32 @@ void vLetContrTask_job(void) {
     }
    
     if (balance_on && (*ContrTask_Enc > 150 &&  *ContrTask_Enc < 210)){
-        encoder_position = *ContrTask_Enc;
-
-        PID_Pend.measurment = *ContrTask_Enc * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
-
-        *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment);
-        
-        if(toggle){
-		    pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, contr_period);
-            toggle = false;
-        }
-        else 
-            toggle = true;
-
-
 
         PID_Rotor.measurment = *ContrTask_Motor * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
         *current_error_rotor_steps = PID_Rotor.Set_point - PID_Rotor.measurment;
 
-        pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, contr_period);
+        //pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, contr_period);
+        pid_filter_control_executeV3(&PID_Rotor, current_error_rotor_steps, contr_period);
 
-		rotor_control_target_steps = (PID_Pend.control_output + PID_Rotor.control_output)/STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+        encoder_position = *ContrTask_Enc;
+
+        PID_Pend.measurment = *ContrTask_Enc * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+        *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment - PID_Rotor.control_output);
+
+		//pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, contr_period);
+        pid_filter_control_executeV3(&PID_Pend, current_error_steps, contr_period);
+
+        /* Reset Integral collector when error is approximatly zero. Prevents growing oscillations*/
+        if(PID_Rotor.clamp_on && round(abs(PID_Pend.Set_point - PID_Pend.measurment)) == 0)
+		    PID_Rotor.int_term = 0;
+
+        // test leaky integrator
+        /*if ((PID_Pend.Set_point - PID_Pend.measurment) > 0)
+            PID_Rotor.int_term = PID_Rotor.int_term - PID_Rotor.int_term*0.1f;	
+        else if ((PID_Pend.Set_point - PID_Pend.measurment) < 0)
+            PID_Rotor.int_term = PID_Rotor.int_term + PID_Rotor.int_term*0.1f;*/
+
+        rotor_control_target_steps = (PID_Pend.control_output)*Rotor_scale;
 
         (*task_Contr) = rotor_control_target_steps;
         //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);

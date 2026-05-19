@@ -175,6 +175,48 @@ void pid_filter_control_executeV2(arm_pid_instance_a_f32 *PID, float *current_er
 	PID->state_a[3] = diff_filt;
 }
 
+void pid_filter_control_executeV3(inverted_pid_contr *PID, float *current_error, float sample_period) {
+
+	float proportional, diff, diff_sp, diff_deriv, diff_filt, contr_sig;
+	static bool first_time = true;
+	float error = *current_error;
+
+	/* Compute porportional part */								
+	proportional = PID->Kp*error;	
+
+	/* Compute time integral of error by trapezoidal rule */
+	PID->int_term = PID->int_term + 0.5f * PID->Ki*(sample_period)*(error + PID->prev_error_1);
+	
+	if(PID->clamp_on)
+		PID->int_term = limit_value(PID->int_term, PID->min, PID->max);
+
+	/* Compute time derivative of measurment to avoid derivative kick*/
+	diff = PID->Kd*(error - PID->prev_error_1)/(sample_period);
+	
+	/* 
+	* Compute first order low pass filter of time derivative. IIR filter 
+	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
+	* feedback_term is the pole location
+	*/
+	if (PID->Kd != 0)
+		STM_Lowpass_simp(diff, PID, &diff_filt);
+	else
+		diff_filt = 0;
+	
+	/* Accumulate PID output with Integral, Derivative and Proportional contributions*/
+	contr_sig = proportional + PID->int_term + diff_filt;
+	PID->control_output = contr_sig;
+
+	//printf("Proport: %f\tint: %f\tdiff_filt: %f\toutput: %f\n", proportional*Rotor_scale, PID->int_term*Rotor_scale , diff_filt*Rotor_scale, PID->control_output*Rotor_scale);
+
+    PID->prev_measurment = PID->measurment;
+    PID->prev_error_2    = PID->prev_error_1; 	//e(t - 2)
+   	PID->prev_error_1    = error;				//e(t - 1)
+    PID->prev_diff       = diff;
+    PID->prev_filt       = diff_filt;
+	PID->prev_set_point  = PID->Set_point;
+}
+
 void pid_filter_control_execute_Incremental(inverted_pid_contr *PID, float *current_error, float sample_period) {
 
 	float Delt_int, deriv_term, diff_filt, Delt_deriv, contr_sig;

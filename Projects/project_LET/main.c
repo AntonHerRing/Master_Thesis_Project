@@ -541,14 +541,15 @@ void vLetContrTask_job(void) {
         pid_filter_control_executeV3(&PID_Pend, current_error_steps, contr_period);
 
         /* Reset Integral collector when error is approximatly zero. Prevents growing oscillations*/
-        if(PID_Rotor.clamp_on && round(abs(PID_Pend.Set_point - PID_Pend.measurment)) == 0)
-		    PID_Rotor.int_term = 0;
+        //if(PID_Rotor.clamp_on && (int)abs(PID_Pend.Set_point - PID_Pend.measurment) == 0)
+        //     PID_Rotor.int_term = 0;
 
-        // test leaky integrator
-        /*if ((PID_Pend.Set_point - PID_Pend.measurment) > 0)
-            PID_Rotor.int_term = PID_Rotor.int_term - PID_Rotor.int_term*0.1f;	
-        else if ((PID_Pend.Set_point - PID_Pend.measurment) < 0)
-            PID_Rotor.int_term = PID_Rotor.int_term + PID_Rotor.int_term*0.1f;*/
+        if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.5)
+		    PID_Rotor.int_term *= 0.96;
+
+        // pos_error = pos_setpoint - position
+        //out = out + (Kp * pos_error - out) / slowing
+        //PID_Rotor.control_output = PID_Rotor.control_output + (0.08 * (*current_error_rotor_steps) - PID_Rotor.control_output);
 
         rotor_control_target_steps = (PID_Pend.control_output)*Rotor_scale;
 

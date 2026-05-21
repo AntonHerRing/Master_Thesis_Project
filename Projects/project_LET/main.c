@@ -231,15 +231,6 @@ void gpio_callback(uint gpio, uint32_t events) {
     }
 }
 
-// Hook for detective stack overflow
-void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName ){
-    char taskname = *pcTaskName;
-
-    TaskHandle_t task = xTask;
-
-    printf("Warning: The task %s has a stack Overflow!\n");
-}
-
 
 /*************************************************************/
 
@@ -364,6 +355,7 @@ void vLetMotorTask_job(void) {
     static int16_t buttons = 0;
     static bool pos_overflow = false;
     static float collector = 0;
+
     /******** Main function ********/
     //Handle button inputs
     buttons = *MotorTask_Btns;
@@ -382,8 +374,6 @@ void vLetMotorTask_job(void) {
     desired_pos = *MotorTask_Contr - collector;
     motor_deg = get_stepper_angle();
     (*task_Motor) = motor_deg; //write any inputs
-
-    //printf("Desired pos: %f\n", desired_pos);
 
     // Catch Control signal overflow
     if(!pos_overflow && abs(motor_deg) >= 360 || abs(desired_pos) >= 360){
@@ -486,8 +476,8 @@ void vLetContrTask_init(void) {
     PID_Rotor.control_output  = 0;
 
     PID_Rotor.clamp_on        = true;
-    PID_Rotor.max             = 10; 
-    PID_Rotor.min             = -10; 
+    PID_Rotor.low_clamp       = 10; 
+    PID_Rotor.high_clamp      = 30; 
 
     PID_Pend.Kp = PRIMARY_PROPORTIONAL_MODE_1;
     PID_Pend.Ki = PRIMARY_INTEGRAL_MODE_1;
@@ -529,7 +519,6 @@ void vLetContrTask_job(void) {
         PID_Rotor.measurment = *ContrTask_Motor * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
         *current_error_rotor_steps = PID_Rotor.Set_point - PID_Rotor.measurment;
 
-        //pid_filter_control_execute_Incremental(&PID_Rotor, current_error_rotor_steps, contr_period);
         pid_filter_control_executeV3(&PID_Rotor, current_error_rotor_steps, contr_period);
 
         encoder_position = *ContrTask_Enc;
@@ -537,15 +526,16 @@ void vLetContrTask_job(void) {
         PID_Pend.measurment = *ContrTask_Enc * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
         *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment - PID_Rotor.control_output);
 
-		//pid_filter_control_execute_Incremental(&PID_Pend, current_error_steps, contr_period);
         pid_filter_control_executeV3(&PID_Pend, current_error_steps, contr_period);
 
         /* Reset Integral collector when error is approximatly zero. Prevents growing oscillations*/
         //if(PID_Rotor.clamp_on && (int)abs(PID_Pend.Set_point - PID_Pend.measurment) == 0)
         //     PID_Rotor.int_term = 0;
+        float lambda = 0.91;
 
-        if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.5)
-		    PID_Rotor.int_term *= 0.96;
+        if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.2*STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE)   //0.2
+            PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
+                    //PID_Rotor.int_term *= 0.96;
 
         // pos_error = pos_setpoint - position
         //out = out + (Kp * pos_error - out) / slowing
@@ -560,48 +550,3 @@ void vLetContrTask_job(void) {
         (*task_Contr) = 0;
 }
 /*-----------------------------------------------------------*/
-
-
-// Scrapped functions
-//previously in Control_job
-    /*else{
-        motor_deg = (get_stepper_angle() - offset);
-        Contr_sig = *MotorTask_Contr;
-
-        if((int)motor_deg >= max_pos || Contr_sig == 2)
-            l_dir = -1;
-        else if((int)motor_deg <= min_pos || Contr_sig == 3)
-            l_dir = 1;
-
-        //Contr task sends STOP signal via MotorTask_Contr when around 180 Deg
-        if (Contr_sig == 0);    //do nothing
-        else if (l_dir == 1)
-            move_stepper_by(0.2);
-        else if (l_dir == -1 )
-            move_stepper_by(-0.2);
-
-        (*task_Motor) = (int32_t)motor_deg; //write any inputs
-    }*/
-
-    //Old Control_job
-    /*-----------------------------------------------------------*/
-
-//void vLetContrTask_job(void) {
-    /******** Init static var ********/
-    
-
-    /******** Main function ********/
-    // mock control functions
-    // Read Rotary Encoder angle, and send STOP signal to Control Variable for the Motor
-    /*if (*ContrTask_Enc >= 170 && *ContrTask_Enc <= 190)     //STOP -- ~180
-        (*task_Contr) = 0;
-    else if(*ContrTask_Enc >= 80 && *ContrTask_Enc <= 100)  //LEFT -- ~90
-        (*task_Contr) = 2;
-    else if(*ContrTask_Enc >= 250 && *ContrTask_Enc <= 280) //RIGHT -- ~270 / -90
-        (*task_Contr) = 3;
-    else
-        (*task_Contr) = 1;*/                                  //GO
-
-
-    //printf("Deg in contr: %d\r\n", *ContrTask_Enc); //Read any inputs
-//}

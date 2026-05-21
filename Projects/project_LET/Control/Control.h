@@ -53,8 +53,8 @@
 #define PRIMARY_DERIVATIVE_MODE_1   0.002       //0.01//0.05//0.01//0.01       //0.00001    
 
 #define SECONDARY_PROPORTIONAL_MODE_1 	-0.08//-0.08  //0.02        //0.5//0.07//0.07//0.05  //0.44    //0.02        
-#define SECONDARY_INTEGRAL_MODE_1     	0.03  //0.5//0.05         //0.01        //4.75//5 <- Is VERY close   
-#define SECONDARY_DERIVATIVE_MODE_1   	-0.017//-0.015     -0.017 <- keeps it from growing. 
+#define SECONDARY_INTEGRAL_MODE_1     	0.03//0.03  //0.5//0.05         //0.01        //4.75//5 <- Is VERY close   
+#define SECONDARY_DERIVATIVE_MODE_1   	-0.0165//-0.015     -0.017 <- keeps it from growing. 
 
 #define scale 10
 
@@ -133,10 +133,11 @@ typedef struct
   float prev_diff;
   float prev_filt;
 
-  /* Clamping values Int*/
+  /* Anti-Windup*/
   bool clamp_on;
-  float min;
-  float max;
+  float low_clamp;
+  float high_clamp;
+  float pre_sat;
 
 } inverted_pid_contr;
 

@@ -187,17 +187,6 @@ void pid_filter_control_executeV3(inverted_pid_contr *PID, float *current_error,
 	/* Compute time integral of error by trapezoidal rule */
 	PID->int_term = PID->int_term + 0.5f * PID->Ki*(sample_period)*(error + PID->prev_error_1);
 	
-	/*if(PID->clamp_on){
-		if(abs(error) < 40)
-			PID->int_term = limit_value(PID->int_term, (-1)*PID->low_clamp, PID->low_clamp);
-		else if (abs(error) < 60)
-			PID->int_term = limit_value(PID->int_term, (-1)*PID->high_clamp, PID->high_clamp);
-	}*/
-	//if(PID->clamp_on)
-	//	if(abs(error) < 30 * STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE)
-	//		PID->int_term = limit_value(PID->int_term, (-1)*PID->low_clamp, PID->low_clamp);
-		//else 
-		//	PID->int_term = limit_value(PID->int_term, (-1)*PID->high_clamp, PID->high_clamp);
 
 	/* Compute time derivative of measurment to avoid derivative kick*/
 	diff = PID->Kd*(error - PID->prev_error_1)/(sample_period);

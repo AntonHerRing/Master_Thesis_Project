@@ -507,6 +507,7 @@ void vLetContrTask_init(void) {
 
 void vLetContrTask_job(void) {
     static float bias = 0;
+    float lambda = 0.91;
 
     /******** Main function ********/
     if (abs(*ContrTask_Enc) >= 179.5 && abs(*ContrTask_Enc) <= 180.5 && balance_on == false){
@@ -521,9 +522,11 @@ void vLetContrTask_job(void) {
 
         pid_filter_control_executeV3(&PID_Rotor, current_error_rotor_steps, contr_period);
 
-        encoder_position = *ContrTask_Enc;
-
         PID_Pend.measurment = *ContrTask_Enc * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+
+        if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.2*STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE)   //0.2
+            PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
+
         *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment - PID_Rotor.control_output);
 
         pid_filter_control_executeV3(&PID_Pend, current_error_steps, contr_period);
@@ -531,10 +534,9 @@ void vLetContrTask_job(void) {
         /* Reset Integral collector when error is approximatly zero. Prevents growing oscillations*/
         //if(PID_Rotor.clamp_on && (int)abs(PID_Pend.Set_point - PID_Pend.measurment) == 0)
         //     PID_Rotor.int_term = 0;
-        float lambda = 0.91;
+        
 
-        if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.2*STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE)   //0.2
-            PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
+
                     //PID_Rotor.int_term *= 0.96;
 
         // pos_error = pos_setpoint - position

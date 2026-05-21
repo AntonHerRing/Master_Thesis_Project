@@ -1,0 +1,2964 @@
+#StartRunTime#0.050000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.100000	#EndRunTime#
+#StartEnc#0.06749996625001688#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.150000	#EndRunTime#
+#StartEnc#0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.200000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.250000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.300000	#EndRunTime#
+#StartEnc#-0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.350000	#EndRunTime#
+#StartEnc#-0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.400000	#EndRunTime#
+#StartEnc#-0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.450000	#EndRunTime#
+#StartEnc#-0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.500000	#EndRunTime#
+#StartEnc#-0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.550000	#EndRunTime#
+#StartEnc#-0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.600000	#EndRunTime#
+#StartEnc#-0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.650000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.700000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.750000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.800000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.850000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.900000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#0.950000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.000000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.050000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.100000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.150000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.200000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.250000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.300000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.350000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.400000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.450000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.500000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.550000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.600000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.650000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.700000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.750000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.800000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.850000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.900000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#1.950000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.000000	#EndRunTime#
+#StartEnc#0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.050000	#EndRunTime#
+#StartEnc#1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.100000	#EndRunTime#
+#StartEnc#2.0249988375005814#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.150000	#EndRunTime#
+#StartEnc#2.8574984212507895#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.200000	#EndRunTime#
+#StartEnc#4.004997847501076#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.250000	#EndRunTime#
+#StartEnc#5.332497183751408#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.300000	#EndRunTime#
+#StartEnc#6.502496448751776#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.350000	#EndRunTime#
+#StartEnc#7.492495803752099#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.400000	#EndRunTime#
+#StartEnc#8.189995605002197#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.450000	#EndRunTime#
+#StartEnc#8.482495008752496#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.500000	#EndRunTime#
+#StartEnc#7.897495751252124#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.550000	#EndRunTime#
+#StartEnc#6.997496201251899#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.600000	#EndRunTime#
+#StartEnc#5.917496591251705#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.650000	#EndRunTime#
+#StartEnc#4.522497438751281#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.700000	#EndRunTime#
+#StartEnc#2.9249982375008816#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.750000	#EndRunTime#
+#StartEnc#0.9899995050002475#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.800000	#EndRunTime#
+#StartEnc#-1.0574994712502643#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.850000	#EndRunTime#
+#StartEnc#-2.9699983650008175#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.900000	#EndRunTime#
+#StartEnc#-4.499997450001275#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#2.950000	#EndRunTime#
+#StartEnc#-5.512497243751378#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.000000	#EndRunTime#
+#StartEnc#-6.614996392501804#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.050000	#EndRunTime#
+#StartEnc#-8.234995582502208#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.100000	#EndRunTime#
+#StartEnc#-9.427494986252507#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.150000	#EndRunTime#
+#StartEnc#-10.529994285002857#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.200000	#EndRunTime#
+#StartEnc#-11.609993295003354#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.250000	#EndRunTime#
+#StartEnc#-12.757492871253564#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.300000	#EndRunTime#
+#StartEnc#-14.152492623753687#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.350000	#EndRunTime#
+#StartEnc#-15.682491408754295#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.400000	#EndRunTime#
+#StartEnc#-17.05499102250449#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.450000	#EndRunTime#
+#StartEnc#-18.38249005875497#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.500000	#EndRunTime#
+#StartEnc#-19.439988930005534#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.550000	#EndRunTime#
+#StartEnc#-20.317489391255304#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.600000	#EndRunTime#
+#StartEnc#-20.78998825500587#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.650000	#EndRunTime#
+#StartEnc#-20.992489053755474#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.700000	#EndRunTime#
+#StartEnc#-20.947488626255687#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.750000	#EndRunTime#
+#StartEnc#-20.54248927875536#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.800000	#EndRunTime#
+#StartEnc#-19.77748876125562#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.850000	#EndRunTime#
+#StartEnc#-18.494990002505#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.900000	#EndRunTime#
+#StartEnc#-16.627490336254834#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#3.950000	#EndRunTime#
+#StartEnc#-14.152492623753687#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.000000	#EndRunTime#
+#StartEnc#-11.789993805003098#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.050000	#EndRunTime#
+#StartEnc#-9.382494558752722#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.100000	#EndRunTime#
+#StartEnc#-6.884996257501871#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.150000	#EndRunTime#
+#StartEnc#-4.612497393751304#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.200000	#EndRunTime#
+#StartEnc#-3.5549980725009633#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.250000	#EndRunTime#
+#StartEnc#-2.3399986800006602#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.300000	#EndRunTime#
+#StartEnc#-0.8324995837502082#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.350000	#EndRunTime#
+#StartEnc#0.8324995837502082#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.400000	#EndRunTime#
+#StartEnc#2.519998590000705#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.450000	#EndRunTime#
+#StartEnc#3.937497731251135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.500000	#EndRunTime#
+#StartEnc#5.309997045001477#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.550000	#EndRunTime#
+#StartEnc#6.682496508751746#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.600000	#EndRunTime#
+#StartEnc#8.324995237502382#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.650000	#EndRunTime#
+#StartEnc#10.012494993752503#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.700000	#EndRunTime#
+#StartEnc#11.519993490003255#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.750000	#EndRunTime#
+#StartEnc#13.094992702503648#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.800000	#EndRunTime#
+#StartEnc#14.51249154375423#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.850000	#EndRunTime#
+#StartEnc#15.727491836254082#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.900000	#EndRunTime#
+#StartEnc#16.649990475004763#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#4.950000	#EndRunTime#
+#StartEnc#16.98749030625485#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.000000	#EndRunTime#
+#StartEnc#16.55999082000459#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.050000	#EndRunTime#
+#StartEnc#15.367491866254067#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.100000	#EndRunTime#
+#StartEnc#13.162492218753892#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.150000	#EndRunTime#
+#StartEnc#9.877494761252619#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.200000	#EndRunTime#
+#StartEnc#5.624997187501406#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.250000	#EndRunTime#
+#StartEnc#0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.300000	#EndRunTime#
+#StartEnc#-4.544997577501212#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.350000	#EndRunTime#
+#StartEnc#-9.157494671252666#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.400000	#EndRunTime#
+#StartEnc#-12.802493298753351#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.450000	#EndRunTime#
+#StartEnc#-15.34499157750421#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.500000	#EndRunTime#
+#StartEnc#-16.784990707504647#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.550000	#EndRunTime#
+#StartEnc#-17.167490966254515#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.600000	#EndRunTime#
+#StartEnc#-16.55999082000459#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.650000	#EndRunTime#
+#StartEnc#-14.917492091253955#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.700000	#EndRunTime#
+#StartEnc#-12.23999358000321#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.750000	#EndRunTime#
+#StartEnc#-8.504995297502353#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.800000	#EndRunTime#
+#StartEnc#-3.937497731251135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.850000	#EndRunTime#
+#StartEnc#0.9674995162502419#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.900000	#EndRunTime#
+#StartEnc#5.647496876251561#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#5.950000	#EndRunTime#
+#StartEnc#9.67499516250242#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.000000	#EndRunTime#
+#StartEnc#12.71249244375378#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.050000	#EndRunTime#
+#StartEnc#14.602492398753801#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.100000	#EndRunTime#
+#StartEnc#15.43499138250431#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.150000	#EndRunTime#
+#StartEnc#15.209991495004253#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.200000	#EndRunTime#
+#StartEnc#13.949991825004089#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.250000	#EndRunTime#
+#StartEnc#11.632493433753282#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.300000	#EndRunTime#
+#StartEnc#8.302495548752226#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.350000	#EndRunTime#
+#StartEnc#4.117497791251104#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.400000	#EndRunTime#
+#StartEnc#-0.5174997412501294#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.450000	#EndRunTime#
+#StartEnc#-5.084997157501421#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.500000	#EndRunTime#
+#StartEnc#-9.067495016252492#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.550000	#EndRunTime#
+#StartEnc#-12.082493208753394#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.600000	#EndRunTime#
+#StartEnc#-14.03999268000366#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.650000	#EndRunTime#
+#StartEnc#-14.849991375004313#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.700000	#EndRunTime#
+#StartEnc#-14.602492398753801#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.750000	#EndRunTime#
+#StartEnc#-13.27499216250392#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.800000	#EndRunTime#
+#StartEnc#-10.867494116252942#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.850000	#EndRunTime#
+#StartEnc#-7.492495803752099#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.900000	#EndRunTime#
+#StartEnc#-3.307498196250902#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#6.950000	#EndRunTime#
+#StartEnc#1.1249994375002812#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.000000	#EndRunTime#
+#StartEnc#5.354996872501564#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.050000	#EndRunTime#
+#StartEnc#8.954995072502465#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.100000	#EndRunTime#
+#StartEnc#11.587493006253498#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.150000	#EndRunTime#
+#StartEnc#13.117492991253505#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.200000	#EndRunTime#
+#StartEnc#13.589992905003548#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.250000	#EndRunTime#
+#StartEnc#12.98249275875362#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.300000	#EndRunTime#
+#StartEnc#11.2949936025032#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.350000	#EndRunTime#
+#StartEnc#8.61749524125238#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.400000	#EndRunTime#
+#StartEnc#5.062497468751266#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.450000	#EndRunTime#
+#StartEnc#0.9449995275002362#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.500000	#EndRunTime#
+#StartEnc#-3.2849983575008213#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.550000	#EndRunTime#
+#StartEnc#-7.177496111251944#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.600000	#EndRunTime#
+#StartEnc#-10.169994165002917#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.650000	#EndRunTime#
+#StartEnc#-12.23999358000321#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.700000	#EndRunTime#
+#StartEnc#-13.162492218753892#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.750000	#EndRunTime#
+#StartEnc#-13.004993047503476#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.800000	#EndRunTime#
+#StartEnc#-11.767493666253166#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.850000	#EndRunTime#
+#StartEnc#-9.494994502502749#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.900000	#EndRunTime#
+#StartEnc#-6.3224965387517305#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#7.950000	#EndRunTime#
+#StartEnc#-2.429998635000682#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.000000	#EndRunTime#
+#StartEnc#1.61999904000048#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.050000	#EndRunTime#
+#StartEnc#5.39999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.100000	#EndRunTime#
+#StartEnc#8.572495413752293#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.150000	#EndRunTime#
+#StartEnc#10.7999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.200000	#EndRunTime#
+#StartEnc#11.947493126253438#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.250000	#EndRunTime#
+#StartEnc#12.03749278125361#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.300000	#EndRunTime#
+#StartEnc#11.092494003752998#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.350000	#EndRunTime#
+#StartEnc#9.112494843752579#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.400000	#EndRunTime#
+#StartEnc#6.232496733751633#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.450000	#EndRunTime#
+#StartEnc#2.6549985225007386#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.500000	#EndRunTime#
+#StartEnc#-1.2149992425003788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.550000	#EndRunTime#
+#StartEnc#-4.927497236251382#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.600000	#EndRunTime#
+#StartEnc#-8.099995350002326#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.650000	#EndRunTime#
+#StartEnc#-10.372493913753045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.700000	#EndRunTime#
+#StartEnc#-11.65499372250314#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.750000	#EndRunTime#
+#StartEnc#-11.812492893753554#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.800000	#EndRunTime#
+#StartEnc#-10.934993632503184#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.850000	#EndRunTime#
+#StartEnc#-9.044994727502637#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.900000	#EndRunTime#
+#StartEnc#-6.277496561251719#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#8.950000	#EndRunTime#
+#StartEnc#-2.7674984662507667#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.000000	#EndRunTime#
+#StartEnc#0.9224995387502307#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.050000	#EndRunTime#
+#StartEnc#4.432497633751183#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.100000	#EndRunTime#
+#StartEnc#7.4249956875021565#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.150000	#EndRunTime#
+#StartEnc#9.584994907502546#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.200000	#EndRunTime#
+#StartEnc#10.732493883753058#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.250000	#EndRunTime#
+#StartEnc#10.822493688753157#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.300000	#EndRunTime#
+#StartEnc#9.922494138752931#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.350000	#EndRunTime#
+#StartEnc#8.054995522502239#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.400000	#EndRunTime#
+#StartEnc#5.332497183751408#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.450000	#EndRunTime#
+#StartEnc#2.0024988487505757#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.500000	#EndRunTime#
+#StartEnc#-1.5299992350003824#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.550000	#EndRunTime#
+#StartEnc#-4.904997097501452#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.600000	#EndRunTime#
+#StartEnc#-7.717495691252155#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.650000	#EndRunTime#
+#StartEnc#-9.652494873752563#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.700000	#EndRunTime#
+#StartEnc#-10.642494228752886#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.750000	#EndRunTime#
+#StartEnc#-10.597493801253101#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.800000	#EndRunTime#
+#StartEnc#-9.517494791252606#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.850000	#EndRunTime#
+#StartEnc#-7.514995942502029#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.900000	#EndRunTime#
+#StartEnc#-4.724997337501332#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#9.950000	#EndRunTime#
+#StartEnc#-1.4174992912503543#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.000000	#EndRunTime#
+#StartEnc#1.9574988712505643#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.050000	#EndRunTime#
+#StartEnc#5.062497468751266#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.100000	#EndRunTime#
+#StartEnc#7.58249605875197#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.150000	#EndRunTime#
+#StartEnc#9.224994787502608#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.200000	#EndRunTime#
+#StartEnc#9.877494761252619#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.250000	#EndRunTime#
+#StartEnc#9.562494618752691#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.300000	#EndRunTime#
+#StartEnc#8.302495548752226#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.350000	#EndRunTime#
+#StartEnc#6.164996617501691#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.400000	#EndRunTime#
+#StartEnc#3.3299981850009073#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.450000	#EndRunTime#
+#StartEnc#0.13499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.500000	#EndRunTime#
+#StartEnc#-3.0824983087508455#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.550000	#EndRunTime#
+#StartEnc#-5.962496418751791#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.600000	#EndRunTime#
+#StartEnc#-8.099995350002326#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.650000	#EndRunTime#
+#StartEnc#-9.449994675002664#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.700000	#EndRunTime#
+#StartEnc#-9.764994817502592#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.750000	#EndRunTime#
+#StartEnc#-9.134995132502434#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.800000	#EndRunTime#
+#StartEnc#-7.55999592000204#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.850000	#EndRunTime#
+#StartEnc#-5.197497101251449#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.900000	#EndRunTime#
+#StartEnc#-2.2499987250006375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#10.950000	#EndRunTime#
+#StartEnc#0.8549995725002137#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.000000	#EndRunTime#
+#StartEnc#3.8249977875011067#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.050000	#EndRunTime#
+#StartEnc#6.299996250001875#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.100000	#EndRunTime#
+#StartEnc#8.099995350002326#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.150000	#EndRunTime#
+#StartEnc#8.932494783752608#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.200000	#EndRunTime#
+#StartEnc#8.842495128752436#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.250000	#EndRunTime#
+#StartEnc#7.852495773752113#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.300000	#EndRunTime#
+#StartEnc#6.029996535001733#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.350000	#EndRunTime#
+#StartEnc#3.532498083750958#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.400000	#EndRunTime#
+#StartEnc#0.6074996962501519#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.450000	#EndRunTime#
+#StartEnc#-2.362498668750666#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.500000	#EndRunTime#
+#StartEnc#-5.107497296251352#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.550000	#EndRunTime#
+#StartEnc#-7.1999958000021005#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.600000	#EndRunTime#
+#StartEnc#-8.527495436252282#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.650000	#EndRunTime#
+#StartEnc#-8.954995072502465#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.700000	#EndRunTime#
+#StartEnc#-8.414995492502253#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.750000	#EndRunTime#
+#StartEnc#-7.01999634000183#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.800000	#EndRunTime#
+#StartEnc#-4.882497408751296#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.850000	#EndRunTime#
+#StartEnc#-2.15999892000054#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.900000	#EndRunTime#
+#StartEnc#0.6974996512501744#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#11.950000	#EndRunTime#
+#StartEnc#3.41999814000093#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.000000	#EndRunTime#
+#StartEnc#5.714996842501579#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.050000	#EndRunTime#
+#StartEnc#7.402495998752#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.100000	#EndRunTime#
+#StartEnc#8.189995605002197#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.150000	#EndRunTime#
+#StartEnc#8.07749566125217#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.200000	#EndRunTime#
+#StartEnc#7.132496283751858#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.250000	#EndRunTime#
+#StartEnc#5.39999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.300000	#EndRunTime#
+#StartEnc#3.0374981812509096#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.350000	#EndRunTime#
+#StartEnc#0.33749983125008437#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.400000	#EndRunTime#
+#StartEnc#-2.407498646250677#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.450000	#EndRunTime#
+#StartEnc#-4.882497408751296#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.500000	#EndRunTime#
+#StartEnc#-6.749996025001988#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.550000	#EndRunTime#
+#StartEnc#-7.897495751252124#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.600000	#EndRunTime#
+#StartEnc#-8.189995605002197#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.650000	#EndRunTime#
+#StartEnc#-7.604995747502127#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.700000	#EndRunTime#
+#StartEnc#-6.187496306251847#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.750000	#EndRunTime#
+#StartEnc#-4.094997802501099#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.800000	#EndRunTime#
+#StartEnc#-1.5524990737504631#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.850000	#EndRunTime#
+#StartEnc#1.1024992987503508#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.900000	#EndRunTime#
+#StartEnc#3.5549980725009633#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#12.950000	#EndRunTime#
+#StartEnc#5.57999676000162#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.000000	#EndRunTime#
+#StartEnc#6.997496201251899#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.050000	#EndRunTime#
+#StartEnc#7.537495631252185#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.100000	#EndRunTime#
+#StartEnc#7.2674959162520425#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.150000	#EndRunTime#
+#StartEnc#6.209996595001702#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.200000	#EndRunTime#
+#StartEnc#4.432497633751183#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.250000	#EndRunTime#
+#StartEnc#2.15999892000054#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.300000	#EndRunTime#
+#StartEnc#-0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.350000	#EndRunTime#
+#StartEnc#-2.8574984212507895#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.400000	#EndRunTime#
+#StartEnc#-5.03999718000141#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.450000	#EndRunTime#
+#StartEnc#-6.569996565001717#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.500000	#EndRunTime#
+#StartEnc#-7.402495998752#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.550000	#EndRunTime#
+#StartEnc#-7.447495976252012#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.600000	#EndRunTime#
+#StartEnc#-6.63749608125196#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.650000	#EndRunTime#
+#StartEnc#-5.107497296251352#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.700000	#EndRunTime#
+#StartEnc#-2.9924983537508227#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.750000	#EndRunTime#
+#StartEnc#-0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.800000	#EndRunTime#
+#StartEnc#1.8224990887504557#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.850000	#EndRunTime#
+#StartEnc#3.9824978587510707#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.900000	#EndRunTime#
+#StartEnc#5.647496876251561#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#13.950000	#EndRunTime#
+#StartEnc#6.7049961975019015#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.000000	#EndRunTime#
+#StartEnc#6.907496396251802#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.050000	#EndRunTime#
+#StartEnc#6.367496366251817#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.100000	#EndRunTime#
+#StartEnc#5.084997157501421#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.150000	#EndRunTime#
+#StartEnc#3.23999808000096#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.200000	#EndRunTime#
+#StartEnc#1.0124994937502532#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.250000	#EndRunTime#
+#StartEnc#-1.3499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.300000	#EndRunTime#
+#StartEnc#-3.5549980725009633#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.350000	#EndRunTime#
+#StartEnc#-5.332497183751408#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.400000	#EndRunTime#
+#StartEnc#-6.457496621251689#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.450000	#EndRunTime#
+#StartEnc#-6.907496396251802#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.500000	#EndRunTime#
+#StartEnc#-6.592496253751873#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.550000	#EndRunTime#
+#StartEnc#-5.512497243751378#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.600000	#EndRunTime#
+#StartEnc#-3.8249977875011067#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.650000	#EndRunTime#
+#StartEnc#-1.687499006250497#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.700000	#EndRunTime#
+#StartEnc#0.5624997187501406#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.750000	#EndRunTime#
+#StartEnc#2.699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.800000	#EndRunTime#
+#StartEnc#4.499997450001275#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.850000	#EndRunTime#
+#StartEnc#5.737496531251735#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.900000	#EndRunTime#
+#StartEnc#6.344996677501661#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#14.950000	#EndRunTime#
+#StartEnc#6.164996617501691#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.000000	#EndRunTime#
+#StartEnc#5.287497356251322#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.050000	#EndRunTime#
+#StartEnc#3.8024977987511006#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.100000	#EndRunTime#
+#StartEnc#1.867499066250467#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.150000	#EndRunTime#
+#StartEnc#-0.2699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.200000	#EndRunTime#
+#StartEnc#-2.407498646250677#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.250000	#EndRunTime#
+#StartEnc#-4.229997735001132#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.300000	#EndRunTime#
+#StartEnc#-5.57999676000162#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.350000	#EndRunTime#
+#StartEnc#-6.254996422501789#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.400000	#EndRunTime#
+#StartEnc#-6.277496561251719#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.450000	#EndRunTime#
+#StartEnc#-5.557497071251465#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.500000	#EndRunTime#
+#StartEnc#-4.207497746251127#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.550000	#EndRunTime#
+#StartEnc#-2.3849988075005966#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.600000	#EndRunTime#
+#StartEnc#-0.3149998425000788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.650000	#EndRunTime#
+#StartEnc#1.732498983750508#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.700000	#EndRunTime#
+#StartEnc#3.5549980725009633#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.750000	#EndRunTime#
+#StartEnc#4.904997097501452#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.800000	#EndRunTime#
+#StartEnc#5.692496703751648#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.850000	#EndRunTime#
+#StartEnc#5.804996647501677#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.900000	#EndRunTime#
+#StartEnc#5.21999724000138#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#15.950000	#EndRunTime#
+#StartEnc#4.027497686251157#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.000000	#EndRunTime#
+#StartEnc#2.362498668750666#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.050000	#EndRunTime#
+#StartEnc#0.4274997862501069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.100000	#EndRunTime#
+#StartEnc#-1.5749990625004688#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.150000	#EndRunTime#
+#StartEnc#-3.374998012500994#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.200000	#EndRunTime#
+#StartEnc#-4.792497453751273#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.250000	#EndRunTime#
+#StartEnc#-5.624997187501406#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.300000	#EndRunTime#
+#StartEnc#-5.804996647501677#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.350000	#EndRunTime#
+#StartEnc#-5.354996872501564#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.400000	#EndRunTime#
+#StartEnc#-4.274997562501219#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.450000	#EndRunTime#
+#StartEnc#-2.699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.500000	#EndRunTime#
+#StartEnc#-0.8549995725002137#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.550000	#EndRunTime#
+#StartEnc#1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.600000	#EndRunTime#
+#StartEnc#2.8349985825007087#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.650000	#EndRunTime#
+#StartEnc#4.207497746251127#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.700000	#EndRunTime#
+#StartEnc#5.084997157501421#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.750000	#EndRunTime#
+#StartEnc#5.39999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.800000	#EndRunTime#
+#StartEnc#5.01749704125148#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.850000	#EndRunTime#
+#StartEnc#4.049997675001163#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.900000	#EndRunTime#
+#StartEnc#2.609998695000652#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#16.950000	#EndRunTime#
+#StartEnc#0.8549995725002137#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.000000	#EndRunTime#
+#StartEnc#-1.0124994937502532#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.050000	#EndRunTime#
+#StartEnc#-2.7449984775007614#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.100000	#EndRunTime#
+#StartEnc#-4.162497618751191#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.150000	#EndRunTime#
+#StartEnc#-5.062497468751266#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.200000	#EndRunTime#
+#StartEnc#-5.377497011251495#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.250000	#EndRunTime#
+#StartEnc#-5.062497468751266#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.300000	#EndRunTime#
+#StartEnc#-4.184997607501196#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.350000	#EndRunTime#
+#StartEnc#-2.812498593750703#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.400000	#EndRunTime#
+#StartEnc#-1.147499426250287#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.450000	#EndRunTime#
+#StartEnc#0.6299996850001576#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.500000	#EndRunTime#
+#StartEnc#2.3174986912506546#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.550000	#EndRunTime#
+#StartEnc#3.667498016250992#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.600000	#EndRunTime#
+#StartEnc#4.589997405001298#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.650000	#EndRunTime#
+#StartEnc#4.972497213751392#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.700000	#EndRunTime#
+#StartEnc#4.747497326251337#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.750000	#EndRunTime#
+#StartEnc#3.937497731251135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.800000	#EndRunTime#
+#StartEnc#2.6774983612508194#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.850000	#EndRunTime#
+#StartEnc#1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.900000	#EndRunTime#
+#StartEnc#-0.6299996850001576#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#17.950000	#EndRunTime#
+#StartEnc#-2.272498863750568#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.000000	#EndRunTime#
+#StartEnc#-3.644998027500986#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.050000	#EndRunTime#
+#StartEnc#-4.567497566251217#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.100000	#EndRunTime#
+#StartEnc#-4.949997525001238#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.150000	#EndRunTime#
+#StartEnc#-4.747497326251337#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.200000	#EndRunTime#
+#StartEnc#-4.004997847501076#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.250000	#EndRunTime#
+#StartEnc#-2.812498593750703#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.300000	#EndRunTime#
+#StartEnc#-1.304999347500326#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.350000	#EndRunTime#
+#StartEnc#0.35999982000009#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.400000	#EndRunTime#
+#StartEnc#1.9349990325004838#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.450000	#EndRunTime#
+#StartEnc#3.23999808000096#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.500000	#EndRunTime#
+#StartEnc#4.162497618751191#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.550000	#EndRunTime#
+#StartEnc#4.544997577501212#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.600000	#EndRunTime#
+#StartEnc#4.409997495001252#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.650000	#EndRunTime#
+#StartEnc#3.734998132500934#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.700000	#EndRunTime#
+#StartEnc#2.609998695000652#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.750000	#EndRunTime#
+#StartEnc#1.1699994150002926#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.800000	#EndRunTime#
+#StartEnc#-0.4274997862501069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.850000	#EndRunTime#
+#StartEnc#-1.9574988712505643#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.900000	#EndRunTime#
+#StartEnc#-3.2624980687509657#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#18.950000	#EndRunTime#
+#StartEnc#-4.162497618751191#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.000000	#EndRunTime#
+#StartEnc#-4.567497566251217#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.050000	#EndRunTime#
+#StartEnc#-4.454997622501189#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.100000	#EndRunTime#
+#StartEnc#-3.8024977987511006#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.150000	#EndRunTime#
+#StartEnc#-2.7224986387506807#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.200000	#EndRunTime#
+#StartEnc#-1.3274991862504069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.250000	#EndRunTime#
+#StartEnc#0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.300000	#EndRunTime#
+#StartEnc#1.6649990175004914#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.350000	#EndRunTime#
+#StartEnc#2.9249982375008816#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.400000	#EndRunTime#
+#StartEnc#3.8024977987511006#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.450000	#EndRunTime#
+#StartEnc#4.207497746251127#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.500000	#EndRunTime#
+#StartEnc#4.094997802501099#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.550000	#EndRunTime#
+#StartEnc#3.487497956251022#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.600000	#EndRunTime#
+#StartEnc#2.474998762500619#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.650000	#EndRunTime#
+#StartEnc#1.147499426250287#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.700000	#EndRunTime#
+#StartEnc#-0.3149998425000788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.750000	#EndRunTime#
+#StartEnc#-1.7549991225004387#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.800000	#EndRunTime#
+#StartEnc#-2.9699983650008175#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.850000	#EndRunTime#
+#StartEnc#-3.8249977875011067#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.900000	#EndRunTime#
+#StartEnc#-4.229997735001132#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#19.950000	#EndRunTime#
+#StartEnc#-4.139997630001185#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.000000	#EndRunTime#
+#StartEnc#-3.5549980725009633#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.050000	#EndRunTime#
+#StartEnc#-2.587498706250647#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.100000	#EndRunTime#
+#StartEnc#-1.304999347500326#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.150000	#EndRunTime#
+#StartEnc#0.11249994375002813#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.200000	#EndRunTime#
+#StartEnc#1.4849992575003714#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.250000	#EndRunTime#
+#StartEnc#2.6549985225007386#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.300000	#EndRunTime#
+#StartEnc#3.487497956251022#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.350000	#EndRunTime#
+#StartEnc#3.8699979150010426#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.400000	#EndRunTime#
+#StartEnc#3.8024977987511006#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.450000	#EndRunTime#
+#StartEnc#3.23999808000096#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.500000	#EndRunTime#
+#StartEnc#2.3174986912506546#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.550000	#EndRunTime#
+#StartEnc#1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.600000	#EndRunTime#
+#StartEnc#-0.2699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.650000	#EndRunTime#
+#StartEnc#-1.5974992012503995#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.700000	#EndRunTime#
+#StartEnc#-2.7449984775007614#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.750000	#EndRunTime#
+#StartEnc#-3.532498083750958#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.800000	#EndRunTime#
+#StartEnc#-3.9149977425011286#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.850000	#EndRunTime#
+#StartEnc#-3.847498076250962#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.900000	#EndRunTime#
+#StartEnc#-3.307498196250902#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#20.950000	#EndRunTime#
+#StartEnc#-2.407498646250677#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.000000	#EndRunTime#
+#StartEnc#-1.2149992425003788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.050000	#EndRunTime#
+#StartEnc#0.0899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.100000	#EndRunTime#
+#StartEnc#1.3724993137503432#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.150000	#EndRunTime#
+#StartEnc#2.452498473750763#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.200000	#EndRunTime#
+#StartEnc#3.2174982412508792#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.250000	#EndRunTime#
+#StartEnc#3.5774979112510445#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.300000	#EndRunTime#
+#StartEnc#3.5099982450008773#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.350000	#EndRunTime#
+#StartEnc#2.9924983537508227#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.400000	#EndRunTime#
+#StartEnc#2.1149987925006037#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.450000	#EndRunTime#
+#StartEnc#0.9674995162502419#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.500000	#EndRunTime#
+#StartEnc#-0.29249985375007315#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.550000	#EndRunTime#
+#StartEnc#-1.5074990962504518#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.600000	#EndRunTime#
+#StartEnc#-2.5649984175007914#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.650000	#EndRunTime#
+#StartEnc#-3.2849983575008213#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.700000	#EndRunTime#
+#StartEnc#-3.6224981887509053#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.750000	#EndRunTime#
+#StartEnc#-3.5549980725009633#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.800000	#EndRunTime#
+#StartEnc#-3.0374981812509096#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.850000	#EndRunTime#
+#StartEnc#-2.182498758750621#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.900000	#EndRunTime#
+#StartEnc#-1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#21.950000	#EndRunTime#
+#StartEnc#0.11249994375002813#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.000000	#EndRunTime#
+#StartEnc#1.2824992087503957#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.050000	#EndRunTime#
+#StartEnc#2.294998702500649#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.100000	#EndRunTime#
+#StartEnc#2.9924983537508227#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.150000	#EndRunTime#
+#StartEnc#3.307498196250902#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.200000	#EndRunTime#
+#StartEnc#3.2174982412508792#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.250000	#EndRunTime#
+#StartEnc#2.7224986387506807#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.300000	#EndRunTime#
+#StartEnc#1.8899989050005477#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.350000	#EndRunTime#
+#StartEnc#0.8324995837502082#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.400000	#EndRunTime#
+#StartEnc#-0.3149998425000788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.450000	#EndRunTime#
+#StartEnc#-1.4399991300004351#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.500000	#EndRunTime#
+#StartEnc#-2.407498646250677#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.550000	#EndRunTime#
+#StartEnc#-3.0599984700007647#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.600000	#EndRunTime#
+#StartEnc#-3.352498023750988#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.650000	#EndRunTime#
+#StartEnc#-3.2624980687509657#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.700000	#EndRunTime#
+#StartEnc#-2.7674984662507667#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.750000	#EndRunTime#
+#StartEnc#-1.979999010000495#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.800000	#EndRunTime#
+#StartEnc#-0.9449995275002362#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.850000	#EndRunTime#
+#StartEnc#0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.900000	#EndRunTime#
+#StartEnc#1.2599993700003151#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#22.950000	#EndRunTime#
+#StartEnc#2.15999892000054#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.000000	#EndRunTime#
+#StartEnc#2.7674984662507667#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.050000	#EndRunTime#
+#StartEnc#3.0374981812509096#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.100000	#EndRunTime#
+#StartEnc#2.9249982375008816#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.150000	#EndRunTime#
+#StartEnc#2.452498473750763#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.200000	#EndRunTime#
+#StartEnc#1.6649990175004914#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.250000	#EndRunTime#
+#StartEnc#0.6974996512501744#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.300000	#EndRunTime#
+#StartEnc#-0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.350000	#EndRunTime#
+#StartEnc#-1.4174992912503543#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.400000	#EndRunTime#
+#StartEnc#-2.272498863750568#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.450000	#EndRunTime#
+#StartEnc#-2.8574984212507895#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.500000	#EndRunTime#
+#StartEnc#-3.104998297500851#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.550000	#EndRunTime#
+#StartEnc#-2.9699983650008175#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.600000	#EndRunTime#
+#StartEnc#-2.497498751250624#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.650000	#EndRunTime#
+#StartEnc#-1.7549991225004387#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.700000	#EndRunTime#
+#StartEnc#-0.7874996062501969#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.750000	#EndRunTime#
+#StartEnc#0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.800000	#EndRunTime#
+#StartEnc#1.2149992425003788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.850000	#EndRunTime#
+#StartEnc#2.0249988375005814#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.900000	#EndRunTime#
+#StartEnc#2.5649984175007914#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#23.950000	#EndRunTime#
+#StartEnc#2.7899983050008474#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.000000	#EndRunTime#
+#StartEnc#2.6549985225007386#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.050000	#EndRunTime#
+#StartEnc#2.182498758750621#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.100000	#EndRunTime#
+#StartEnc#1.4399991300004351#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.150000	#EndRunTime#
+#StartEnc#0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.200000	#EndRunTime#
+#StartEnc#-0.4499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.250000	#EndRunTime#
+#StartEnc#-1.3949991525004237#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.300000	#EndRunTime#
+#StartEnc#-2.15999892000054#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.350000	#EndRunTime#
+#StartEnc#-2.6549985225007386#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.400000	#EndRunTime#
+#StartEnc#-2.8574984212507895#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.450000	#EndRunTime#
+#StartEnc#-2.699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.500000	#EndRunTime#
+#StartEnc#-2.2274987362506318#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.550000	#EndRunTime#
+#StartEnc#-1.5074990962504518#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.600000	#EndRunTime#
+#StartEnc#-0.6299996850001576#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.650000	#EndRunTime#
+#StartEnc#0.3149998425000788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.700000	#EndRunTime#
+#StartEnc#1.1924994037502983#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.750000	#EndRunTime#
+#StartEnc#1.9124988937505534#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.800000	#EndRunTime#
+#StartEnc#2.3849988075005966#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.850000	#EndRunTime#
+#StartEnc#2.5424985787507106#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.900000	#EndRunTime#
+#StartEnc#2.3849988075005966#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#24.950000	#EndRunTime#
+#StartEnc#1.9124988937505534#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.000000	#EndRunTime#
+#StartEnc#1.2149992425003788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.050000	#EndRunTime#
+#StartEnc#0.35999982000009#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.100000	#EndRunTime#
+#StartEnc#-0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.150000	#EndRunTime#
+#StartEnc#-1.3724993137503432#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.200000	#EndRunTime#
+#StartEnc#-2.047498976250512#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.250000	#EndRunTime#
+#StartEnc#-2.474998762500619#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.300000	#EndRunTime#
+#StartEnc#-2.609998695000652#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.350000	#EndRunTime#
+#StartEnc#-2.429998635000682#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.400000	#EndRunTime#
+#StartEnc#-1.979999010000495#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.450000	#EndRunTime#
+#StartEnc#-1.2824992087503957#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.500000	#EndRunTime#
+#StartEnc#-0.4724997637501181#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.550000	#EndRunTime#
+#StartEnc#0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.600000	#EndRunTime#
+#StartEnc#1.1924994037502983#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.650000	#EndRunTime#
+#StartEnc#1.8224990887504557#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.700000	#EndRunTime#
+#StartEnc#2.204998747500626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.750000	#EndRunTime#
+#StartEnc#2.294998702500649#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.800000	#EndRunTime#
+#StartEnc#2.1149987925006037#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.850000	#EndRunTime#
+#StartEnc#1.6649990175004914#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.900000	#EndRunTime#
+#StartEnc#0.9899995050002475#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#25.950000	#EndRunTime#
+#StartEnc#0.20249989875005064#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.000000	#EndRunTime#
+#StartEnc#-0.6074996962501519#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.050000	#EndRunTime#
+#StartEnc#-1.3499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.100000	#EndRunTime#
+#StartEnc#-1.9349990325004838#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.150000	#EndRunTime#
+#StartEnc#-2.294998702500649#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.200000	#EndRunTime#
+#StartEnc#-2.362498668750666#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.250000	#EndRunTime#
+#StartEnc#-2.15999892000054#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.300000	#EndRunTime#
+#StartEnc#-1.7099991450004275#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.350000	#EndRunTime#
+#StartEnc#-1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.400000	#EndRunTime#
+#StartEnc#-0.3149998425000788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.450000	#EndRunTime#
+#StartEnc#0.4724997637501181#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.500000	#EndRunTime#
+#StartEnc#1.1699994150002926#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.550000	#EndRunTime#
+#StartEnc#1.7099991450004275#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.600000	#EndRunTime#
+#StartEnc#2.0249988375005814#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.650000	#EndRunTime#
+#StartEnc#2.0699988150005924#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.700000	#EndRunTime#
+#StartEnc#1.867499066250467#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.750000	#EndRunTime#
+#StartEnc#1.4174992912503543#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.800000	#EndRunTime#
+#StartEnc#0.7874996062501969#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.850000	#EndRunTime#
+#StartEnc#0.06749996625001688#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.900000	#EndRunTime#
+#StartEnc#-0.6749996625001687#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#26.950000	#EndRunTime#
+#StartEnc#-1.3274991862504069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.000000	#EndRunTime#
+#StartEnc#-1.8224990887504557#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.050000	#EndRunTime#
+#StartEnc#-2.1149987925006037#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.100000	#EndRunTime#
+#StartEnc#-2.1374987812506094#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.150000	#EndRunTime#
+#StartEnc#-1.9124988937505534#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.200000	#EndRunTime#
+#StartEnc#-1.4624991187504408#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.250000	#EndRunTime#
+#StartEnc#-0.8774995612502193#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.300000	#EndRunTime#
+#StartEnc#-0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.350000	#EndRunTime#
+#StartEnc#0.5174997412501294#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.400000	#EndRunTime#
+#StartEnc#1.1249994375002812#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.450000	#EndRunTime#
+#StartEnc#1.5974992012503995#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.500000	#EndRunTime#
+#StartEnc#1.8224990887504557#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.550000	#EndRunTime#
+#StartEnc#1.8449989275005363#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.600000	#EndRunTime#
+#StartEnc#1.61999904000048#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.650000	#EndRunTime#
+#StartEnc#1.1699994150002926#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.700000	#EndRunTime#
+#StartEnc#0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.750000	#EndRunTime#
+#StartEnc#-0.06749996625001688#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.800000	#EndRunTime#
+#StartEnc#-0.71999964000018#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.850000	#EndRunTime#
+#StartEnc#-1.2824992087503957#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.900000	#EndRunTime#
+#StartEnc#-1.7099991450004275#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#27.950000	#EndRunTime#
+#StartEnc#-1.9124988937505534#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.000000	#EndRunTime#
+#StartEnc#-1.9124988937505534#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.050000	#EndRunTime#
+#StartEnc#-1.6649990175004914#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.100000	#EndRunTime#
+#StartEnc#-1.2374993812503094#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.150000	#EndRunTime#
+#StartEnc#-0.6749996625001687#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.200000	#EndRunTime#
+#StartEnc#-0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.250000	#EndRunTime#
+#StartEnc#0.5624997187501406#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.300000	#EndRunTime#
+#StartEnc#1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.350000	#EndRunTime#
+#StartEnc#1.4624991187504408#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.400000	#EndRunTime#
+#StartEnc#1.6424991787504106#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.450000	#EndRunTime#
+#StartEnc#1.61999904000048#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.500000	#EndRunTime#
+#StartEnc#1.3724993137503432#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.550000	#EndRunTime#
+#StartEnc#0.9449995275002362#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.600000	#EndRunTime#
+#StartEnc#0.4049997975001013#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.650000	#EndRunTime#
+#StartEnc#-0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.700000	#EndRunTime#
+#StartEnc#-0.7649996175001912#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.750000	#EndRunTime#
+#StartEnc#-1.2374993812503094#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.800000	#EndRunTime#
+#StartEnc#-1.5749990625004688#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.850000	#EndRunTime#
+#StartEnc#-1.732498983750508#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.900000	#EndRunTime#
+#StartEnc#-1.687499006250497#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#28.950000	#EndRunTime#
+#StartEnc#-1.4399991300004351#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.000000	#EndRunTime#
+#StartEnc#-1.0349994825002589#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.050000	#EndRunTime#
+#StartEnc#-0.5174997412501294#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.100000	#EndRunTime#
+#StartEnc#0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.150000	#EndRunTime#
+#StartEnc#0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.200000	#EndRunTime#
+#StartEnc#1.0349994825002589#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.250000	#EndRunTime#
+#StartEnc#1.3274991862504069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.300000	#EndRunTime#
+#StartEnc#1.4624991187504408#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.350000	#EndRunTime#
+#StartEnc#1.3949991525004237#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.400000	#EndRunTime#
+#StartEnc#1.147499426250287#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.450000	#EndRunTime#
+#StartEnc#0.7424996287501857#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.500000	#EndRunTime#
+#StartEnc#0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.550000	#EndRunTime#
+#StartEnc#-0.2699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.600000	#EndRunTime#
+#StartEnc#-0.7649996175001912#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.650000	#EndRunTime#
+#StartEnc#-1.1699994150002926#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.700000	#EndRunTime#
+#StartEnc#-1.4399991300004351#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.750000	#EndRunTime#
+#StartEnc#-1.5299992350003824#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.800000	#EndRunTime#
+#StartEnc#-1.4624991187504408#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.850000	#EndRunTime#
+#StartEnc#-1.2149992425003788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.900000	#EndRunTime#
+#StartEnc#-0.8324995837502082#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#29.950000	#EndRunTime#
+#StartEnc#-0.35999982000009#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.000000	#EndRunTime#
+#StartEnc#0.13499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.050000	#EndRunTime#
+#StartEnc#0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.100000	#EndRunTime#
+#StartEnc#0.9674995162502419#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.150000	#EndRunTime#
+#StartEnc#1.1924994037502983#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.200000	#EndRunTime#
+#StartEnc#1.2599993700003151#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.250000	#EndRunTime#
+#StartEnc#1.1699994150002926#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.300000	#EndRunTime#
+#StartEnc#0.9224995387502307#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.350000	#EndRunTime#
+#StartEnc#0.5624997187501406#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.400000	#EndRunTime#
+#StartEnc#0.11249994375002813#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.450000	#EndRunTime#
+#StartEnc#-0.33749983125008437#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.500000	#EndRunTime#
+#StartEnc#-0.7649996175001912#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.550000	#EndRunTime#
+#StartEnc#-1.1024992987503508#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.600000	#EndRunTime#
+#StartEnc#-1.304999347500326#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.650000	#EndRunTime#
+#StartEnc#-1.3499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.700000	#EndRunTime#
+#StartEnc#-1.2374993812503094#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.750000	#EndRunTime#
+#StartEnc#-0.9899995050002475#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.800000	#EndRunTime#
+#StartEnc#-0.652499673750163#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.850000	#EndRunTime#
+#StartEnc#-0.22499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.900000	#EndRunTime#
+#StartEnc#0.20249989875005064#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#30.950000	#EndRunTime#
+#StartEnc#0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.000000	#EndRunTime#
+#StartEnc#0.8774995612502193#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.050000	#EndRunTime#
+#StartEnc#1.0574994712502643#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.100000	#EndRunTime#
+#StartEnc#1.07999946000027#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.150000	#EndRunTime#
+#StartEnc#0.9674995162502419#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.200000	#EndRunTime#
+#StartEnc#0.71999964000018#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.250000	#EndRunTime#
+#StartEnc#0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.300000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.350000	#EndRunTime#
+#StartEnc#-0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.400000	#EndRunTime#
+#StartEnc#-0.7424996287501857#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.450000	#EndRunTime#
+#StartEnc#-1.0124994937502532#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.500000	#EndRunTime#
+#StartEnc#-1.147499426250287#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.550000	#EndRunTime#
+#StartEnc#-1.1699994150002926#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.600000	#EndRunTime#
+#StartEnc#-1.0349994825002589#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.650000	#EndRunTime#
+#StartEnc#-0.8099995950002026#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.700000	#EndRunTime#
+#StartEnc#-0.49499975250012374#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.750000	#EndRunTime#
+#StartEnc#-0.13499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.800000	#EndRunTime#
+#StartEnc#0.22499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.850000	#EndRunTime#
+#StartEnc#0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.900000	#EndRunTime#
+#StartEnc#0.7649996175001912#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#31.950000	#EndRunTime#
+#StartEnc#0.899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.000000	#EndRunTime#
+#StartEnc#0.899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.050000	#EndRunTime#
+#StartEnc#0.7649996175001912#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.100000	#EndRunTime#
+#StartEnc#0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.150000	#EndRunTime#
+#StartEnc#0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.200000	#EndRunTime#
+#StartEnc#-0.0899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.250000	#EndRunTime#
+#StartEnc#-0.4049997975001013#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.300000	#EndRunTime#
+#StartEnc#-0.6974996512501744#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.350000	#EndRunTime#
+#StartEnc#-0.899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.400000	#EndRunTime#
+#StartEnc#-0.9899995050002475#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.450000	#EndRunTime#
+#StartEnc#-0.9674995162502419#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.500000	#EndRunTime#
+#StartEnc#-0.8549995725002137#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.550000	#EndRunTime#
+#StartEnc#-0.6299996850001576#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.600000	#EndRunTime#
+#StartEnc#-0.35999982000009#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.650000	#EndRunTime#
+#StartEnc#-0.06749996625001688#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.700000	#EndRunTime#
+#StartEnc#0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.750000	#EndRunTime#
+#StartEnc#0.49499975250012374#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.800000	#EndRunTime#
+#StartEnc#0.652499673750163#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.850000	#EndRunTime#
+#StartEnc#0.7424996287501857#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.900000	#EndRunTime#
+#StartEnc#0.71999964000018#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#32.950000	#EndRunTime#
+#StartEnc#0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.000000	#EndRunTime#
+#StartEnc#0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.050000	#EndRunTime#
+#StartEnc#0.13499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.100000	#EndRunTime#
+#StartEnc#-0.1574999212500394#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.150000	#EndRunTime#
+#StartEnc#-0.4049997975001013#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.200000	#EndRunTime#
+#StartEnc#-0.6299996850001576#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.250000	#EndRunTime#
+#StartEnc#-0.7874996062501969#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.300000	#EndRunTime#
+#StartEnc#-0.8324995837502082#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.350000	#EndRunTime#
+#StartEnc#-0.8099995950002026#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.400000	#EndRunTime#
+#StartEnc#-0.6749996625001687#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.450000	#EndRunTime#
+#StartEnc#-0.49499975250012374#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.500000	#EndRunTime#
+#StartEnc#-0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.550000	#EndRunTime#
+#StartEnc#0.0#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.600000	#EndRunTime#
+#StartEnc#0.22499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.650000	#EndRunTime#
+#StartEnc#0.4274997862501069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.700000	#EndRunTime#
+#StartEnc#0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.750000	#EndRunTime#
+#StartEnc#0.5849997075001463#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.800000	#EndRunTime#
+#StartEnc#0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.850000	#EndRunTime#
+#StartEnc#0.4274997862501069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.900000	#EndRunTime#
+#StartEnc#0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#33.950000	#EndRunTime#
+#StartEnc#0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.000000	#EndRunTime#
+#StartEnc#-0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.050000	#EndRunTime#
+#StartEnc#-0.4049997975001013#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.100000	#EndRunTime#
+#StartEnc#-0.5624997187501406#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.150000	#EndRunTime#
+#StartEnc#-0.652499673750163#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.200000	#EndRunTime#
+#StartEnc#-0.6974996512501744#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.250000	#EndRunTime#
+#StartEnc#-0.6299996850001576#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.300000	#EndRunTime#
+#StartEnc#-0.5174997412501294#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.350000	#EndRunTime#
+#StartEnc#-0.35999982000009#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.400000	#EndRunTime#
+#StartEnc#-0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.450000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.500000	#EndRunTime#
+#StartEnc#0.20249989875005064#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.550000	#EndRunTime#
+#StartEnc#0.33749983125008437#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.600000	#EndRunTime#
+#StartEnc#0.4274997862501069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.650000	#EndRunTime#
+#StartEnc#0.4274997862501069#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.700000	#EndRunTime#
+#StartEnc#0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.750000	#EndRunTime#
+#StartEnc#0.2699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.800000	#EndRunTime#
+#StartEnc#0.13499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.850000	#EndRunTime#
+#StartEnc#-0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.900000	#EndRunTime#
+#StartEnc#-0.20249989875005064#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#34.950000	#EndRunTime#
+#StartEnc#-0.35999982000009#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.000000	#EndRunTime#
+#StartEnc#-0.4724997637501181#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.050000	#EndRunTime#
+#StartEnc#-0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.100000	#EndRunTime#
+#StartEnc#-0.539999730000135#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.150000	#EndRunTime#
+#StartEnc#-0.49499975250012374#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.200000	#EndRunTime#
+#StartEnc#-0.4049997975001013#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.250000	#EndRunTime#
+#StartEnc#-0.2699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.300000	#EndRunTime#
+#StartEnc#-0.11249994375002813#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.350000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.400000	#EndRunTime#
+#StartEnc#0.1574999212500394#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.450000	#EndRunTime#
+#StartEnc#0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.500000	#EndRunTime#
+#StartEnc#0.29249985375007315#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.550000	#EndRunTime#
+#StartEnc#0.29249985375007315#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.600000	#EndRunTime#
+#StartEnc#0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.650000	#EndRunTime#
+#StartEnc#0.1574999212500394#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.700000	#EndRunTime#
+#StartEnc#0.04499997750001125#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.750000	#EndRunTime#
+#StartEnc#-0.0899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.800000	#EndRunTime#
+#StartEnc#-0.20249989875005064#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.850000	#EndRunTime#
+#StartEnc#-0.3149998425000788#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.900000	#EndRunTime#
+#StartEnc#-0.3824998087500956#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#35.950000	#EndRunTime#
+#StartEnc#-0.4049997975001013#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.000000	#EndRunTime#
+#StartEnc#-0.4049997975001013#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.050000	#EndRunTime#
+#StartEnc#-0.35999982000009#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.100000	#EndRunTime#
+#StartEnc#-0.2699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.150000	#EndRunTime#
+#StartEnc#-0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.200000	#EndRunTime#
+#StartEnc#-0.0899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.250000	#EndRunTime#
+#StartEnc#0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.300000	#EndRunTime#
+#StartEnc#0.0899999550000225#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.350000	#EndRunTime#
+#StartEnc#0.1574999212500394#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.400000	#EndRunTime#
+#StartEnc#0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.450000	#EndRunTime#
+#StartEnc#0.1574999212500394#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.500000	#EndRunTime#
+#StartEnc#0.11249994375002813#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.550000	#EndRunTime#
+#StartEnc#0.06749996625001688#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.600000	#EndRunTime#
+#StartEnc#-0.022499988750005626#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.650000	#EndRunTime#
+#StartEnc#-0.11249994375002813#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.700000	#EndRunTime#
+#StartEnc#-0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.750000	#EndRunTime#
+#StartEnc#-0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.800000	#EndRunTime#
+#StartEnc#-0.29249985375007315#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.850000	#EndRunTime#
+#StartEnc#-0.29249985375007315#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.900000	#EndRunTime#
+#StartEnc#-0.2699998650000675#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#36.950000	#EndRunTime#
+#StartEnc#-0.24749987625006187#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#37.000000	#EndRunTime#
+#StartEnc#-0.179999910000045#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#
+#StartRunTime#37.050000	#EndRunTime#
+#StartEnc#-0.13499993250003375#EndEnc#
+#StartMotor#0.000000	#EndMotor#
+#StartContr#0.0#EndContr#

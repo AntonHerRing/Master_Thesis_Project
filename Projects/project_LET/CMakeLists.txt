@@ -57,7 +57,7 @@ message(LET_SOURCES="${LET_SOURCES}")
 #include_directories(../../bsp ../../FreeRTOS_LET/src) # Add include files for the bsp
 include_directories(../../bsp ../../../Tools/RT_Trace/target ../../FreeRTOS_LET/src) # Add include files for the bsp
 add_executable(project_LET main.c ${BSP_SOURCES} ${TRACE_SOURCES} ${LET_SOURCES} Drivers/L16474/l6474.c Drivers/L16474/motor_rpi3b_interface.c 
-                Drivers/L16474/steppermotor.c Control/Control.c Encoder/Encoder.c)
+                Drivers/L16474/steppermotor.c Control/Control.c Encoder/Encoder.c Tasks/tasks.c)
 
 pico_set_program_name(project_LET "project_LET")
 pico_set_program_version(project_LET "0.1")

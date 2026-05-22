@@ -8,7 +8,7 @@
 #include "queue.h"
 #include "semphr.h"
 #include "bsp.h"
-//#include "let.h"
+#include "let.h"
 #include "trace.h"
 
 #include "pico/stdlib.h"
@@ -17,14 +17,14 @@
 #include "hardware/regs/io_bank0.h"
 #include "hardware/structs/io_bank0.h"
 
-#include "Drivers/L16474/motor_rpi3b_interface.h"
-#include "Drivers/L16474/l6474.h"
-#include "Drivers/L16474/steppermotor.h"
+#include "../project_LET/Drivers/L16474/motor_rpi3b_interface.h"
+#include "../project_LET/Drivers/L16474/l6474.h"
+#include "../project_LET/Drivers/L16474/steppermotor.h"
 
 /*#include "Control/Control.h"
 #include "Encoder/Encoder.h"*/
 
-#include "Tasks/tasks.h"
+#include "../project_LET/Tasks/tasks.h"
 
 /*
 GPIO9::     CS
@@ -80,7 +80,7 @@ int main()
     init_motor();           /* Initialize the Stepper Motor*/
     trace_init();           /* Initialize the Tracing function*/
     
-    //xTaskCreate(Enc_Task, "Enc Task", 512, (void*) T_Enc, 6, &EncTask);
+    xTaskCreate(Enc_Task, "Enc Task", 512, (void*) T_Enc, 6, &EncTask);
     xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 5, &ContrTask);
     xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 4, &BtnsTask);
     xTaskCreate(Motor_Task, "Motor Task", 18216, (void*) T_Motor, 3, &MotorTask);
@@ -282,7 +282,7 @@ void Contr_Task(void *args) {
             PID_Rotor.measurment = Motor_read * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
             *current_error_rotor_steps = PID_Rotor.Set_point - PID_Rotor.measurment;
 
-            pid_filter_control_executeV3(&PID_Rotor, current_error_rotor_steps, contr_period);
+            pid_filter_control_execute(&PID_Rotor, current_error_rotor_steps, contr_period);
 
             PID_Pend.measurment = Encoder_read * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
             /* Integral Anti-windup*/
@@ -291,7 +291,7 @@ void Contr_Task(void *args) {
             /* Calculate Pendulum SP - PV*/
             *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment - PID_Rotor.control_output);
 
-            pid_filter_control_executeV3(&PID_Pend, current_error_steps, contr_period);
+            pid_filter_control_execute(&PID_Pend, current_error_steps, contr_period);
 
             /* Convert PID Output to Angle*/
             rotor_control_target_steps = (PID_Pend.control_output)*Rotor_scale;

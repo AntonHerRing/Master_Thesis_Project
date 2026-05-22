@@ -27,7 +27,7 @@
 #define T_Enc   2
 #define T_Motor 2
 #define T_Contr 5
-#define T_Print 25 
+#define T_Print 10//25 
 #define T_Btns  2
 
 /***** STM Var******/

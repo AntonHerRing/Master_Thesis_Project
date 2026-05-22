@@ -53,11 +53,13 @@ message(TRACE_SOURCES="${TRACE_SOURCES}")
 #file(GLOB LET_SOURCES "../../FreeRTOS_LET/src/*.c")
 #message(LET_SOURCES="${LET_SOURCES}")
 
+#path = "../project_LET"
+
 # Add executable. Default name is the project name, version 0.1
 #include_directories(../../bsp ../../FreeRTOS_LET/src) # Add include files for the bsp
 include_directories(../../bsp ../../../Tools/RT_Trace/target ../../FreeRTOS_LET/src) # Add include files for the bsp
-add_executable(project_without_LET main.c ${BSP_SOURCES} ${TRACE_SOURCES} ${LET_SOURCES} Drivers/L16474/l6474.c Drivers/L16474/motor_rpi3b_interface.c 
-                Drivers/L16474/steppermotor.c Control/Control.c Encoder/Encoder.c Tasks/tasks.c)
+add_executable(project_without_LET main.c ${BSP_SOURCES} ${TRACE_SOURCES} ${LET_SOURCES} ../project_LET/Drivers/L16474/l6474.c ../project_LET/Drivers/L16474/motor_rpi3b_interface.c 
+                ../project_LET/Drivers/L16474/steppermotor.c ../project_LET/Control/Control.c ../project_LET/Encoder/Encoder.c ../project_LET/Tasks/tasks.c)
 
 pico_set_program_name(project_without_LET "project_without_LET")
 pico_set_program_version(project_without_LET "0.1")

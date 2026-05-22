@@ -1,0 +1,4 @@
+#StartRunTime#31.325000	#EndRunTime#
+#StartEnc#180.149994	#EndEnc#
+#StartMotor#-7.425000	#EndMotor#
+#StartContr#-7.453888	#EndContr#

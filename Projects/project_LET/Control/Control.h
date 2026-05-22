@@ -13,9 +13,9 @@
 #include "hardware/regs/io_bank0.h"
 #include "hardware/structs/io_bank0.h"
 
-#include "Drivers/L16474/motor_rpi3b_interface.h"
-#include "Drivers/L16474/l6474.h"
-#include "Drivers/L16474/steppermotor.h"
+//#include "Drivers/L16474/motor_rpi3b_interface.h"
+//#include "Drivers/L16474/l6474.h"
+//#include "Drivers/L16474/steppermotor.h"
 
 /******************* Defines *******************/
 
@@ -65,9 +65,6 @@
 
 
 /************ Structs and Variables ************/
-//#ifndef INVERTED_PID_H
-//#define INVERTED_PID_H
-
 
 typedef struct
 {
@@ -81,11 +78,6 @@ typedef struct
   float Kp;          /** The proportional gain. */
   float Ki;          /** The integral gain. */
   float Kd;          /** The derivative gain. */
-
-  /* Set point handling*/
-  float b;
-  float b_1;  // set to one only when no integral.
-  float c;
 
   /* Derivative Filter*/
   float ff_gain;
@@ -113,7 +105,6 @@ typedef struct
 } inverted_pid_contr;
 /* typedef here */
 
-//#endif
 
 /****************** Func Inits ******************/
 
@@ -124,7 +115,7 @@ bool oppositeSigns(int x, int y);
 float lowpass(float error, float prev_error, float dt, float RC);
 float lowpass_alt(float deriv, float prev_out, float dt, float RC);
 void lowpass_V2(float input, float *prev_out, float *out,float dt, float TC);
-void pid_filter_control_executeV3(inverted_pid_contr *PID, float *current_error, float sample_period);
+void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error, float sample_period);
 void STM_Lowpass(float input, float prev_in, float ff_gain, float fb_gain, float prev_out, float *out);
 void STM_Lowpass_simp(float diff, inverted_pid_contr *PID, float *out);
 

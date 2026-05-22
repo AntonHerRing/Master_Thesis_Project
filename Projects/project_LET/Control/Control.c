@@ -1,4 +1,4 @@
-#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
+//#pragma GCC optimize ("O0") /* Incldue for dubuggning. Easier viewing of variables */
 #include "Control.h"
 
 
@@ -21,23 +21,19 @@ float limit_value(float signal, float min, float max){
 
 float max(float signal1, float signal2){
 	if(signal1 > signal2){
-		//printf("Min:: Sig1: %f > Sig2: %f\n", signal1, signal2);
 		return signal1;
 	}
 	else{
 		return signal2;
-		//printf("Min:: Sig1: %f < Sig2: %f\n", signal1, signal2);
 	}
 }
 
 float min(float signal1, float signal2){
 	if(signal1 < signal2){
-		//printf("Min:: Sig1: %f < Sig2: %f\n", signal1, signal2);
 		return signal1;
 	}
 	else{
 		return signal2;
-		//printf("Min:: Sig1: %f > Sig2: %f\n", signal1, signal2);
 	}
 }
 
@@ -49,9 +45,9 @@ float sign(float signal){
 }
 
 
-void pid_filter_control_executeV3(inverted_pid_contr *PID, float *current_error, float sample_period) {
+void pid_filter_control_execute(inverted_pid_contr *PID, float *current_error, float sample_period) {
 
-	float proportional, diff, diff_sp, diff_deriv, diff_filt, contr_sig;
+	float proportional, diff, diff_filt, contr_sig;
 	static bool first_time = true;
 	float error = *current_error;
 
@@ -64,28 +60,20 @@ void pid_filter_control_executeV3(inverted_pid_contr *PID, float *current_error,
 	/* Compute time derivative of measurment to avoid derivative kick*/
 	diff = PID->Kd*(error - PID->prev_error_1)/(sample_period);
 	
-	/* 
-	* Compute first order low pass filter of time derivative. IIR filter 
-	* Filter_out = feedforward_gain * (Deriv + past_Deriv) - feedback_term*Past_Filter_out
-	* feedback_term is the pole location
-	*/
-	if (PID->Kd != 0)
-		STM_Lowpass_simp(diff, PID, &diff_filt);
-	else
-		diff_filt = 0;
+	/* Compute first order low pass filter of time derivative*/
+	if (PID->Kd != 0) STM_Lowpass_simp(diff, PID, &diff_filt);
+	else diff_filt = 0;
 	
 	/* Accumulate PID output with Integral, Derivative and Proportional contributions*/
 	contr_sig = proportional + PID->int_term + diff_filt;
 	PID->control_output = contr_sig;
 
-	//printf("Proport: %f\tint: %f\tdiff_filt: %f\toutput: %f\n", proportional*Rotor_scale, PID->int_term*Rotor_scale , diff_filt*Rotor_scale, PID->control_output*Rotor_scale);
-
-    PID->prev_measurment = PID->measurment;
+	/* Save down past variables*/
     PID->prev_error_2    = PID->prev_error_1; 	//e(t - 2)
    	PID->prev_error_1    = error;				//e(t - 1)
     PID->prev_diff       = diff;
     PID->prev_filt       = diff_filt;
-	PID->prev_set_point  = PID->Set_point;
+	//printf("Proport: %f\tint: %f\tdiff_filt: %f\toutput: %f\n", proportional*Rotor_scale, PID->int_term*Rotor_scale , diff_filt*Rotor_scale, PID->control_output*Rotor_scale);
 }
 
 void pid_filter_control_execute_Incremental(inverted_pid_contr *PID, float *current_error, float sample_period) {

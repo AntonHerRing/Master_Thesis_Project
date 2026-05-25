@@ -81,11 +81,20 @@ int main()
     trace_init();           /* Initialize the Tracing function*/
     
     xTaskCreate(Enc_Task, "Enc Task", 512, (void*) T_Enc, 6, &EncTask);
-    xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 5, &ContrTask);
-    xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 4, &BtnsTask);
-    xTaskCreate(Motor_Task, "Motor Task", 18216, (void*) T_Motor, 3, &MotorTask);
-    xTaskCreate(Print_Task, "Print Task", 1024, (void*) T_Print, 2, &PrintTask);
+    vTaskCoreAffinitySet(EncTask, CORE1);
 
+    xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 5, &ContrTask);
+    vTaskCoreAffinitySet(ContrTask, CORE0);
+
+    xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 4, &BtnsTask);
+    vTaskCoreAffinitySet(BtnsTask, CORE0);
+
+    xTaskCreate(Motor_Task, "Motor Task", 18216, (void*) T_Motor, 3, &MotorTask);
+    vTaskCoreAffinitySet(MotorTask, CORE0);
+
+    xTaskCreate(Print_Task, "Print Task", 1024, (void*) T_Print, 2, &PrintTask);
+    vTaskCoreAffinitySet(PrintTask, CORE0);
+   
     //low num = low prio, High num = high prio
     /*xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE1, &letEncTsk);
     xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 5120, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);

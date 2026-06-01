@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 from datetime import datetime
+import statistics
 
 import sys
 
@@ -18,11 +19,13 @@ from tkinter import ttk
 plt.ion()
 
 # Innit Variables
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\"
 
-Enc_plot        = [0]
-Motor_plot      = [0]
-Contr_plot      = [0]
+Enc_plot        = []
+Motor_plot      = []
+Contr_plot      = []
 Run_time_plot   = []
 
 #button choice when starting
@@ -60,13 +63,26 @@ def Record_Graph(ser, time):
     # Read Run time at start of recoring
     value = ser.readline()
     StringValue = str(value,'UTF-8')
-    if "#-" in StringValue and "-#" in StringValue:
-        extracted = StringValue.split("#-")[1].split("-#")[0]
-        if extracted == "42":
-            if StringValue.find("Run Time(s): ") != -1 and StringValue.find("Deg:") != -1:
-                Start_time = StringValue.split("Run Time(s): ")[1].split("Deg:")[0].replace(" ", "")
+    while (True):
+        if "#-" in StringValue and "-#" in StringValue:
+            extracted = StringValue.split("#-")[1].split("-#")[0]
+            if extracted == "42" and StringValue.find("#-42-#", 7, len(StringValue)) == -1:
+                if StringValue.find("Run Time(s): ") != -1 and StringValue.find("Deg:") != -1:
+                    Start_time = StringValue.split("Run Time(s): ")[1].split("Deg:")[0].replace(" ", "")
+                if StringValue.find("Deg: ") != -1 and StringValue.find("Motor") != -1:
+                    Encoder = StringValue.split("Deg: ")[1].split("Motor")[0].replace(" ", "")
+                if StringValue.find("Motor Deg: ") != -1 and StringValue.find("Target") != -1:
+                    Motor = StringValue.split("Motor Deg: ")[1].split("Target")[0].replace(" ", "")
+                if StringValue.find("Target Deg:") != -1 and StringValue.find("End") != -1:
+                    Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
+                break
     Run_Time = Start_time
     Run_time_plot.append(float(Run_Time))
+    Enc_plot.append(float(Encoder))
+    Motor_plot.append(float(Motor))
+    Contr_plot.append(float(Control))
+
+    print("First Data Saved")
 
     # Generate file for logging with date and time
     CurrDateTime = str(datetime.now().strftime("%Y-%m-%d %H-%M-%S"))
@@ -170,10 +186,14 @@ def Record_Graph(ser, time):
 
                 delay -= 1
             else:
-                print("Error! Invalid String Input! Expected '42' but got'", extracted,"'")
-
+                print("Warning: Skipped Overwridden String")
     ser.close()
     file.close()
+
+    print("End Run Time: " + str((float(Run_Time) - float(Start_time))))
+
+    Analyze_data(Enc_plot)
+    #plt.boxplot(Enc_plot)
 
 def ask_record_time():
     window = tk.Tk()
@@ -215,30 +235,46 @@ def log_handler():
 def load_log(logname):
     with open(logname, 'r') as file:
         data = file.read()
+        first_time = True
 
         # parse Run time variables
         temp_parse = data.split("#StartRunTime#")
         for var in temp_parse[1:]:
             Run_Time = var.split("#EndRunTime#")[0].replace(" ", "")
             Run_time_plot.append(float(Run_Time))
+            if first_time == True:
+                first_time = False
+                Run_time_plot.append(float(Run_Time))
+        first_time = True
 
         # parse Encoder variables
         temp_parse = data.split("#StartEnc#")
         for var in temp_parse[1:]:
             Encoder = var.split("#EndEnc#")[0].replace(" ", "")
             Enc_plot.append(float(Encoder))
+            if first_time == True:
+                first_time = False
+                Enc_plot.append(float(Encoder))
+        first_time = True
 
         # parse Motor variables
         temp_parse = data.split("#StartMotor#")
         for var in temp_parse[1:]:
             Motor = var.split("#EndMotor#")[0].replace(" ", "")
             Motor_plot.append(float(Motor))
+            if first_time == True:
+                first_time = False
+                Motor_plot.append(float(Motor))
+        first_time = True
 
         # parse Control variables
         temp_parse = data.split("#StartContr#")
         for var in temp_parse[1:]:
             Control = var.split("#EndContr#")[0].replace(" ", "")
             Contr_plot.append(float(Control))
+            if first_time == True:
+                first_time = False
+                Contr_plot.append(float(Control))
 
         # Load in plot values
         fig, graph = plt.subplots(2, 2, figsize=(12, 5))
@@ -250,6 +286,7 @@ def load_log(logname):
         graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
         graph[1, 0].set_title('Target Degree')
         fig.delaxes(graph[1, 1])
+        
 
         # set plot labels
         for plot in graph.flat:
@@ -258,9 +295,15 @@ def load_log(logname):
         for plot in graph.flat[:1]:
             plot.label_outer()
 
-        plt.ylim(-360,360)
+        Analyze_data(Enc_plot)
+
+        # plt.ylim(-360,360)
         plt.show(block=True)
         plt.pause(1)
+
+        plt.boxplot(Enc_plot)
+
+        #Analyze_data(Enc_plot)
         #while True: pass
 
 def log_mult():
@@ -375,6 +418,25 @@ def loading_screen(time):
     window.after(50, process_to_load)
     window.mainloop()
 
+def Analyze_data(data):
+    #Calculate Average
+    Avr = statistics.mean(data)
+    print("Average Value: " + str(Avr))
+
+    #Calculate Stand dev
+    stnd_dev = statistics.stdev(data)
+    print("Standard Deviation: " + str(stnd_dev))
+
+    #Calculate the other one
+    variance = statistics.variance(data)
+    print("variance: " + str(variance))
+
+    #Extract max/min values.
+    print("Max Value: " + str(max(data)) + "\tMin Value: " + str(min(data)))
+
+    #Print Box plot
+    #plt.boxplot(data)
+
 #Input to change state
 #State_input = int(input("(1): Record Graph\t(2): Load Graph\n"))
 
@@ -394,6 +456,6 @@ while True:
     else:
         print("Error: Incorrect Option! Expected 1, 2, or 3. Got: " + str(State_input))
 
-    #sys.exit()
+    sys.exit()
 
 

@@ -11,6 +11,7 @@ LetTask_t letMotorTsk;  /*Handle for the LET stepper motor task. */
 LetTask_t letContrTsk;  /*Handle for the LET Control task. */
 LetTask_t letPrintTsk;  /*Handle for the LET Print task. */
 LetTask_t letBtnsTsk;  /*Handle for the LET Buttons task. */
+LetTask_t letDummyTsk;  /*Handle for  LET dummy task. */
 
 float* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
 float  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
@@ -223,7 +224,16 @@ void vLetPrintTask_init(void) {
 
 void vLetPrintTask_job(void) {
     /******* Init static var *******/
-    static uint32_t run_time = 0; 
+    static uint32_t run_time    = 0; 
+    static float inc_mean       = 0;
+    static float past_inc_mean  = 0;
+
+    static float inc_variance   = 0;
+    static float inc_stndDev    = 0;
+    static float samples        = 0;
+
+    static bool activate_calc = CALC_ON;
+    static bool set_point_reached = false;
 
     /******** Main function ********/
     run_time += T_Print;
@@ -231,6 +241,26 @@ void vLetPrintTask_job(void) {
     //print data
     printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", 
             (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr); //Read any inputs
+
+    if(!set_point_reached && (int)(*PrintTask_Enc) == 180 ){
+        set_point_reached = true;
+    }
+
+    /* Calculate Incremental mean, standard deviation and Variance*/
+    if (activate_calc && set_point_reached){
+        samples++;
+        past_inc_mean = inc_mean;
+        inc_mean = inc_mean + (*PrintTask_Enc - inc_mean)/samples;
+
+        inc_variance = ((samples - 2.0f)*inc_variance + (samples - 1.0f)
+                      * (past_inc_mean - inc_mean)*(past_inc_mean - inc_mean)
+                      + (*PrintTask_Enc - inc_mean)*(*PrintTask_Enc - inc_mean))
+                      / (samples - 1.0f);
+
+        inc_stndDev = sqrt(inc_variance);
+        printf("#-32-#: Samples: %f\tMean %f\tVariance: %f\tStandard Deviation; %f\n", samples, inc_mean, inc_variance, inc_stndDev);
+    }
+
 }
 /*-----------------------------------------------------------*/
 
@@ -311,7 +341,7 @@ void vLetContrTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetContrTask_job(void) {
-    float lambda = 0.91;
+    float lambda = 0.87;//0.82; //0.91;
 
     /******** Main function ********/
     /* Activate Balancing*/
@@ -330,7 +360,8 @@ void vLetContrTask_job(void) {
         PID_Pend.measurment = *ContrTask_Enc * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
         /* Integral Anti-windup*/
         if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.2*STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE)   //0.2
-            PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
+            PID_Rotor.int_term = lambda*PID_Rotor.int_term;
+            //PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
         /* Calculate Pendulum SP - PV*/
         *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment - PID_Rotor.control_output);
 
@@ -343,5 +374,22 @@ void vLetContrTask_job(void) {
     }
     else if (!balance_on) 
         (*task_Contr) = 0;
+}
+/*-----------------------------------------------------------*/
+
+void vLetDummyTask_init(void) {
+    /* Dummy Task for taking up CPU cycles*/
+}
+/*-----------------------------------------------------------*/
+
+void vLetDummyTask_job(void) {
+
+    uint32_t base_delay = 200000;   //200000
+
+    uint32_t random = rand();
+    uint32_t cycles = (random) % base_delay;//240000;
+
+    BSP_WaitClkCycles(cycles);
+
 }
 /*-----------------------------------------------------------*/

@@ -10,6 +10,7 @@
 #include "bsp.h"
 #include "let.h"
 #include "trace.h"
+#include "math.h"
 
 #include "pico/stdlib.h"
 #include "hardware/irq.h"
@@ -24,11 +25,14 @@
 #include "Control/Control.h"
 #include "Encoder/Encoder.h"
 
-#define T_Enc   2
-#define T_Motor 2
-#define T_Contr 5
-#define T_Print 10//25 
-#define T_Btns  2
+#define T_Dummy  4      //2
+#define T_Enc   2       //2
+#define T_Motor 2       //2
+#define T_Contr 5       //5
+#define T_Print 10      //10
+#define T_Btns  2       //2
+
+#define CALC_ON true
 
 /***** STM Var******/
 extern float *current_error_steps, *current_error_rotor_steps;
@@ -59,6 +63,7 @@ extern LetTask_t letMotorTsk;  /*Handle for the LET stepper motor task. */
 extern LetTask_t letContrTsk;  /*Handle for the LET Control task. */
 extern LetTask_t letPrintTsk;  /*Handle for the LET Print task. */
 extern LetTask_t letBtnsTsk;  /*Handle for the LET Buttons task. */
+extern LetTask_t letDummyTsk;  /*Handle for  LET dummy task. */
 
 extern float* task_Enc;      /* Pointer to the local data of label ENC by Encoder task. */
 extern float  task_Enc_data; /* Local copy of label ENC owned by LET Encoder task. */
@@ -164,5 +169,15 @@ void vLetBtnsTask_init(void);
  * @brief Job function of Buttons LET task.
  */
 void vLetBtnsTask_job(void);
+
+/**
+ * @brief Initialization function of Dummy LET task.
+ */
+void vLetDummyTask_init(void);
+
+/**
+ * @brief Job function of Dummy LET task.
+ */
+void vLetDummyTask_job(void);
 
 #endif

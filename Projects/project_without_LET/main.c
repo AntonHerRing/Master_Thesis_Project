@@ -46,6 +46,7 @@ TaskHandle_t ContrTask;
 TaskHandle_t BtnsTask;
 TaskHandle_t MotorTask;
 TaskHandle_t PrintTask;
+TaskHandle_t DummyTask;
 
 void Enc_Task(void *args);
 
@@ -56,6 +57,8 @@ void Btns_Task(void *args);
 void Motor_Task(void *args);
 
 void Print_Task(void *args);
+
+void Dummy_Task(void *args);
 
 /** Make Dummy functions to LET functions **/
 UBaseType_t xLetTaskRegisterWrite(LetTask_t *pxLetTask, label_t *pxLabel, void **pxLocalBufferPtr){
@@ -80,28 +83,25 @@ int main()
     init_motor();           /* Initialize the Stepper Motor*/
     trace_init();           /* Initialize the Tracing function*/
     
-    xTaskCreate(Enc_Task, "Enc Task", 512, (void*) T_Enc, 6, &EncTask);
+    xTaskCreate(Enc_Task, "Enc Task", 512, (void*) T_Enc, 7, &EncTask);
     vTaskCoreAffinitySet(EncTask, CORE1);
 
-    xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 5, &ContrTask);
+    xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 3, &ContrTask);
     vTaskCoreAffinitySet(ContrTask, CORE0);
 
-    xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 4, &BtnsTask);
+    xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 5, &BtnsTask);
     vTaskCoreAffinitySet(BtnsTask, CORE0);
 
-    xTaskCreate(Motor_Task, "Motor Task", 18216, (void*) T_Motor, 3, &MotorTask);
+    xTaskCreate(Motor_Task, "Motor Task", 18216, (void*) T_Motor, 6, &MotorTask);
     vTaskCoreAffinitySet(MotorTask, CORE0);
 
     xTaskCreate(Print_Task, "Print Task", 1024, (void*) T_Print, 2, &PrintTask);
     vTaskCoreAffinitySet(PrintTask, CORE0);
+
+    /* Dummy Task for taking up space on Scheduler*/
+    xTaskCreate(Dummy_Task, "Dummy Task", 5120, (void*) T_Dummy, 4, &DummyTask);
+    vTaskCoreAffinitySet(DummyTask, CORE0);
    
-    //low num = low prio, High num = high prio
-    /*xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 6, T_Enc, T_Enc, 0, CORE1, &letEncTsk);
-    xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 5120, 5, T_Contr, T_Contr, 0, CORE0, &letContrTsk);
-    xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 4, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);
-    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 18216, 3, T_Motor, T_Motor, 0, CORE0, &letMotorTsk);    //18216          //10240, is too much
-    xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 1024, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);*/
-    
     vTaskStartScheduler();  /* Start the scheduler. */
     
     while (true) { 
@@ -128,8 +128,6 @@ void Btns_Task(void *args) {
         taskENTER_CRITICAL();
         *task_Btns = buttons;
         taskEXIT_CRITICAL();
-
-        //printf("Buttons: %d\n", buttons);
 
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
     }
@@ -161,8 +159,6 @@ void Enc_Task(void *args) {
         taskENTER_CRITICAL();
         (*task_Enc) = encoder_value;
         taskEXIT_CRITICAL();
-
-        //printf("Encoder: %f\n", encoder_value);
 
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
     }
@@ -314,10 +310,24 @@ void Contr_Task(void *args) {
         (*task_Contr) = Controll_write;
         taskEXIT_CRITICAL();
 
-        //printf("Controller: %f\n", Controll_write);
-
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
     }
 }
 /*-----------------------------------------------------------*/
+/*-----------------------------------------------------------*/
 
+void Dummy_Task(void *args) {
+    TickType_t xLastWakeTime = 0;
+    const TickType_t xPeriod = (int)args;   /* Get period (in ticks) from argument. */
+
+    vLetDummyTask_init();
+
+    for (;;) {
+
+        //BSP_WaitClkCycles(270000);
+        vLetDummyTask_job();
+        
+        vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
+    }
+}
+/*-----------------------------------------------------------*/

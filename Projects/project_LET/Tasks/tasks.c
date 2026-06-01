@@ -141,6 +141,11 @@ void vLetEncTask_job(void) {
         case 4: count = 0; break; //reset pendulum angle
         default: break;
     }
+
+    /* Reset to zero if offset after initation*/
+    if(current_time < 3000){
+        count = 0;
+    }
     
     (*task_Enc) = get_encoder_angle_continous(count);
 
@@ -226,6 +231,7 @@ void vLetPrintTask_job(void) {
     /******* Init static var *******/
     static uint32_t run_time    = 0; 
     static float inc_mean       = 0;
+    static float M2             = 0;
     static float past_inc_mean  = 0;
 
     static float inc_variance   = 0;
@@ -252,15 +258,17 @@ void vLetPrintTask_job(void) {
         past_inc_mean = inc_mean;
         inc_mean = inc_mean + (*PrintTask_Enc - inc_mean)/samples;
 
-        inc_variance = ((samples - 2.0f)*inc_variance + (samples - 1.0f)
-                      * (past_inc_mean - inc_mean)*(past_inc_mean - inc_mean)
-                      + (*PrintTask_Enc - inc_mean)*(*PrintTask_Enc - inc_mean))
-                      / (samples - 1.0f);
+        M2 = M2 + (*PrintTask_Enc - past_inc_mean)*(*PrintTask_Enc - inc_mean);
+
+        if(samples > 2){
+            /* Sample Variance */
+            /* Welfrod Variance */
+            inc_variance = M2 / (samples - 1.0f);
+        }
 
         inc_stndDev = sqrt(inc_variance);
-        printf("#-32-#: Samples: %f\tMean %f\tVariance: %f\tStandard Deviation; %f\n", samples, inc_mean, inc_variance, inc_stndDev);
+        printf("##32##: Samples: %f\tMean: %f\tVariance: %f\tStandard Deviation: %f\tEnd\r\n", samples, inc_mean, inc_variance, inc_stndDev);
     }
-
 }
 /*-----------------------------------------------------------*/
 

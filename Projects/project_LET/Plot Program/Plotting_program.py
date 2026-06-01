@@ -5,6 +5,7 @@ import numpy as np
 import time
 from datetime import datetime
 import statistics
+import math
 
 import sys
 
@@ -20,8 +21,8 @@ plt.ion()
 
 # Innit Variables
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\"
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\"
 
 Enc_plot        = []
 Motor_plot      = []
@@ -138,10 +139,10 @@ def Record_Graph(ser, time):
                     Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
 
                 # Keep rotation within 360 degrees
-                if (float(Encoder)) <= -360:
-                    rotations -= 1
-                elif (float(Encoder)) >= 360:
-                    rotations += 1
+                #if (float(Encoder)) <= -360:
+                #    rotations -= 1
+                #elif (float(Encoder)) >= 360:
+                #    rotations += 1
 
                 #append values to plots
                 Enc_plot.append(float(Encoder))
@@ -155,14 +156,11 @@ def Record_Graph(ser, time):
                     print("#StartRunTime#" + Run_Time + "#EndRunTime#", file=log_file)
                     print("#StartEnc#" + str(Encoder) + "#EndEnc#", file=log_file)
                     print("#StartMotor#" + Motor + "#EndMotor#", file=log_file)
-                    #print("#StartContr#" + str((float(Control)/8.88889)%360) + "#EndContr#", file=log_file)
                     print("#StartContr#" + str(Control) + "#EndContr#", file=log_file)
 
                 #replace old frame every 2 seconds
                 if delay == 0:
                     delay = 20
-                    #fig.delaxes(graph[0, 0])
-
                     #Dynamically update the plots
                     graph[0, 0].plot(Run_time_plot, Enc_plot, 'tab:green')
                     graph[0, 0].set_title('Encoder Degree')
@@ -187,11 +185,44 @@ def Record_Graph(ser, time):
                 delay -= 1
             else:
                 print("Warning: Skipped Overwridden String")
-    ser.close()
-    file.close()
-
     print("End Run Time: " + str((float(Run_Time) - float(Start_time))))
 
+    # Get True Statistics values
+    while (True):
+        value = ser.readline()
+        StringValue = str(value,'UTF-8')
+        print(StringValue)
+        if "##" in StringValue and "##" in StringValue:
+            extracted = StringValue.split("##")[1].split("##")[0]
+            if extracted == "32" and StringValue.find("##32##", 7, len(StringValue)) == -1:
+                #parse values from print
+                Mean = 0
+                Variance = 0
+
+                if StringValue.find("Mean: ") != -1 and StringValue.find("Variance:") != -1:
+                    Mean = StringValue.split("Mean: ")[1].split("Variance:")[0].replace(" ", "")
+                if StringValue.find("Variance: ") != -1 and StringValue.find("Standard Deviation:") != -1:
+                    Variance = StringValue.split("Variance: ")[1].split("Standard Deviation:")[0].replace(" ", "")
+                
+                stnd_dev = math.sqrt(float(Variance))
+
+                print("--True Values--")
+                print("Average Value: " + str(Mean))
+
+                #Calculate the other one
+                print("variance: " + str(Variance))
+
+                #Calculate Stand dev
+                print("Standard Deviation: " + str(stnd_dev))
+
+                with open(fileName, 'a') as log_file:
+                    print("#StartMean#" + str(Mean) + "#EndMean#", file=log_file)
+                    print("#StartVariance#" + str(Variance) + "#EndVariance#", file=log_file)
+                    print("#StartStandardDeviation#" + str(stnd_dev) + "#EndStandardDeviation#", file=log_file)
+                break
+    ser.close()
+    file.close()
+    print("--Estimated Values--")            
     Analyze_data(Enc_plot)
     #plt.boxplot(Enc_plot)
 
@@ -295,6 +326,23 @@ def load_log(logname):
         for plot in graph.flat[:1]:
             plot.label_outer()
 
+        print("--True Values--")
+        # parse Mean
+        if data.find("#StartMean#") != -1 and data.find("#EndMean#") != -1:
+            Mean = data.split("#StartMean#")[1].split("#EndMean#")[0].replace(" ", "")
+            print("Mean: " + str(Mean))
+
+        # parse Variance
+        if data.find("#StartVariance#") != -1 and data.find("#EndVariance#") != -1:
+            Variance = data.split("#StartVariance#")[1].split("#EndVariance#")[0].replace(" ", "")
+            print("Variance: " + str(Variance))
+
+        # parse Stand Deviation 
+        if data.find("#StartStandardDeviation#") != -1 and data.find("#EndStandardDeviation#") != -1:
+            stnd_dev = data.split("#StartStandardDeviation#")[1].split("#EndStandardDeviation#")[0].replace(" ", "")
+            print("stnd_dev: " + str(stnd_dev))
+                    
+        print("--Estimated Values--")
         Analyze_data(Enc_plot)
 
         # plt.ylim(-360,360)
@@ -423,16 +471,17 @@ def Analyze_data(data):
     Avr = statistics.mean(data)
     print("Average Value: " + str(Avr))
 
-    #Calculate Stand dev
-    stnd_dev = statistics.stdev(data)
-    print("Standard Deviation: " + str(stnd_dev))
-
     #Calculate the other one
     variance = statistics.variance(data)
     print("variance: " + str(variance))
 
+    #Calculate Stand dev
+    stnd_dev = statistics.stdev(data)
+    print("Standard Deviation: " + str(stnd_dev))
+
     #Extract max/min values.
-    print("Max Value: " + str(max(data)) + "\tMin Value: " + str(min(data)))
+    print("Max Value: " + str(max(data)))
+    print("Min Value: " + str(min(data)))
 
     #Print Box plot
     #plt.boxplot(data)

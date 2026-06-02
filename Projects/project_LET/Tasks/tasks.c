@@ -350,6 +350,9 @@ void vLetContrTask_init(void) {
 
 void vLetContrTask_job(void) {
     float lambda = 0.87;//0.82; //0.91;
+    static uint32_t current_time = 0;
+    static uint32_t start_time = 0;
+    static bool sp_changed = false;
 
     /******** Main function ********/
     /* Activate Balancing*/
@@ -357,8 +360,21 @@ void vLetContrTask_job(void) {
         balance_on = true;
         L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
     }
+
+    /* Activation for step response */
+    if (STEP_RESPONSE && (current_time - start_time) >= 10000){
+        PID_Rotor.Set_point = 15 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+        //printf("--------------Sp changed--------------\n");
+    }
    
     if (balance_on && (*ContrTask_Enc > 140 &&  *ContrTask_Enc < 220)){
+        /* Activation for step response */
+        if(STEP_RESPONSE && !sp_changed){
+            start_time = xTaskGetTickCount();
+            sp_changed = true;
+        }
+        if (STEP_RESPONSE) current_time = xTaskGetTickCount();
+
         /* Calculate Rotor SP - PV*/
         PID_Rotor.measurment = *ContrTask_Motor * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
         *current_error_rotor_steps = PID_Rotor.Set_point - PID_Rotor.measurment;

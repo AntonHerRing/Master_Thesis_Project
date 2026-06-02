@@ -32,7 +32,8 @@
 #define T_Print 10      //10
 #define T_Btns  2       //2
 
-#define CALC_ON true
+#define CALC_ON         true
+#define STEP_RESPONSE   false
 
 /***** STM Var******/
 extern float *current_error_steps, *current_error_rotor_steps;

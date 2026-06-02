@@ -21,8 +21,9 @@ plt.ion()
 
 # Innit Variables
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\"
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\Step _Response_20s\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
+#LET_120s_rand_dummy\Step _Response
 
 Enc_plot        = []
 Motor_plot      = []
@@ -36,6 +37,7 @@ def Ping_Comm():
     while True:
         try:
             ser = serial.Serial(port='/COM9', baudrate=115200) #/COM9
+            ser.set_buffer_size(rx_size = 250000, tx_size = 250000)
             break
         except serial.serialutil.SerialException:
             print("No Connection found") 

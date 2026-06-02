@@ -41,6 +41,8 @@ GPIO12::    MISO
 #define Phase_A 40
 #define Phase_B 39
 
+#define ENC_OFFSET 2
+
 TaskHandle_t EncTask;
 TaskHandle_t ContrTask;
 TaskHandle_t BtnsTask;
@@ -86,21 +88,22 @@ int main()
     xTaskCreate(Enc_Task, "Enc Task", 512, (void*) T_Enc, 7, &EncTask);
     vTaskCoreAffinitySet(EncTask, CORE1);
 
-    xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 3, &ContrTask);
-    vTaskCoreAffinitySet(ContrTask, CORE0);
-
-    xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 5, &BtnsTask);
-    vTaskCoreAffinitySet(BtnsTask, CORE0);
-
     xTaskCreate(Motor_Task, "Motor Task", 18216, (void*) T_Motor, 6, &MotorTask);
     vTaskCoreAffinitySet(MotorTask, CORE0);
 
-    xTaskCreate(Print_Task, "Print Task", 1024, (void*) T_Print, 2, &PrintTask);
-    vTaskCoreAffinitySet(PrintTask, CORE0);
+    xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 5, &BtnsTask);
+    vTaskCoreAffinitySet(BtnsTask, CORE1);
 
     /* Dummy Task for taking up space on Scheduler*/
     xTaskCreate(Dummy_Task, "Dummy Task", 5120, (void*) T_Dummy, 4, &DummyTask);
     vTaskCoreAffinitySet(DummyTask, CORE0);
+
+    xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 3, &ContrTask);
+    vTaskCoreAffinitySet(ContrTask, CORE0);
+
+    xTaskCreate(Print_Task, "Print Task", 1024, (void*) T_Print, 2, &PrintTask);
+    vTaskCoreAffinitySet(PrintTask, CORE0);
+
    
     vTaskStartScheduler();  /* Start the scheduler. */
     
@@ -112,10 +115,13 @@ int main()
 /*-----------------------------------------------------------*/
 
 void Btns_Task(void *args) {
-    TickType_t xLastWakeTime = 0;
+    TickType_t xLastWakeTime = 5;
     const TickType_t xPeriod = (int)args;   /* Get period (in ticks) from argument. */
+    uint8_t buttons = 0;
 
     vLetBtnsTask_init();
+
+    vTaskDelayUntil(&xLastWakeTime, 0);
 
     for (;;) {
         uint8_t btn1 = BSP_GetInput(SW_5);
@@ -123,10 +129,10 @@ void Btns_Task(void *args) {
         uint8_t btn3 = BSP_GetInput(SW_7);
         uint8_t btn4 = BSP_GetInput(SW_8);
 
-        uint8_t buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
+        buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
 
         taskENTER_CRITICAL();
-        *task_Btns = buttons;
+        (*task_Btns) = buttons;
         taskEXIT_CRITICAL();
 
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
@@ -141,13 +147,16 @@ void Enc_Task(void *args) {
     const TickType_t xPeriod = (int)args;   /* Get period (in ticks) from argument. */
 
     float encoder_value = 0;
+    uint8_t button = 0;
 
     vLetEncTask_init();
+
+    vTaskDelayUntil(&xLastWakeTime, ENC_OFFSET);
 
     for (;;) {   
         //Handle button inputs
         taskENTER_CRITICAL();
-        uint8_t button = *task_Btns;
+        button = *task_Btns;
         taskEXIT_CRITICAL();
 
         switch(button){
@@ -181,6 +190,8 @@ void Motor_Task(void *args) {
     float motor_read = 0;
     bool pos_overflow = false;
     float collector = 0;
+
+    vTaskDelayUntil(&xLastWakeTime, 0);
 
     for (;;) {
         /******** Main function ********/
@@ -239,6 +250,19 @@ void Print_Task(void *args) {
     float Encoder = 0;
     float Motor = 0;
     float Controller = 0;
+    
+    float inc_mean       = 0;
+    float M2             = 0;
+    float past_inc_mean  = 0;
+
+    float inc_variance   = 0;
+    float inc_stndDev    = 0;
+    float samples        = 0;
+
+    bool activate_calc = CALC_ON;
+    bool set_point_reached = false;
+
+    vTaskDelayUntil(&xLastWakeTime, 0);
 
     for (;;) {
         run_time += T_Print;
@@ -251,6 +275,28 @@ void Print_Task(void *args) {
         //print data
         printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", 
                 (float)run_time/1000.0f, Encoder, Motor, Controller); //Read any inputs
+
+        if(!set_point_reached && (int)Encoder == 180 ){
+            set_point_reached = true;
+        }
+
+        /* Calculate Incremental mean, standard deviation and Variance*/
+        if (activate_calc && set_point_reached){
+            samples++;
+            past_inc_mean = inc_mean;
+            inc_mean = inc_mean + (Encoder - inc_mean)/samples;
+
+            M2 = M2 + (Encoder - past_inc_mean)*(Encoder - inc_mean);
+
+            if(samples > 2){
+                /* Sample Variance */
+                /* Welfrod Variance */
+                inc_variance = M2 / (samples - 1.0f);
+            }
+
+            inc_stndDev = sqrt(inc_variance);
+            printf("##32##: Samples: %f\tMean: %f\tVariance: %f\tStandard Deviation: %f\tEnd\r\n", samples, inc_mean, inc_variance, inc_stndDev);
+        }
         
         vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
     }
@@ -269,6 +315,8 @@ void Contr_Task(void *args) {
     float Encoder_read = 0;
     float Motor_read = 0;
     float Controll_write = 0;
+
+    vTaskDelayUntil(&xLastWakeTime, 0);
 
     for (;;) {
         taskENTER_CRITICAL();
@@ -321,6 +369,8 @@ void Dummy_Task(void *args) {
     const TickType_t xPeriod = (int)args;   /* Get period (in ticks) from argument. */
 
     vLetDummyTask_init();
+
+    vTaskDelayUntil(&xLastWakeTime, 0);
 
     for (;;) {
 

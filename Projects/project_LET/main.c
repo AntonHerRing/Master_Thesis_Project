@@ -74,7 +74,7 @@ int main()
     xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 1024, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);     //2
 
     /* Test with high priority */
-    //xLetTaskCreate(vLetDummyTask_init, vLetDummyTask_job, "LET_Dummy_Task", 1024, 4, T_Dummy, T_Dummy, 0, CORE0, &letDummyTsk);
+    xLetTaskCreate(vLetDummyTask_init, vLetDummyTask_job, "LET_Dummy_Task", 1024, 4, T_Dummy, T_Dummy, 0, CORE0, &letDummyTsk);
     
     vTaskStartScheduler();  /* Start the scheduler. */
     

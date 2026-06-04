@@ -32,6 +32,8 @@
 #define T_Print 10      //10
 #define T_Btns  2       //2
 
+#define ENC_OFFSET 1
+
 #define CALC_ON         true
 #define STEP_RESPONSE   false
 

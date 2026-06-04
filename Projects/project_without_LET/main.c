@@ -41,7 +41,7 @@ GPIO12::    MISO
 #define Phase_A 40
 #define Phase_B 39
 
-#define ENC_OFFSET 2
+
 
 TaskHandle_t EncTask;
 TaskHandle_t ContrTask;
@@ -95,8 +95,8 @@ int main()
     vTaskCoreAffinitySet(BtnsTask, CORE1);
 
     /* Dummy Task for taking up space on Scheduler*/
-    xTaskCreate(Dummy_Task, "Dummy Task", 5120, (void*) T_Dummy, 4, &DummyTask);
-    vTaskCoreAffinitySet(DummyTask, CORE0);
+    //xTaskCreate(Dummy_Task, "Dummy Task", 5120, (void*) T_Dummy, 4, &DummyTask);
+    //vTaskCoreAffinitySet(DummyTask, CORE0);
 
     xTaskCreate(Contr_Task, "Contr Task", 5120, (void*) T_Contr, 3, &ContrTask);
     vTaskCoreAffinitySet(ContrTask, CORE0);
@@ -316,6 +316,10 @@ void Contr_Task(void *args) {
     float Motor_read = 0;
     float Controll_write = 0;
 
+    uint32_t current_time = 0;
+    uint32_t start_time = 0;
+    bool sp_changed = false;
+
     vTaskDelayUntil(&xLastWakeTime, 0);
 
     for (;;) {
@@ -329,8 +333,22 @@ void Contr_Task(void *args) {
             balance_on = true;
             L6474_SetAnalogValue(0, L6474_TVAL, MAX_TORQUE_CONFIG);
         }
+
+        /* Activation for step response */
+        if (STEP_RESPONSE && (current_time - start_time) >= 10000){
+            PID_Rotor.Set_point = 15 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+            //PID_Rotor.Set_point = 3.324262676 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+            //printf("--------------Sp changed--------------\n");
+        }
     
         if (balance_on && (Encoder_read > 150 &&  Encoder_read < 210)){
+            /* Activation for step response */
+            if(STEP_RESPONSE && !sp_changed){
+                start_time = xTaskGetTickCount();
+                sp_changed = true;
+            }
+            if (STEP_RESPONSE) current_time = xTaskGetTickCount();
+
             /* Calculate Rotor SP - PV*/
             PID_Rotor.measurment = Motor_read * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
             *current_error_rotor_steps = PID_Rotor.Set_point - PID_Rotor.measurment;

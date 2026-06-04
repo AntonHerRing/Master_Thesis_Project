@@ -28,7 +28,9 @@ plt.ion()
 #LET_120s_rand_dummy\Step _Response
 
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_Control\\"
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_rand_dummy\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_rand_dummy\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_Control\\Step _Response_20s\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_rand_dummy\\Step _Response_20s\\"
 
 Enc_plot        = []
 Motor_plot      = []

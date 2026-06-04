@@ -10,7 +10,7 @@
 /**
  * Enable if the board has PSRAM and this should be used
  */
-//#define PICO_USE_PSRAM
+#define PICO_USE_PSRAM
 
 /**
  * Enable this to trace IRQ enter/exit

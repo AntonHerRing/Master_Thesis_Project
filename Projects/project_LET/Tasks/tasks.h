@@ -32,7 +32,7 @@
 #define T_Print 10      //10
 #define T_Btns  2       //2
 
-#define ENC_OFFSET 1
+#define ENC_OFFSET 1    //0 <- for testing
 
 #define CALC_ON         true
 #define STEP_RESPONSE   false

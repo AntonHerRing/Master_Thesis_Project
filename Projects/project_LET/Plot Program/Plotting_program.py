@@ -19,9 +19,10 @@ from tkinter import ttk
 
 plt.ion()
 
-# Innit Variables
+# Innit Variables #LET_120s_no_offset
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\Step _Response_20s\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\Step _Response_20s\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
 #LET_120s_rand_dummy\Step _Response
 

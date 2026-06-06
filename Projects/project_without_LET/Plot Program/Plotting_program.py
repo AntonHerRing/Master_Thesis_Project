@@ -32,7 +32,7 @@ filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\proje
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_Control\\Step _Response_20s\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_rand_dummy\\Step _Response_20s\\"
 
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_no_offset\\"
 
 Enc_plot        = []
 Motor_plot      = []

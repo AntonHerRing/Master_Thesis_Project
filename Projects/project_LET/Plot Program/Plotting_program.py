@@ -2,6 +2,8 @@ import serial
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import numpy as np
+#from cycler import cycle
+from itertools import cycle
 import time
 from datetime import datetime
 import statistics
@@ -25,6 +27,8 @@ filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\proje
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
 #LET_120s_rand_dummy\Step _Response
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\"
+
 
 Enc_plot        = []
 Motor_plot      = []
@@ -229,6 +233,7 @@ def Record_Graph(ser, time):
     Analyze_data(Enc_plot)
     #plt.boxplot(Enc_plot)
 
+# Obsolite function
 def ask_record_time():
     window = tk.Tk()
     window.geometry('400x200')
@@ -255,8 +260,36 @@ def ask_record_time():
 
     return time.get()
 
+# pop up GUi for inputting values
+def ask_value(label):
+    window = tk.Tk()
+    window.geometry('400x200')
+    window.title('Input Value Time')
+
+    value = tk.StringVar()
+
+    #nested button function
+    def read_button():
+        window.destroy()
+
+    value_label = ttk.Label(window, text=label)
+    value_label.pack()
+
+    value_input = ttk.Entry(window, textvariable=value)
+    value_input.pack()
+
+    affirm_choice = tk.Button(window, text="OK", width=25, command=lambda: read_button())
+    affirm_choice.pack()
+
+    window.mainloop()
+
+    print("Input was: " + str(value.get()))
+
+    return value.get()
+
 #function which initiate the log laoding function 
 def log_handler():
+    
     # open log
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     logname = askopenfilename(initialdir=filePath) # show an "Open" dialog box and return the path to the selected file
@@ -357,41 +390,167 @@ def load_log(logname):
         #Analyze_data(Enc_plot)
         #while True: pass
 
+# Load multiple logs in boxplots, or combine them into a single plot
 def load_boxplots():
     # open log
+    plots = []
+    num_of_plots = ask_value('How many plots to Combine?')
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
-    logtuple = askopenfilenames(initialdir=filePath) # show an "Open" dialog box and return the path to the selected file
+    for i in range(int(num_of_plots)):
+        logtuple = askopenfilenames(initialdir=filePath) # show an "Open" dialog box and return the path to the selected file
+        plots.append(logtuple)
     
-    load_boxplots_func(logtuple)
+    load_boxplots_func(plots, num_of_plots)
 
 # Functions that loads multiple logs and displays their average 
-def load_boxplots_func(logtuple):
+# plots <- logtuple <-log
+def load_boxplots_func(plots, num_of_plots):
     Enc_boxplot = []
+    Mean_all = []
+    Variance_all = []
+    Stand_dev_all = []
     i = 0
+
+    # storage for all box plots
+    BoxPlots = []
+
+    for logtuple in plots:
+        for log in logtuple:
+            with open(log, 'r') as file:
+                data = file.read()
+
+                # parse Encoder variables
+                temp_parse = data.split("#StartEnc#")
+                for var in temp_parse[1:]:
+                    Encoder = var.split("#EndEnc#")[0].replace(" ", "")
+                    Enc_boxplot.append(float(Encoder))
+
+                # Only extract statistics variables on single box plots
+                if int(num_of_plots) == 1:
+                    # parse Mean
+                    if data.find("#StartMean#") != -1 and data.find("#EndMean#") != -1:
+                        Mean = data.split("#StartMean#")[1].split("#EndMean#")[0].replace(" ", "")
+                        Mean_all.append(float(Mean))
+
+                    # parse Variance
+                    if data.find("#StartVariance#") != -1 and data.find("#EndVariance#") != -1:
+                        Variance = data.split("#StartVariance#")[1].split("#EndVariance#")[0].replace(" ", "")
+                        Variance_all.append(float(Variance))
+
+                    # parse Stand Deviation 
+                    if data.find("#StartStandardDeviation#") != -1 and data.find("#EndStandardDeviation#") != -1:
+                        stnd_dev = data.split("#StartStandardDeviation#")[1].split("#EndStandardDeviation#")[0].replace(" ", "")
+                        Stand_dev_all.append(float(stnd_dev))
+
+                i += 1
+                print("Finished Loading #" + str(i))
+        BoxPlots.append(Enc_boxplot.copy())
+        Enc_boxplot.clear()
+    
+    if int(num_of_plots) == 1:
+        # Analyse data
+        print("--True Values--")
+        print("-- Average --")
+        print("Mean: " + str(statistics.mean(Mean_all)))
+        print("Variance: " + str(statistics.mean(Variance_all)))
+        print("Standard Deviation: " + str(statistics.mean(Stand_dev_all)))
+
+        print("--Estimated Values--")
+        Analyze_data(BoxPlots[0])
+
+        # Load Box Plot
+        plt.boxplot(BoxPlots[0])
+        plt.show(block=True)
+        plt.pause(1)
+    else:
+        plt.boxplot(BoxPlots)
+        plt.xticks([1, 2, 3], ['Control', 'No Offset', 'Dummy'])
+        plt.ylabel("Pendulum Angle")
+        plt.title("LET Boxplots")
+        plt.grid(True)
+
+        plt.show()    
+        plt.show(block=True)
+        plt.pause(1)    
+
+
+def load_graphs():
+    # open log
+    Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
+    logtuple = askopenfilenames(initialdir=filePath) # show an "Open" dialog box and return the path to the selected file
+
+    layer_step_response(logtuple)
+    
+def layer_step_response(logtuple):
+    Enc_plot = []
+    time_plot = []
+    first_time = False
+    i = 0
+
+    # storage for all box plots
+    x_axis = []
+    y_axis = []
+
+    
     for log in logtuple:
         with open(log, 'r') as file:
             data = file.read()
 
             # parse Run time variables
-            #temp_parse = data.split("#StartRunTime#")
-            #for var in temp_parse[1:]:
-            #    Run_Time = var.split("#EndRunTime#")[0].replace(" ", "")
-            #    Run_time_plot.append(float(Run_Time))
+            temp_parse = data.split("#StartRunTime#")
+            for var in temp_parse[1:]:
+                Run_Time = var.split("#EndRunTime#")[0].replace(" ", "")
+                time_plot.append(float(Run_Time))
+                #if first_time == True:
+                #    first_time = False
+                #    time_plot.append(float(Run_Time))
+            #first_time = True
 
             # parse Encoder variables
             temp_parse = data.split("#StartEnc#")
             for var in temp_parse[1:]:
                 Encoder = var.split("#EndEnc#")[0].replace(" ", "")
-                Enc_boxplot.append(float(Encoder))
-                #print("Debugg: " + str(Encoder))
+                Enc_plot.append(float(Encoder))
+                #if first_time == True:
+                #    first_time = False
+                #    Enc_plot.append(float(Encoder))
+            #first_time = True
+
             i += 1
             print("Finished Loading #" + str(i))
-    plt.boxplot(Enc_boxplot)
-    plt.show(block=True)
+            x_axis.append(time_plot.copy())
+            y_axis.append(Enc_plot.copy())
+            time_plot.clear()
+            Enc_plot.clear()
+
+    # Load Box Plot
+    #plt.boxplot(BoxPlots[0])
+    #plt.plot(time_plot, Enc_plot)
+
+
+    lines = ["-","--","-.",":"]
+    linecycler = cycle(lines)
+    plt.figure()
+    for i in range(10):
+        #x = range(i,i+10)
+        plt.plot(x_axis[i], y_axis[i], next(linecycler))
+        #print(y_axis[i])
+    #plt.show()
+
+    #fig, ax = plt.subplots()
+    #ax.set_prop_cycle(custom_cycler)
+    #ax.plot(time_plot, Enc_plot)    
+    plt.show()
+
     plt.pause(1)
-
-
+    #plt.xticks([1, 2, 3], ['Control', 'No Offset', 'Dummy'])
+    #plt.ylabel("Pendulum Angle")
+    #plt.title("LET Boxplots")
+    plt.grid(True)
+  
+    plt.show(block=True)
+    plt.pause(1)  
 
 # Window pop up for choice selection
 def select_function():
@@ -411,9 +570,11 @@ def select_function():
     button1 = tk.Button(window, text="Record Graph", width=25, command=lambda: read_button(1))
     button2 = tk.Button(window, text="Load Single Graph", width=25, command=lambda: read_button(2))
     button3 = tk.Button(window, text="Load Box Plots", width=25, command=lambda: read_button(3))
+    button4 = tk.Button(window, text="Load Layered Graphs", width=25, command=lambda: read_button(4))
     button1.pack()
     button2.pack()
     button3.pack()
+    button4.pack()
 
     window.mainloop()
 
@@ -475,11 +636,13 @@ while True:
     if State_input == 0:
         break
     elif State_input == 1:
-        loading_screen(ask_record_time())
+        loading_screen(ask_value('Record time in (s):'))
     elif State_input == 2:
         log_handler()
     elif State_input == 3:
         load_boxplots()
+    elif State_input == 4:
+        load_graphs()
     else:
         print("Error: Incorrect Option! Expected 1, 2, or 3. Got: " + str(State_input))
 

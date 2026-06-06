@@ -22,12 +22,12 @@ from tkinter import ttk
 plt.ion()
 
 # Innit Variables #LET_120s_no_offset
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\Step _Response_20s\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
 #LET_120s_rand_dummy\Step _Response
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\"
 
 
 Enc_plot        = []
@@ -493,6 +493,8 @@ def layer_step_response(logtuple):
     x_axis = []
     y_axis = []
 
+
+    #From top to bottom of file list, sorted after names
     # LET Control: Start of impluse
     #Manual_step_tuning = [
     #    19.68, 18.16, 23.47, 17.69, 22.17,
@@ -500,12 +502,26 @@ def layer_step_response(logtuple):
     #]
     #min_start = 15.61
 
-    #LET Dummy: [Start, End]
+    #LET Dummy: Start of impluse
+    #Manual_step_tuning = [
+    #    20.89, 19.29, 19.72, 19.08, 21.43, 
+    #    29.91, 24.05, 18.91, 25.07, 17.51
+    #]
+    #min_start = 17.51
+
+    #Implcit Control: Start of impluse
+    #Manual_step_tuning = [
+    #    18.23, 33.11, 23.23, 18.40, 17.24,
+    #    23.10, 17.15, 21.41, 17.44, 16.46
+    #]
+    #min_start = min(Manual_step_tuning)
+
+    #Implcit Dummy: Start of impluse
     Manual_step_tuning = [
-        20.89, 19.29, 19.72, 19.08, 21.43, 
-        29.91, 24.05, 18.91, 25.07, 17.51
+        25.38, 24.79, 20.46, 19.89, 20.01,
+        19.43, 19.60, 18.73, 23.11, 30.22
     ]
-    min_start = 17.51
+    min_start = min(Manual_step_tuning)
 
     # Find minimum End, set it as max x. Find good start, and 
     # Scale all others to it
@@ -528,7 +544,7 @@ def layer_step_response(logtuple):
                 Enc_plot.append(float(Encoder))
 
             #Scale the plots properly
-            print("Correction: "+ str((Manual_step_tuning[i] - min_start)))
+            #print("Correction: "+ str((Manual_step_tuning[i] - min_start)))
             for d in range(len(Enc_plot)):
                 #if time_plot[i] - (Manual_step_tuning[i][0] - min_start) >= 0:
                 Corrected_Enc_plot.append(Enc_plot[d])
@@ -548,24 +564,15 @@ def layer_step_response(logtuple):
             Corrected_Enc_plot.clear()
 
 
-    # Load Box Plot
-    #plt.boxplot(BoxPlots[0])
-    #plt.plot(time_plot, Enc_plot)
-
-
     lines = ["-","--","-.",":"]
     linecycler = cycle(lines)
     plt.figure()
     for i in range(10):
-        #x = range(i,i+10)
         plt.plot(x_axis[i], y_axis[i], next(linecycler))
-        #print(y_axis[i])
-    #plt.show()
 
-    #fig, ax = plt.subplots()
-    #ax.set_prop_cycle(custom_cycler)
-    #ax.plot(time_plot, Enc_plot)    
-    plt.ylim(170,193)
+ 
+    plt.ylim(175,193)
+    plt.xlim(9.5, 20)
     plt.show()
 
     plt.pause(1)

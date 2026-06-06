@@ -484,13 +484,31 @@ def load_graphs():
     
 def layer_step_response(logtuple):
     Enc_plot = []
+    Corrected_Enc_plot = []
     time_plot = []
-    first_time = False
+    Corrected_time_plot = []
     i = 0
 
     # storage for all box plots
     x_axis = []
     y_axis = []
+
+    # LET Control: Start of impluse
+    #Manual_step_tuning = [
+    #    19.68, 18.16, 23.47, 17.69, 22.17,
+    #    15.61, 23.14, 21.86, 19.25, 17.93
+    #]
+    #min_start = 15.61
+
+    #LET Dummy: [Start, End]
+    Manual_step_tuning = [
+        20.89, 19.29, 19.72, 19.08, 21.43, 
+        29.91, 24.05, 18.91, 25.07, 17.51
+    ]
+    min_start = 17.51
+
+    # Find minimum End, set it as max x. Find good start, and 
+    # Scale all others to it
 
     
     for log in logtuple:
@@ -502,27 +520,33 @@ def layer_step_response(logtuple):
             for var in temp_parse[1:]:
                 Run_Time = var.split("#EndRunTime#")[0].replace(" ", "")
                 time_plot.append(float(Run_Time))
-                #if first_time == True:
-                #    first_time = False
-                #    time_plot.append(float(Run_Time))
-            #first_time = True
 
             # parse Encoder variables
             temp_parse = data.split("#StartEnc#")
             for var in temp_parse[1:]:
                 Encoder = var.split("#EndEnc#")[0].replace(" ", "")
                 Enc_plot.append(float(Encoder))
-                #if first_time == True:
-                #    first_time = False
-                #    Enc_plot.append(float(Encoder))
-            #first_time = True
+
+            #Scale the plots properly
+            print("Correction: "+ str((Manual_step_tuning[i] - min_start)))
+            for d in range(len(Enc_plot)):
+                #if time_plot[i] - (Manual_step_tuning[i][0] - min_start) >= 0:
+                Corrected_Enc_plot.append(Enc_plot[d])
+                Corrected_time_plot.append((time_plot[d] - (Manual_step_tuning[i] - min_start)))
 
             i += 1
             print("Finished Loading #" + str(i))
-            x_axis.append(time_plot.copy())
-            y_axis.append(Enc_plot.copy())
+
+            #print("Len Enc: " + str(len(Corrected_Enc_plot)) + "\tLen Time: "+ str(len(Corrected_time_plot)))
+
+            #print(Corrected_time_plot)
+            x_axis.append(Corrected_time_plot.copy())
+            y_axis.append(Corrected_Enc_plot.copy())
             time_plot.clear()
             Enc_plot.clear()
+            Corrected_time_plot.clear()
+            Corrected_Enc_plot.clear()
+
 
     # Load Box Plot
     #plt.boxplot(BoxPlots[0])
@@ -541,12 +565,14 @@ def layer_step_response(logtuple):
     #fig, ax = plt.subplots()
     #ax.set_prop_cycle(custom_cycler)
     #ax.plot(time_plot, Enc_plot)    
+    plt.ylim(170,193)
     plt.show()
 
     plt.pause(1)
     #plt.xticks([1, 2, 3], ['Control', 'No Offset', 'Dummy'])
-    #plt.ylabel("Pendulum Angle")
-    #plt.title("LET Boxplots")
+    plt.ylabel("Pendulum Angle")
+    plt.xlabel("Time(s)")
+    plt.title("LET Step Response")
     plt.grid(True)
   
     plt.show(block=True)

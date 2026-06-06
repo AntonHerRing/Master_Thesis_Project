@@ -20,9 +20,9 @@ from tkinter import ttk
 plt.ion()
 
 # Innit Variables #LET_120s_no_offset
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\Step _Response_20s\\"
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
 #LET_120s_rand_dummy\Step _Response
 
@@ -357,66 +357,41 @@ def load_log(logname):
         #Analyze_data(Enc_plot)
         #while True: pass
 
-def log_mult():
+def load_boxplots():
     # open log
 
     Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
     logtuple = askopenfilenames(initialdir=filePath) # show an "Open" dialog box and return the path to the selected file
     
-    load_avr(logtuple)
+    load_boxplots_func(logtuple)
 
 # Functions that loads multiple logs and displays their average 
-def load_avr(logtuple):
+def load_boxplots_func(logtuple):
+    Enc_boxplot = []
+    i = 0
     for log in logtuple:
         with open(log, 'r') as file:
             data = file.read()
 
             # parse Run time variables
-            temp_parse = data.split("#StartRunTime#")
-            for var in temp_parse[1:]:
-                Run_Time = var.split("#EndRunTime#")[0].replace(" ", "")
-                Run_time_plot.append(float(Run_Time))
+            #temp_parse = data.split("#StartRunTime#")
+            #for var in temp_parse[1:]:
+            #    Run_Time = var.split("#EndRunTime#")[0].replace(" ", "")
+            #    Run_time_plot.append(float(Run_Time))
 
             # parse Encoder variables
             temp_parse = data.split("#StartEnc#")
             for var in temp_parse[1:]:
                 Encoder = var.split("#EndEnc#")[0].replace(" ", "")
-                Enc_plot.append(float(Encoder))
+                Enc_boxplot.append(float(Encoder))
+                #print("Debugg: " + str(Encoder))
+            i += 1
+            print("Finished Loading #" + str(i))
+    plt.boxplot(Enc_boxplot)
+    plt.show(block=True)
+    plt.pause(1)
 
-            # parse Motor variables
-            temp_parse = data.split("#StartMotor#")
-            for var in temp_parse[1:]:
-                Motor = var.split("#EndMotor#")[0].replace(" ", "")
-                Motor_plot.append(float(Motor))
 
-            # parse Control variables
-            temp_parse = data.split("#StartContr#")
-            for var in temp_parse[1:]:
-                Control = var.split("#EndContr#")[0].replace(" ", "")
-                Contr_plot.append(float(Control))
-
-            # Load in plot values
-            fig, graph = plt.subplots(2, 2, figsize=(12, 5))
-            fig.suptitle('Control System Monitoring')
-            graph[0, 0].plot(Run_time_plot, Enc_plot, 'tab:green')
-            graph[0, 0].set_title('Encoder Degree')
-            graph[0, 1].plot(Run_time_plot, Motor_plot, 'tab:orange')
-            graph[0, 1].set_title('Motor Degree')
-            graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
-            graph[1, 0].set_title('Target Degree')
-            fig.delaxes(graph[1, 1])
-
-            # set plot labels
-            for plot in graph.flat:
-                plot.set(xlabel='time(s)', ylabel='Degree')
-
-            for plot in graph.flat[:1]:
-                plot.label_outer()
-
-            plt.ylim(-360,360)
-            plt.show(block=True)
-            plt.pause(1)
-            #while True: pass
 
 # Window pop up for choice selection
 def select_function():
@@ -435,10 +410,10 @@ def select_function():
     #button1 = tk.Button(window, text="(1))", width=25, command=window.destroy)
     button1 = tk.Button(window, text="Record Graph", width=25, command=lambda: read_button(1))
     button2 = tk.Button(window, text="Load Single Graph", width=25, command=lambda: read_button(2))
-    #button3 = tk.Button(window, text="Load Average Graph", width=25, command=lambda: read_button(3))
+    button3 = tk.Button(window, text="Load Box Plots", width=25, command=lambda: read_button(3))
     button1.pack()
     button2.pack()
-    #button3.pack()
+    button3.pack()
 
     window.mainloop()
 
@@ -504,7 +479,7 @@ while True:
     elif State_input == 2:
         log_handler()
     elif State_input == 3:
-        log_mult()
+        load_boxplots()
     else:
         print("Error: Incorrect Option! Expected 1, 2, or 3. Got: " + str(State_input))
 

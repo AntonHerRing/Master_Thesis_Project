@@ -41,6 +41,15 @@ int16_t  MotorTask_Btns_data; /* Local copy of label Butns owned by LET Buttons 
 int16_t* EncTask_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
 int16_t  EncTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
 
+/** Debug **/
+label_t debug_time;
+
+uint32_t* max_time;
+uint32_t max_time_data;
+uint32_t* PrintTask_time;      /* Pointer to the local data of label Motor by Print task. */
+uint32_t  PrintTask_time_data; /* Local copy of label Motor owned by Print LET task. */
+/********* */
+
 /***** STM Var******/
 float *current_error_steps, *current_error_rotor_steps;
 float rotor_control_target_steps;
@@ -150,14 +159,14 @@ void vLetEncTask_job(void) {
     (*task_Enc) = get_encoder_angle_continous(count);
 
     //(*task_Enc) = step_response_enc(current_time, 8000);
-
-    
 }
 /*-----------------------------------------------------------*/
 
 void vLetMotorTask_init(void) {
     task_Motor = &task_Motor_data;    /* Initialize the pointer to the local buffer for label Motor */
     MotorTask_Contr = &MotorTask_Contr_data;
+
+    max_time = &max_time_data;
 
     /******** Calibrate Motor ********/
     sleep_ms(10);
@@ -170,11 +179,15 @@ void vLetMotorTask_init(void) {
     /******** Register LET variables ********/
     xLetTaskRegisterWrite(&letMotorTsk, &label_Motor, (void*) &task_Motor);    /* Register the write access for label Motor */   
     xLetTaskRegisterRead(&letMotorTsk, &label_Contr, (void*) &MotorTask_Contr); /* Register the read access for label Contr */ 
-    xLetTaskRegisterRead(&letMotorTsk, &label_Btns, (void*) &MotorTask_Btns);    /* Register the write access for label Motor */ 
+    xLetTaskRegisterRead(&letMotorTsk, &label_Btns, (void*) &MotorTask_Btns);    /* Register the write access for label Motor */
+
+    xLetTaskRegisterWrite(&letMotorTsk, &debug_time, (void*) &max_time);    /* Register the write access for label Motor */   
+    xLetTaskRegisterRead(&letMotorTsk, &debug_time, (void*) &max_time);    /* Register the write access for label Motor */ 
 }
 /*-----------------------------------------------------------*/
 
 void vLetMotorTask_job(void) {
+    uint64_t start = timer_time_us_64(timer0_hw);
     /******** Init static var ********/
     static float motor_deg = 0.0;
     static float desired_pos = 0.0;
@@ -212,6 +225,10 @@ void vLetMotorTask_job(void) {
     if(!pos_overflow){
         move_stepper_to(desired_pos);
     }
+    uint64_t end = timer_time_us_64(timer0_hw);
+
+    if((end - start) > (*max_time))
+        (*max_time) = (uint32_t)(end - start);
 }
 /*-----------------------------------------------------------*/
 
@@ -220,10 +237,14 @@ void vLetPrintTask_init(void) {
     PrintTask_Motor = &PrintTask_Motor_data;
     PrintTask_Contr = &PrintTask_Contr_data;
 
+    PrintTask_time = &PrintTask_time_data;
+
     /******** Register LET variables ********/
     xLetTaskRegisterRead(&letPrintTsk, &label_Enc, (void*) &PrintTask_Enc);    /* Register the read access for label Enc */    
     xLetTaskRegisterRead(&letPrintTsk, &label_Motor, (void*) &PrintTask_Motor);    /* Register the read access for label Motor */   
     xLetTaskRegisterRead(&letPrintTsk, &label_Contr, (void*) &PrintTask_Contr);    /* Register the read access for label Control */  
+
+    xLetTaskRegisterRead(&letPrintTsk, &debug_time, (void*) &PrintTask_time);    /* Register the read access for label Control */  
 }
 /*-----------------------------------------------------------*/
 
@@ -245,8 +266,10 @@ void vLetPrintTask_job(void) {
     run_time += T_Print;
 
     //print data
-    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", 
-            (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr); //Read any inputs
+    printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\tExec Time (ms): %f\tEnd2\r\n", 
+            (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr, (float)(*PrintTask_time)/1000.0f); //Read any inputs
+
+            
 
     if(!set_point_reached && (int)(*PrintTask_Enc) == 180 ){
         set_point_reached = true;

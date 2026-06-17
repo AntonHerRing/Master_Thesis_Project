@@ -214,7 +214,8 @@ void L6474_Board_SpiInit()
     gpio_init(SPI_MISO);
 
     //spi_init(SPI_PORT, 5 * 100 * 1000); // 5 * 100 * 1000 = 500kHz
-    spi_init(SPI_PORT, 5 * 100 * 1000); // 5 * 100 * 1000 = 500kHz
+    //spi_init(SPI_PORT, 5 * 100 * 1000); // 5 * 100 * 1000 = 500kHz
+    spi_init(SPI_PORT, 10 * 100 * 1000); // 5 * 100 * 1000 = 500kHz
     spi_set_format(SPI_PORT, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST);
 
     gpio_set_dir(SPI_CS, GPIO_OUT);

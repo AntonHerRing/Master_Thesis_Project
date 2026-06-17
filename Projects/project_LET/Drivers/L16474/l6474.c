@@ -1856,16 +1856,6 @@ void L6474_StepClockHandler(uint8_t deviceId)
   /* Incrementation of the relative position */
   devicePrm[deviceId].relativePos++;
 
-  //Stepper motor State Error Detection
-  /*dummy5 = devicePrm[deviceId].relativePos;
-  motorState_t current_state = devicePrm[deviceId].motionState;
-  motorState_t past_state;
-
-  if (dummy5 > 100 && current_state != INACTIVE){  
-    L6474_HardStop(0);
-    dummy5 = devicePrm[deviceId].relativePos;
-  }*/
-
   switch (devicePrm[deviceId].motionState) 
   {
     case ACCELERATING: 
@@ -1874,9 +1864,6 @@ void L6474_StepClockHandler(uint8_t deviceId)
         uint32_t endAccPos = devicePrm[deviceId].endAccPos;
         uint16_t speed = devicePrm[deviceId].speed;
         uint32_t acc = ((uint32_t)devicePrm[deviceId].acceleration << 16);
-
-        //uint32_t dummy = 0;
-        //uint32_t dummy2 = (uint32_t)devicePrm[deviceId].acceleration;
         
         if ((devicePrm[deviceId].commandExecuted == SOFT_STOP_CMD)||
             ((devicePrm[deviceId].commandExecuted != RUN_CMD)&&  

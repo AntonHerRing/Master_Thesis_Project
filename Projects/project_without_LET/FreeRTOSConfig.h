@@ -146,6 +146,7 @@ to exclude the API function. */
 #define INCLUDE_xTaskGetHandle                  1
 #define INCLUDE_xTaskResumeFromISR              1
 #define INCLUDE_xQueueGetMutexHolder            1
+#define INCLUDE_xTaskDelayUntil                 1
 
 #if PICO_RP2350
 #define configENABLE_MPU                        0

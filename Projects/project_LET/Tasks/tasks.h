@@ -25,15 +25,27 @@
 #include "Control/Control.h"
 #include "Encoder/Encoder.h"
 
-#define T_Dummy  4      //2
+/*#define T_Dummy  4      //2
 #define T_Enc   2       //2
-#define T_Motor 2       //2
+#define T_Motor 2       //2 <- Deeper problem with this value. DL misses occur even when raised, altough less frequenctly. Large spikes.
 #define T_Contr 5       //5
 #define T_Print 10      //10
-#define T_Btns  2       //2
+#define T_Btns  2       //2*/
 
-#define ENC_OFFSET 1    //0 <- for testing
+/* Task Values */
+#define T_Dummy  4      //2
+#define T_Enc    5       //2
+#define T_Motor  5       //2 <- Deeper problem with this value. DL misses occur even when raised, altough less frequenctly. Large spikes.
+#define T_Contr  5       //5
+#define T_Print  10      //10
+#define T_Btns   5       //2
 
+#define DL_Enc   5      //10
+#define DL_Motor 5       //2
+
+#define ENC_OFFSET 5    //0 <- for testing
+
+/* Task Customization settings */
 #define CALC_ON         true
 #define STEP_RESPONSE   false
 
@@ -95,6 +107,15 @@ extern int16_t* MotorTask_Btns;      /* Pointer to the local data of label Btns 
 extern int16_t  MotorTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
 extern int16_t* EncTask_Btns;      /* Pointer to the local data of label Btns by Buttons task. */
 extern int16_t  EncTask_Btns_data; /* Local copy of label Butns owned by LET Buttons task. */
+
+/** Debug **/
+extern label_t debug_time;
+
+extern uint32_t* max_time;
+extern uint32_t max_time_data;
+extern uint32_t* PrintTask_time;      /* Pointer to the local data of label Motor by Print task. */
+extern uint32_t  PrintTask_time_data; /* Local copy of label Motor owned by Print LET task. */
+/********* */
 
 // Rotary Encoder Interrupt Variables
 extern volatile int32_t count;

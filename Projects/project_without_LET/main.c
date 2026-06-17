@@ -92,7 +92,7 @@ int main()
     vTaskCoreAffinitySet(MotorTask, CORE0);
 
     xTaskCreate(Btns_Task, "Btns Task", 512, (void*) T_Btns, 5, &BtnsTask);
-    vTaskCoreAffinitySet(BtnsTask, CORE1);
+    vTaskCoreAffinitySet(BtnsTask, CORE0);
 
     /* Dummy Task for taking up space on Scheduler*/
     //xTaskCreate(Dummy_Task, "Dummy Task", 5120, (void*) T_Dummy, 4, &DummyTask);
@@ -115,7 +115,8 @@ int main()
 /*-----------------------------------------------------------*/
 
 void Btns_Task(void *args) {
-    TickType_t xLastWakeTime = 5;
+    //TickType_t xLastWakeTime = 5;
+    TickType_t xLastWakeTime = 0;
     const TickType_t xPeriod = (int)args;   /* Get period (in ticks) from argument. */
     uint8_t buttons = 0;
 
@@ -135,7 +136,8 @@ void Btns_Task(void *args) {
         (*task_Btns) = buttons;
         taskEXIT_CRITICAL();
 
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
+            printf("------------------------Error: Deadline Missed------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -169,7 +171,8 @@ void Enc_Task(void *args) {
         (*task_Enc) = encoder_value;
         taskEXIT_CRITICAL();
 
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
+            printf("------------------------Error: Deadline Missed------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -190,6 +193,10 @@ void Motor_Task(void *args) {
     float motor_read = 0;
     bool pos_overflow = false;
     float collector = 0;
+
+    uint32_t past_tick = 0;
+    uint32_t current_tick = 0;
+    float elapsed_ticks = 0;
 
     vTaskDelayUntil(&xLastWakeTime, 0);
 
@@ -229,10 +236,10 @@ void Motor_Task(void *args) {
         taskENTER_CRITICAL();
         (*task_Motor) = motor_deg; //write any inputs
         taskEXIT_CRITICAL();
-
-        //printf("Motor: %f\n", motor_deg);
-
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
+        
+        printf("Execution time Motor: %f\tCurr: %d\tPast: %d\n", elapsed_ticks, current_tick, past_tick);
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
+            printf("------------------------Error: Deadline Missed------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -298,7 +305,8 @@ void Print_Task(void *args) {
             printf("##32##: Samples: %f\tMean: %f\tVariance: %f\tStandard Deviation: %f\tEnd\r\n", samples, inc_mean, inc_variance, inc_stndDev);
         }
         
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
+            printf("------------------------Error: Deadline Missed------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -376,7 +384,8 @@ void Contr_Task(void *args) {
         (*task_Contr) = Controll_write;
         taskEXIT_CRITICAL();
 
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
+            printf("------------------------Error: Deadline Missed------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -395,7 +404,8 @@ void Dummy_Task(void *args) {
         //BSP_WaitClkCycles(270000);
         vLetDummyTask_job();
         
-        vTaskDelayUntil(&xLastWakeTime, xPeriod);   /* Wait for the next release. */
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
+            printf("------------------------Error: Deadline Missed------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/

@@ -66,11 +66,13 @@ int main()
     xLetInitLabel("Contr", sizeof(float), &label_Contr, LET_COM_COPY);
     xLetInitLabel("Btns", sizeof(int16_t), &label_Btns, LET_COM_COPY);
 
+    xLetInitLabel("debug", sizeof(uint32_t), &debug_time, LET_COM_COPY);
+
     //low num = low prio, High num = high prio
-    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 7, T_Enc, T_Enc-1, 0, CORE1, &letEncTsk);                  //7
+    xLetTaskCreate(vLetEncTask_init, vLetEncTask_job, "LET_Enc_Task", 512, 7, T_Enc, DL_Enc, 0, CORE1, &letEncTsk);                  //7
     xLetTaskCreate(vLetContrTask_init, vLetContrTask_job, "LET_Control_Task", 5120, 3, T_Contr, T_Contr, 0, CORE0, &letContrTsk);   //6
     xLetTaskCreate(vLetBtnsTask_init, vLetBtnsTask_job, "LET_Buttons_Task", 512, 5, T_Btns, T_Btns, 0, CORE0, &letBtnsTsk);         //5
-    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 18216, 6, T_Motor, T_Motor-1, ENC_OFFSET, CORE0, &letMotorTsk);    //3              //18216          //10240, is too much
+    xLetTaskCreate(vLetMotorTask_init, vLetMotorTask_job, "LET_Motor_Task", 18216, 6, T_Motor, DL_Motor, ENC_OFFSET, CORE0, &letMotorTsk);    //3              //18216          //10240, is too much
     xLetTaskCreate(vLetPrintTask_init, vLetPrintTask_job, "LET_Print_Task", 1024, 2, T_Print, T_Print, 0, CORE0, &letPrintTsk);     //2
 
     /* Test with high priority */

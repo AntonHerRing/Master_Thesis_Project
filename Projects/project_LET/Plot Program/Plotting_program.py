@@ -35,6 +35,8 @@ Motor_plot      = []
 Contr_plot      = []
 Run_time_plot   = []
 
+debug_plot      = []
+
 #button choice when starting
 State_input = 0
 
@@ -67,6 +69,7 @@ def Record_Graph(ser, time):
     '''
     Run_Time = 0
     Start_time = 0
+    debug_time = 0
 
     # Read Run time at start of recoring
     value = ser.readline()
@@ -83,12 +86,16 @@ def Record_Graph(ser, time):
                     Motor = StringValue.split("Motor Deg: ")[1].split("Target")[0].replace(" ", "")
                 if StringValue.find("Target Deg:") != -1 and StringValue.find("End") != -1:
                     Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
+                if StringValue.find("Exec Time (ms):") != -1 and StringValue.find("End2") != -1:
+                    debug_time = StringValue.split("Exec Time (ms):")[1].split("End2")[0].replace(" ", "")
                 break
     Run_Time = Start_time
     Run_time_plot.append(float(Run_Time))
     Enc_plot.append(float(Encoder))
     Motor_plot.append(float(Motor))
     Contr_plot.append(float(Control))
+
+    debug_plot.append(float(debug_time))
 
     print("First Data Saved")
 
@@ -107,7 +114,9 @@ def Record_Graph(ser, time):
     graph[0, 1].set_title('Motor Degree')
     graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
     graph[1, 0].set_title('Target Degree')
-    fig.delaxes(graph[1, 1])
+    #fig.delaxes(graph[1, 1])
+    graph[1, 1].plot(Run_time_plot, debug_plot, 'tab:blue')
+    graph[1, 1].set_title('Motor Execution Time')
 
     # set plot labels
     for plot in graph.flat:
@@ -145,6 +154,9 @@ def Record_Graph(ser, time):
                 if StringValue.find("Target Deg:") != -1 and StringValue.find("End") != -1:
                     Control = StringValue.split("Target Deg:")[1].split("End")[0].replace(" ", "")
 
+                if StringValue.find("Exec Time (ms):") != -1 and StringValue.find("End2") != -1:
+                    debug_time = StringValue.split("Exec Time (ms):")[1].split("End2")[0].replace(" ", "")
+
                 # Keep rotation within 360 degrees
                 #if (float(Encoder)) <= -360:
                 #    rotations -= 1
@@ -156,6 +168,8 @@ def Record_Graph(ser, time):
                 Run_time_plot.append(float(Run_Time))
                 Motor_plot.append(float(Motor))
                 Contr_plot.append(float(Control))
+
+                debug_plot.append(float(debug_time))
 
                 # Logg data in the file
                 #file = open(fileName, 'a')
@@ -176,6 +190,8 @@ def Record_Graph(ser, time):
                     graph[1, 0].plot(Run_time_plot, Contr_plot, 'tab:red')
                     graph[1, 0].set_title('Target Degree')
                     #fig.delaxes(graph[1, 1])
+                    graph[1, 1].plot(Run_time_plot, debug_plot, 'tab:blue')
+                    #graph[1, 1].set_title('Motor Execution Time')
 
                     # set plot labels
                     for plot in graph.flat:

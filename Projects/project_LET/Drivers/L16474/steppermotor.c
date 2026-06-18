@@ -55,12 +55,22 @@ float get_stepper_angle() {
 
 // Tell the stepper motor to move to a particular angle in degrees
 void move_stepper_to(float deg) {
+	static bool wait = false;
 
 	int32_t steps = (int32_t)(deg * MOTOR_STEPS_PER_DEGREE);
 
-	// Tell stepper motor to move
-	L6474_GoTo(0, steps);
-	L6474_WaitWhileActive(0);
+	/* Tell stepper motor to move */
+	if (wait == false)
+		L6474_GoTo(0, steps);
+	/* Prevent reactivtation while Active */
+	if (L6474_GetDeviceState(0) != INACTIVE){
+		wait = true;
+	}
+	else
+		wait = false;
+	
+	//L6474_GoTo(0, steps);
+	//L6474_WaitWhileActive(0);
 }
 
 // Tell the stepper motor to move by a particular angle in degrees

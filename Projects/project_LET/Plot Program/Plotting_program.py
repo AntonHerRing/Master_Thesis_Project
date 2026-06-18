@@ -22,12 +22,12 @@ from tkinter import ttk
 plt.ion()
 
 # Innit Variables #LET_120s_no_offset
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\Step _Response_20s\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
 #LET_120s_rand_dummy\Step _Response
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\"
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\"
 
 
 Enc_plot        = []
@@ -219,9 +219,11 @@ def Record_Graph(ser, time):
             extracted = StringValue.split("##")[1].split("##")[0]
             if extracted == "32" and StringValue.find("##32##", 7, len(StringValue)) == -1:
                 #parse values from print
+                Samples =0
                 Mean = 0
                 Variance = 0
-
+                if StringValue.find("Samples: ") != -1 and StringValue.find("Mean:") != -1:
+                    Samples = StringValue.split("Samples: ")[1].split("Mean:")[0].replace(" ", "")
                 if StringValue.find("Mean: ") != -1 and StringValue.find("Variance:") != -1:
                     Mean = StringValue.split("Mean: ")[1].split("Variance:")[0].replace(" ", "")
                 if StringValue.find("Variance: ") != -1 and StringValue.find("Standard Deviation:") != -1:
@@ -230,6 +232,9 @@ def Record_Graph(ser, time):
                 stnd_dev = math.sqrt(float(Variance))
 
                 print("--True Values--")
+
+                print("Samples: " + str(Samples))
+
                 print("Average Value: " + str(Mean))
 
                 #Calculate the other one
@@ -239,6 +244,7 @@ def Record_Graph(ser, time):
                 print("Standard Deviation: " + str(stnd_dev))
 
                 with open(fileName, 'a') as log_file:
+                    print("#StartSamples#" + str(Samples) + "#EndSamples#", file=log_file)
                     print("#StartMean#" + str(Mean) + "#EndMean#", file=log_file)
                     print("#StartVariance#" + str(Variance) + "#EndVariance#", file=log_file)
                     print("#StartStandardDeviation#" + str(stnd_dev) + "#EndStandardDeviation#", file=log_file)
@@ -379,6 +385,11 @@ def load_log(logname):
             plot.label_outer()
 
         print("--True Values--")
+        # parse Samples
+        if data.find("#StartSamples#") != -1 and data.find("#EndSamples#") != -1:
+            Samples = data.split("#StartSamples#")[1].split("#EndSamples#")[0].replace(" ", "")
+            print("Samples: " + str(Samples))
+
         # parse Mean
         if data.find("#StartMean#") != -1 and data.find("#EndMean#") != -1:
             Mean = data.split("#StartMean#")[1].split("#EndMean#")[0].replace(" ", "")
@@ -426,6 +437,7 @@ def load_boxplots_func(plots, num_of_plots):
     Mean_all = []
     Variance_all = []
     Stand_dev_all = []
+    Samples_all = []
     i = 0
 
     # storage for all box plots
@@ -444,6 +456,11 @@ def load_boxplots_func(plots, num_of_plots):
 
                 # Only extract statistics variables on single box plots
                 if int(num_of_plots) == 1:
+                    # parse Samples
+                    if data.find("#StartSamples#") != -1 and data.find("#EndSamples#") != -1:
+                        Samples = data.split("#StartSamples#")[1].split("#EndSamples#")[0].replace(" ", "")
+                        Samples_all.append(int(Samples))
+                        
                     # parse Mean
                     if data.find("#StartMean#") != -1 and data.find("#EndMean#") != -1:
                         Mean = data.split("#StartMean#")[1].split("#EndMean#")[0].replace(" ", "")

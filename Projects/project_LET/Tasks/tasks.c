@@ -187,7 +187,10 @@ void vLetMotorTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetMotorTask_job(void) {
-    uint64_t start = timer_time_us_64(timer0_hw);
+    /* Allow tracking of WCET */
+    uint64_t start = 0;
+    if (TRACK_MOTOR_ET)
+        start = timer_time_us_64(timer0_hw);
     /******** Init static var ********/
     static float motor_deg = 0.0;
     static float desired_pos = 0.0;
@@ -197,7 +200,8 @@ void vLetMotorTask_job(void) {
     static float collector = 0;
 
     /******** Main function ********/
-    //Handle button inputs
+    // Handle button inputs 
+    // 1-2: move motor left/right | 4: reset motor position| 8: Stop motor
     buttons = *MotorTask_Btns;
     switch(buttons){
         case 1: collector += 0.2; break;    //0.2
@@ -225,10 +229,16 @@ void vLetMotorTask_job(void) {
     if(!pos_overflow){
         move_stepper_to(desired_pos);
     }
-    uint64_t end = timer_time_us_64(timer0_hw);
 
-    if((end - start) > (*max_time))
-        (*max_time) = (uint32_t)(end - start);
+    /* Allow tracking of WCET */
+    if(TRACK_MOTOR_ET){
+        uint64_t end = timer_time_us_64(timer0_hw);
+
+        if(TRACK_MOTOR_WCET && (end - start) > (*max_time))
+            (*max_time) = (uint32_t)(end - start);
+        else
+            (*max_time) = (uint32_t)(end - start);
+    }
 }
 /*-----------------------------------------------------------*/
 
@@ -269,8 +279,6 @@ void vLetPrintTask_job(void) {
     printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\tExec Time (ms): %f\tEnd2\r\n", 
             (float)run_time/1000.0,*PrintTask_Enc, *PrintTask_Motor, *PrintTask_Contr, (float)(*PrintTask_time)/1000.0f); //Read any inputs
 
-            
-
     if(!set_point_reached && (int)(*PrintTask_Enc) == 180 ){
         set_point_reached = true;
     }
@@ -300,6 +308,7 @@ void vLetContrTask_init(void) {
     ContrTask_Enc = &ContrTask_Enc_data;
     ContrTask_Motor = &ContrTask_Motor_data;
 
+    /* Calculate Derivative Filter Gains for Pendulum */
     fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY;
     Wo_t    = 2 * PI * fo_t;
     IWon_t  = 2 / (Wo_t * (contr_period));
@@ -307,6 +316,7 @@ void vLetContrTask_init(void) {
     PID_Pend.fb_gain = PID_Pend.ff_gain * (1 - IWon_t);
     PID_Pend.tau = 1.0f / Wo_t;
 
+    /* Calculate Derivative Filter Gains for Motor */
     fo_t    = DERIVATIVE_LOW_PASS_CORNER_FREQUENCY_ROTOR;
     Wo_t    = 2 * PI * fo_t;
     IWon_t  = 2 / (Wo_t * (contr_period));
@@ -386,8 +396,7 @@ void vLetContrTask_job(void) {
 
     /* Activation for step response */
     if (STEP_RESPONSE && (current_time - start_time) >= 10000){
-        PID_Rotor.Set_point = 15 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
-        //printf("--------------Sp changed--------------\n");
+        PID_Rotor.Set_point = STEP_SIZE * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
     }
    
     if (balance_on && (*ContrTask_Enc > 140 &&  *ContrTask_Enc < 220)){
@@ -408,7 +417,6 @@ void vLetContrTask_job(void) {
         /* Integral Anti-windup*/
         if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.2*STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE)   //0.2
             PID_Rotor.int_term = lambda*PID_Rotor.int_term;
-            //PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
         /* Calculate Pendulum SP - PV*/
         *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment - PID_Rotor.control_output);
 
@@ -417,7 +425,6 @@ void vLetContrTask_job(void) {
         /* Convert PID Output to Angle*/
         rotor_control_target_steps = (PID_Pend.control_output)*Rotor_scale;
         (*task_Contr) = rotor_control_target_steps;
-        //printf("Enc pos: %f\t Target steps: %f\tCurr Error steps: %f\n", encoder_position, rotor_control_target_steps, *current_error_steps);
     }
     else if (!balance_on) 
         (*task_Contr) = 0;
@@ -430,7 +437,7 @@ void vLetDummyTask_init(void) {
 /*-----------------------------------------------------------*/
 
 void vLetDummyTask_job(void) {
-
+    /* Randomize execution time up to 1.33 ms */
     uint32_t base_delay = 200000;   //200000
 
     uint32_t random = rand();

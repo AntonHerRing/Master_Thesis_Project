@@ -236,8 +236,7 @@ void Motor_Task(void *args) {
         taskENTER_CRITICAL();
         (*task_Motor) = motor_deg; //write any inputs
         taskEXIT_CRITICAL();
-        
-        printf("Execution time Motor: %f\tCurr: %d\tPast: %d\n", elapsed_ticks, current_tick, past_tick);
+
         if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
             printf("------------------------Error: Deadline Missed------------------------\n");
     }
@@ -344,7 +343,7 @@ void Contr_Task(void *args) {
 
         /* Activation for step response */
         if (STEP_RESPONSE && (current_time - start_time) >= 10000){
-            PID_Rotor.Set_point = 15 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
+            PID_Rotor.Set_point = STEP_SIZE * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
             //PID_Rotor.Set_point = 3.324262676 * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
             //printf("--------------Sp changed--------------\n");
         }

@@ -25,29 +25,33 @@
 #include "Control/Control.h"
 #include "Encoder/Encoder.h"
 
-/*#define T_Dummy  4      //2
+#define T_Dummy  4      //2
 #define T_Enc   2       //2
 #define T_Motor 2       //2 <- Deeper problem with this value. DL misses occur even when raised, altough less frequenctly. Large spikes.
 #define T_Contr 5       //5
 #define T_Print 10      //10
-#define T_Btns  2       //2*/
+#define T_Btns  2       //2
 
 /* Task Values */
-#define T_Dummy  4      //2
+/*#define T_Dummy  4      //2
 #define T_Enc    5       //2
 #define T_Motor  5       //2 <- Deeper problem with this value. DL misses occur even when raised, altough less frequenctly. Large spikes.
 #define T_Contr  5       //5
 #define T_Print  10      //10
-#define T_Btns   5       //2
+#define T_Btns   5       //2*/
 
-#define DL_Enc   5      //10
-#define DL_Motor 5       //2
+#define DL_Enc   1//5      //10
+#define DL_Motor 1//5       //2
 
-#define ENC_OFFSET 5    //0 <- for testing
+#define ENC_OFFSET 1//5    //0 <- for testing
 
 /* Task Customization settings */
-#define CALC_ON         true
-#define STEP_RESPONSE   false
+#define CALC_ON           true
+#define STEP_RESPONSE     false
+#define TRACK_MOTOR_ET    true
+#define TRACK_MOTOR_WCET  false     /* Requires TRACK_MOTOR_ET to be true */
+
+#define STEP_SIZE       11//15  <- 14 new step size without busywait in steppermotor
 
 /***** STM Var******/
 extern float *current_error_steps, *current_error_rotor_steps;

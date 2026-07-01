@@ -47,11 +47,11 @@
 
 /* Task Customization settings */
 #define CALC_ON           true
-#define STEP_RESPONSE     true//false
+#define STEP_RESPONSE     false
 #define TRACK_MOTOR_ET    true
 #define TRACK_MOTOR_WCET  false     /* Requires TRACK_MOTOR_ET to be true */
 
-#define STEP_SIZE       10//11//15  <- 11 new step size without busywait in steppermotor
+#define STEP_SIZE       9//10//11//15  <- 10 new step size without busywait in steppermotor, 9 for implicit
 
 /***** STM Var******/
 extern float *current_error_steps, *current_error_rotor_steps;

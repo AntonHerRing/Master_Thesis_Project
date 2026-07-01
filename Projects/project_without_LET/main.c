@@ -136,8 +136,8 @@ void Btns_Task(void *args) {
         (*task_Btns) = buttons;
         taskEXIT_CRITICAL();
 
-        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
-            printf("------------------------Error: Deadline Missed------------------------\n");
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE);   /* Wait for the next release. */
+            //printf("------------------------Error: Deadline Missed Btns------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -171,8 +171,8 @@ void Enc_Task(void *args) {
         (*task_Enc) = encoder_value;
         taskEXIT_CRITICAL();
 
-        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
-            printf("------------------------Error: Deadline Missed------------------------\n");
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE);   /* Wait for the next release. */
+            //printf("------------------------Error: Deadline Missed Enc------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -198,6 +198,8 @@ void Motor_Task(void *args) {
     uint32_t current_tick = 0;
     float elapsed_ticks = 0;
 
+    float exec_time = 0;
+
     vTaskDelayUntil(&xLastWakeTime, 0);
 
     for (;;) {
@@ -207,6 +209,11 @@ void Motor_Task(void *args) {
         buttons = *task_Btns;
         motor_read = *task_Contr;
         taskEXIT_CRITICAL();
+
+        /* Allow tracking of WCET */
+        uint64_t start = 0;
+        if (TRACK_MOTOR_ET)
+            start = timer_time_us_64(timer0_hw);
 
         switch(buttons){
             case 1: collector += 0.2; break;    //0.2
@@ -233,12 +240,22 @@ void Motor_Task(void *args) {
         if(!pos_overflow){
             move_stepper_to(desired_pos);
         }
+
+        /* Allow tracking of WCET */
+        if(TRACK_MOTOR_ET){
+            uint64_t end = timer_time_us_64(timer0_hw);
+
+            if(TRACK_MOTOR_WCET && (end - start) > exec_time)
+                exec_time = (uint32_t)(end - start);
+            else
+                exec_time = (uint32_t)(end - start);
+        }
         taskENTER_CRITICAL();
         (*task_Motor) = motor_deg; //write any inputs
+        (*max_time) = exec_time;
         taskEXIT_CRITICAL();
-
-        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
-            printf("------------------------Error: Deadline Missed------------------------\n");
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE);   /* Wait for the next release. */
+            //printf("------------------------Error: Deadline Missed Motor------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -256,6 +273,7 @@ void Print_Task(void *args) {
     float Encoder = 0;
     float Motor = 0;
     float Controller = 0;
+    float exec_time = 0;
     
     float inc_mean       = 0;
     float M2             = 0;
@@ -276,11 +294,17 @@ void Print_Task(void *args) {
         Encoder = *task_Enc;
         Motor = *task_Motor;
         Controller = *task_Contr;
+        exec_time = (*max_time);
         taskEXIT_CRITICAL();
 
         //print data
-        printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", 
-                (float)run_time/1000.0f, Encoder, Motor, Controller); //Read any inputs
+        //printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\r\n", 
+        //        (float)run_time/1000.0f, Encoder, Motor, Controller); //Read any inputs
+
+        //print data
+        printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\tExec Time (ms): %f\tEnd2\r\n", 
+                (float)run_time/1000.0f,Encoder, Motor, Controller, (float)(exec_time)/1000.0f); //Read any inputs
+
 
         if(!set_point_reached && (int)Encoder == 180 ){
             set_point_reached = true;
@@ -301,11 +325,15 @@ void Print_Task(void *args) {
             }
 
             inc_stndDev = sqrt(inc_variance);
-            printf("##32##: Samples: %f\tMean: %f\tVariance: %f\tStandard Deviation: %f\tEnd\r\n", samples, inc_mean, inc_variance, inc_stndDev);
+            if(samples > 2000)                 //attempt to get around deadline issue. 12000 for regular sampling
+                printf("##32##: Samples: %f\tMean: %f\tVariance: %f\tStandard Deviation: %f\tEnd\r\n", samples, inc_mean, inc_variance, inc_stndDev);
         }
+
+        //printf("#-42-#: Run Time(s): %f\tDeg: %f\tMotor Deg: %f\tTarget Deg: %f\tEnd\tExec Time (ms): %f\tEnd2\r\n\n##32##: Samples: %f\tMean: %f\tVariance: %f\tStandard Deviation: %f\tEnd\r\n", 
+        //        (float)run_time/1000.0f,Encoder, Motor, Controller, (float)(exec_time)/1000.0f, samples, inc_mean, inc_variance, inc_stndDev); //Read any inputs
         
-        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
-            printf("------------------------Error: Deadline Missed------------------------\n");
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE);   /* Wait for the next release. */
+            //printf("------------------------Error: Deadline Missed Print------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -365,7 +393,8 @@ void Contr_Task(void *args) {
             PID_Pend.measurment = Encoder_read * STEPPER_READ_POSITION_STEPS_PER_DEGREE;
             /* Integral Anti-windup*/
             if(PID_Rotor.clamp_on && abs(PID_Pend.Set_point - PID_Pend.measurment) < 0.2*STEPPER_CONTROL_POSITION_STEPS_PER_DEGREE)   //0.2
-                PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
+                PID_Rotor.int_term = lambda*PID_Rotor.int_term;   
+            //PID_Rotor.int_term = lambda*PID_Rotor.int_term - (1 - lambda)*PID_Rotor.int_term;
             /* Calculate Pendulum SP - PV*/
             *current_error_steps = ENCODER_ANGLE_POLARITY * (PID_Pend.Set_point - PID_Pend.measurment - PID_Rotor.control_output);
 
@@ -383,8 +412,8 @@ void Contr_Task(void *args) {
         (*task_Contr) = Controll_write;
         taskEXIT_CRITICAL();
 
-        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
-            printf("------------------------Error: Deadline Missed------------------------\n");
+        if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE);   /* Wait for the next release. */
+            //printf("------------------------Error: Deadline Missed Control------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/
@@ -404,7 +433,7 @@ void Dummy_Task(void *args) {
         vLetDummyTask_job();
         
         if (xTaskDelayUntil(&xLastWakeTime, xPeriod) == pdFALSE)   /* Wait for the next release. */
-            printf("------------------------Error: Deadline Missed------------------------\n");
+            printf("------------------------Error: Deadline Missed Dummy------------------------\n");
     }
 }
 /*-----------------------------------------------------------*/

@@ -2,7 +2,7 @@ The main files for the project are located in "Project_LET", and the equivalent 
 
 The Schematic for the adapter board for the ES-Lab-Kit can be found in "Adapter_Board_Schematics".
 
-Button functionality on the ES-Lab-Kit.
+Button functionality on the ES-Lab-Kit::
 
 (SW_5) - Move Left
 

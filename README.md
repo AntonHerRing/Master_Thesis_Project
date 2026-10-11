@@ -8,7 +8,7 @@ Button functionality on the ES-Lab-Kit::
 
 (SW_6) - Move Right
 
-(SW_7) - Reset
+(SW_7) - Reset (Pendulum angle and motor angle reset)
 
 (SW_8) - Override motor to stop (not toggelable).
 

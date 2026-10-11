@@ -114,10 +114,10 @@ void vLetBtnsTask_init(void) {
 
 void vLetBtnsTask_job(void) {
     //[0] == btn1 == 1, [1] == btn2 == 2, [2] == btn3 == 4, [3] == btn4 == 8
-    uint8_t btn1 = BSP_GetInput(SW_5);
-    uint8_t btn2 = BSP_GetInput(SW_6);
-    uint8_t btn3 = BSP_GetInput(SW_7);
-    uint8_t btn4 = BSP_GetInput(SW_8);
+    uint8_t btn1 = BSP_GetInput(SW_5);  //Move Left
+    uint8_t btn2 = BSP_GetInput(SW_6);  //Move Right
+    uint8_t btn3 = BSP_GetInput(SW_7);  //Reset
+    uint8_t btn4 = BSP_GetInput(SW_8);  //Override motor to stop
 
     uint8_t buttons = 0x0 | (!btn1 | (!btn2 << 1) | (!btn3 << 2) | (!btn4 << 3));
 

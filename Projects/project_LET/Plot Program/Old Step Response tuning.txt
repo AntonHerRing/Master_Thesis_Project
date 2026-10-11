@@ -1,0 +1,28 @@
+    #From top to bottom of file list, sorted after names
+    # LET Control: Start of impluse
+    Manual_step_tuning = [
+        19.68, 18.16, 23.47, 17.69, 22.17,
+        15.61, 23.14, 21.86, 19.25, 17.93
+    ]
+    min_start = min(Manual_step_tuning)
+
+    #LET Dummy: Start of impluse
+    #Manual_step_tuning = [
+    #    20.89, 19.29, 19.72, 19.08, 21.43, 
+    #    29.91, 24.05, 18.91, 25.07, 17.51
+    #]
+    #min_start = min(Manual_step_tuning)
+
+    #Implcit Control: Start of impluse
+    #Manual_step_tuning = [
+    #    18.23, 33.11, 23.23, 18.40, 17.24,
+    #    23.10, 17.15, 21.41, 17.44, 16.46
+    #]
+    #min_start = min(Manual_step_tuning)
+
+    #Implcit Dummy: Start of impluse
+    #Manual_step_tuning = [
+    #    25.38, 24.79, 20.46, 19.89, 20.01,
+    #    19.43, 19.60, 18.73, 23.11, 30.22
+    #]
+    #min_start = min(Manual_step_tuning)

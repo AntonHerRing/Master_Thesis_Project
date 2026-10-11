@@ -1,4 +1,5 @@
 import serial
+import matplotlib as mpl
 from matplotlib.animation import FuncAnimation
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,22 +22,23 @@ from tkinter import ttk
 
 plt.ion()
 
-# Innit Variables #LET_120s_no_offset
+# LET version Paths
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\"
+
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\Step _Response_20s\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_rand_dummy\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_no_offset\\"
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
+filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\Step _Response_20s\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_LET\\Plot Program\\Plot_logs\\LET_120s_Control\\"
 #LET_120s_rand_dummy\Step _Response
-#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\"
 
 # Implicit version paths
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\"
+
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_Control\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_rand_dummy\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_Control\\Step _Response_20s\\"
-filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_rand_dummy\\Step _Response_20s\\"
-
+#filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_rand_dummy\\Step _Response_20s\\"
 #filePath = "D:\\Dokument\\ZRasberryPiTest\\ES-Lab-Kit\\Software\\Projects\\project_without_LET\\Plot Program\\Plot_logs\\FreeRTOS_120s_no_offset\\"
 
 
@@ -467,9 +469,9 @@ def load_boxplots_func(plots, num_of_plots):
                 # Only extract statistics variables on single box plots
                 if int(num_of_plots) == 1:
                     # parse Samples
-                    if data.find("#StartSamples#") != -1 and data.find("#EndSamples#") != -1:
-                        Samples = data.split("#StartSamples#")[1].split("#EndSamples#")[0].replace(" ", "")
-                        Samples_all.append(int(Samples))
+                    if data.find("#StartSamples#") != -1 and data.find("\t#EndSamples#") != -1:
+                        Samples = data.split("#StartSamples#")[1].split("\t#EndSamples#")[0].replace(" ", "")
+                        Samples_all.append(float(Samples))
                         
                     # parse Mean
                     if data.find("#StartMean#") != -1 and data.find("#EndMean#") != -1:
@@ -507,10 +509,15 @@ def load_boxplots_func(plots, num_of_plots):
         plt.show(block=True)
         plt.pause(1)
     else:
+        #mpl.rcParams['axes.labelsize'] = 20
+        ax = plt.gca()
+        ax.tick_params(axis='x', labelsize=20)
+        ax.tick_params(axis='y', labelsize=20)
+
         plt.boxplot(BoxPlots)
         plt.xticks([1, 2, 3], ['Control', 'No Offset', 'Dummy'])
-        plt.ylabel("Pendulum Angle")
-        plt.title("LET Boxplots")
+        plt.ylabel("Pendulum Angle", fontsize = 25)
+        plt.title("Implicit Boxplots", fontsize = 25)
         plt.grid(True)
 
         plt.show()    
@@ -539,32 +546,40 @@ def layer_step_response(logtuple):
 
     #From top to bottom of file list, sorted after names
     # LET Control: Start of impluse
-    #Manual_step_tuning = [
-    #    19.68, 18.16, 23.47, 17.69, 22.17,
-    #    15.61, 23.14, 21.86, 19.25, 17.93
-    #]
-    #min_start = 15.61
+    Manual_step_tuning = [
+        19.08, 26.64, 17.74, 15.48, 19.05, 
+        24.38, 23.28, 18.36, 16.38, 18.29
+    ]
+    min_start = min(Manual_step_tuning)
+    #plt.ylim(170,190)
+    #plt.xlim(9.6, 32)
 
     #LET Dummy: Start of impluse
     #Manual_step_tuning = [
-    #    20.89, 19.29, 19.72, 19.08, 21.43, 
-    #    29.91, 24.05, 18.91, 25.07, 17.51
+    #    22.59, 18.19, 20.64, 19.29, 25.0,
+    #    16.09, 18.93, 19.57, 20.99, 16.59
     #]
-    #min_start = 17.51
+    #min_start = min(Manual_step_tuning)
+    #plt.ylim(163.29,192.63)
+    #plt.xlim(10.12, 31.38)
 
     #Implcit Control: Start of impluse
     #Manual_step_tuning = [
-    #    18.23, 33.11, 23.23, 18.40, 17.24,
-    #    23.10, 17.15, 21.41, 17.44, 16.46
+    #    24.54, 19.58, 25.51, 21.12, 23.0,
+    #    21.78, 21.12, 27.39, 22.39, 22.13
     #]
     #min_start = min(Manual_step_tuning)
+    #plt.ylim(170,192)
+    #plt.xlim(9.8, 31.08)
 
     #Implcit Dummy: Start of impluse
-    Manual_step_tuning = [
-        25.38, 24.79, 20.46, 19.89, 20.01,
-        19.43, 19.60, 18.73, 23.11, 30.22
-    ]
-    min_start = min(Manual_step_tuning)
+    #Manual_step_tuning = [
+    #    23.73, 25.36, 26.79, 24.88, 25.15,
+    #    20.06, 29.21, 21.18, 20.56, 24.33
+    #]
+    #min_start = min(Manual_step_tuning)
+    #plt.ylim(170,190)
+    #plt.xlim(10.47, 31.69)
 
     # Find minimum End, set it as max x. Find good start, and 
     # Scale all others to it
@@ -614,15 +629,19 @@ def layer_step_response(logtuple):
         plt.plot(x_axis[i], y_axis[i], next(linecycler))
 
  
-    plt.ylim(175,193)
-    plt.xlim(9.5, 20)
+    plt.ylim(170,190)
+    plt.xlim(9.6, 32)
     plt.show()
 
     plt.pause(1)
-    #plt.xticks([1, 2, 3], ['Control', 'No Offset', 'Dummy'])
-    plt.ylabel("Pendulum Angle")
-    plt.xlabel("Time(s)")
-    plt.title("LET Step Response")
+
+    ax = plt.gca()
+    ax.tick_params(axis='x', labelsize=20)
+    ax.tick_params(axis='y', labelsize=20)
+    
+    plt.ylabel("Pendulum Angle", fontsize = 25)
+    plt.xlabel("Time(s)", fontsize = 25)
+    plt.title("LET Control Step Response", fontsize = 25)
     plt.grid(True)
   
     plt.show(block=True)
